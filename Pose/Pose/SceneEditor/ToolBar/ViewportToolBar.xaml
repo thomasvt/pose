@@ -1,0 +1,20 @@
+﻿<UserControl x:Class="Pose.SceneEditor.ToolBar.ViewportToolBar"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:toolBar="clr-namespace:Pose.SceneEditor.ToolBar"
+             xmlns:editor="clr-namespace:Pose.Domain.Editor;assembly=Pose.Domain.Editor"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" >
+    <UserControl.Resources>
+        <toolBar:EditorToolToIsCheckedConverter x:Key="EditorToolToIsCheckedConverter"></toolBar:EditorToolToIsCheckedConverter>
+    </UserControl.Resources>
+    <Border>
+        <toolBar:PoseToolBar>
+            <toolBar:ToolBarButton IconGeometry="{StaticResource IconArrow}" ToolTip="Modify tool" Click="ModifyToolButtonClicked" IsChecked="{Binding Path=CurrentTool, Mode=OneWay, Converter={StaticResource EditorToolToIsCheckedConverter}, ConverterParameter={x:Static editor:EditorTool.Modify}}" />
+            <toolBar:ToolBarButton IconGeometry="{StaticResource IconBone}" ToolTip="Draw Bone tool" Click="DrawBoneToolButtonClicked" IsChecked="{Binding Path=CurrentTool, Mode=OneWay, Converter={StaticResource EditorToolToIsCheckedConverter}, ConverterParameter={x:Static editor:EditorTool.DrawBone}}" />
+        </toolBar:PoseToolBar>
+    </Border>
+</UserControl>
+

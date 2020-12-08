@@ -1,0 +1,36 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:dopesheet="clr-namespace:Pose.Panels.Dopesheet"
+                    xmlns:dopesheet1="clr-namespace:Pose.Controls.Dopesheet">
+
+    <Style TargetType="{x:Type dopesheet1:DopesheetRow}" >
+        <Setter Property="Height" Value="24" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type dopesheet1:DopesheetRow}">
+                    <Grid x:Name="Grid" Background="Transparent"> <!-- Transparent bg makes the entire rect mouse hittable -->
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+
+                        <DockPanel x:Name="Border" Grid.Column="0" Width="{TemplateBinding HeaderColumnWidth}" Margin="0,0,5,0"> <!-- 5px margin is for the gridsplitter, which exists only in the layer above us in the Dopesheet control, but we need to skip its visual width -->
+                            <ContentPresenter ContentSource="Header" VerticalAlignment="Center" DockPanel.Dock="Left" Margin="8,0,0,0" />
+                            <Line X1="0" X2="1" Y1="0" Y2="0" StrokeThickness="1" Stroke="#4a4a4a" Stretch="Fill" Margin="8,0,0,0" />
+                        </DockPanel>
+
+                        <Line X1="0" X2="1" Y1="0" Y2="0" Grid.Column="1" StrokeThickness="1" Stroke="#404040" Stretch="Fill" />
+                        <dopesheet1:DopesheetTimelinePanel Grid.Column="1" ClipToBounds="True" IsItemsHost="True" />
+
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Grid" Property="Background" Value="#773B5689" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</ResourceDictionary>

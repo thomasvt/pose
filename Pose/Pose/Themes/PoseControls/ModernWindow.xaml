@@ -1,0 +1,175 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:wpf="clr-namespace:Pose.Controls">
+
+    <Style x:Key="Window.Title.Button" TargetType="ButtonBase">
+        <Setter Property="Width" Value="48" />
+        <Setter Property="Height" Value="32" />
+        <Setter Property="Foreground" Value="#eeeeee"/>
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="BorderThickness" Value="0"/>
+        <Setter Property="HorizontalContentAlignment" Value="Center"/>
+        <Setter Property="VerticalContentAlignment" Value="Center"/>
+        <Setter Property="Padding" Value="1"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ButtonBase}">
+                    <Border Name="Chrome"
+                                Background="{TemplateBinding Background}"
+                                BorderThickness="{TemplateBinding BorderThickness}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                SnapsToDevicePixels="true">
+                        <ContentPresenter Margin="{TemplateBinding Padding}"
+                                              VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                              HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                              RecognizesAccessKey="True" 
+                                              SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="#55FEAF29" />
+            </Trigger>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="#99FEAF29" />
+                <Setter Property="Foreground" Value="#111111" />
+            </Trigger>
+            <Trigger Property="IsEnabled" Value="false">
+                <Setter Property="Foreground" Value="#bbbbbb" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
+    <Style TargetType="{x:Type wpf:ModernWindow}">
+        <Setter Property="ShowSystemButtons" Value="True" />
+        <Setter Property="FontFamily" Value="Segoe UI" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="Background" Value="#282828" />
+        <Setter Property="Foreground" Value="#eeeeee" />
+        <Setter Property="BorderBrush" Value="#111111" />
+        <Setter Property="Width" Value="800" />
+        <Setter Property="Height" Value="640" />
+        <Setter Property="MinWidth" Value="320" />
+        <Setter Property="WindowCaptionHeight" Value="32" />
+        <Setter Property="MinHeight" Value="200" />
+        <Setter Property="ResizeMode" Value="CanResizeWithGrip" />
+        <Setter Property="UseLayoutRounding" Value="True" />
+        <Setter Property="TextOptions.TextFormattingMode" Value="Display" />
+        <Setter Property="TextBlock.Foreground" Value="#eeeeee" />
+        <Setter Property="WindowStyle" Value="None" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type wpf:ModernWindow}">
+                    <Border x:Name="WindowBorder" BorderThickness="1" BorderBrush="{TemplateBinding BorderBrush}" Background="{TemplateBinding Background}">
+                        <Grid x:Name="LayoutRoot">
+                            <!-- content -->
+                            <ContentPresenter />
+
+                            <!-- Title bar (= in a layer on top of the content so the content can use the entire window canvas -->
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Title -->
+                                <StackPanel HorizontalAlignment="Center" Orientation="Horizontal" Height="26" VerticalAlignment="Top">
+                                    <Path Data="{TemplateBinding Logo}" x:Name="Logo" Fill="{TemplateBinding Foreground}" Margin="12,4"  Width="16" Height="16" VerticalAlignment="Center" Stretch="Uniform"/>
+                                    <TextBlock x:Name="Title" Foreground="{TemplateBinding Foreground}" 
+                                                   Text="{TemplateBinding Title}" FontSize="14" TextWrapping="NoWrap" 
+                                                   TextTrimming="CharacterEllipsis" TextOptions.TextFormattingMode="Display" VerticalAlignment="Center" />
+                                </StackPanel>
+
+                                <!-- System buttons -->
+                                <StackPanel x:Name="SystemButtons"  Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Top" WindowChrome.IsHitTestVisibleInChrome="True">
+                                    <Button Focusable="False" x:Name="Minimize" Command="{Binding Source={x:Static SystemCommands.MinimizeWindowCommand}}" ToolTip="Minimize" Style="{StaticResource Window.Title.Button}">
+                                        <Button.Content>
+                                            <Grid>
+                                                <Path Data="M0,7 L9,7 Z" Width="10" Height="10" VerticalAlignment="Center" HorizontalAlignment="Center"
+                                                              Stroke="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}}" StrokeThickness="1"  />
+                                            </Grid>
+                                        </Button.Content>
+                                    </Button>
+                                    <Grid Margin="1,0,1,0">
+                                        <Button Focusable="False" x:Name="Restore" Command="{Binding Source={x:Static SystemCommands.RestoreWindowCommand}}" ToolTip="Restore" Style="{StaticResource Window.Title.Button}" Visibility="Collapsed" >
+                                            <Button.Content>
+                                                <Grid UseLayoutRounding="True" >
+                                                    <Path Data="M2,2 L2,0 L9,0 L9,7 L7,7 M0,2 L7,2 L7,9 L0,9 Z" VerticalAlignment="Center" HorizontalAlignment="Center" SnapsToDevicePixels="True"
+                                                                  Stroke="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}}" StrokeThickness="1"  />
+                                                </Grid>
+                                            </Button.Content>
+                                        </Button>
+                                        <Button Focusable="False" x:Name="Maximize" Command="{Binding Source={x:Static SystemCommands.MaximizeWindowCommand}}" ToolTip="Maximize" Style="{StaticResource Window.Title.Button}" >
+                                            <Button.Content>
+                                                <Grid UseLayoutRounding="True">
+                                                    <Path Data="M0,0 L9,0 L9,9 L0,9 Z" VerticalAlignment="Center" HorizontalAlignment="Center"
+                                                                  Stroke="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}}" StrokeThickness="1"  />
+                                                </Grid>
+                                            </Button.Content>
+                                        </Button>
+                                    </Grid>
+                                    <Button Focusable="False" Command="{Binding Source={x:Static SystemCommands.CloseWindowCommand}}" ToolTip="Close" Style="{StaticResource Window.Title.Button}" >
+                                        <Button.Content>
+                                            <Grid UseLayoutRounding="True">
+                                                <Path Data="M0,0 L9,9 M0,9 L9,0"  VerticalAlignment="Center" HorizontalAlignment="Center"
+                                                              Stroke="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}}" StrokeThickness="1"  />
+                                            </Grid>
+                                        </Button.Content>
+                                    </Button>
+                                </StackPanel>
+
+                            </Grid>
+
+                            <!-- resize grip -->
+                            <Grid x:Name="ResizeGrip" Background="Transparent" HorizontalAlignment="Right" VerticalAlignment="Bottom" WindowChrome.ResizeGripDirection="BottomRight">
+                                <Path Width="12" Height="12" Margin="1" Stroke="{TemplateBinding BorderBrush}" StrokeThickness="1" Stretch="None" Data="F1 M1,10 L3,10 M5,10 L7,10 M9,10 L11,10 M2,9 L2,11 M6,9 L6,11 M10,9 L10,11 M5,6 L7,6 M9,6 L11,6 M6,5 L6,7 M10,5 L10,7 M9,2 L11,2 M10,1 L10,3" />
+                            </Grid>
+                        </Grid>
+                    </Border>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="ShowSystemButtons" Value="False">
+                            <Setter TargetName="SystemButtons" Property="Visibility" Value="Hidden"/>
+                        </Trigger>
+                        <Trigger Property="IsActive" Value="True">
+                            <Setter Property="BorderBrush" Value="#8E6118" />
+                            <Setter TargetName="Logo" Property="Fill" Value="#EEEEEE" />
+                            <Setter TargetName="Title" Property="Foreground" Value="#FFFFFF" />
+                        </Trigger>
+                        <Trigger Property="WindowState" Value="Maximized">
+                            <Setter TargetName="Maximize" Property="Visibility" Value="Collapsed" />
+                            <Setter TargetName="Restore" Property="Visibility" Value="Visible" />
+                            <Setter TargetName="ResizeGrip" Property="Visibility" Value="Collapsed" />
+                            <Setter TargetName="WindowBorder" Property="BorderThickness" Value="0" />
+                        </Trigger>
+                        <Trigger Property="WindowState" Value="Normal">
+                            <Setter TargetName="Maximize" Property="Visibility" Value="Visible" />
+                            <Setter TargetName="Restore" Property="Visibility" Value="Collapsed" />
+                        </Trigger>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="ResizeMode" Value="CanResizeWithGrip" />
+                                <Condition Property="WindowState" Value="Normal" />
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="ResizeGrip" Property="Visibility" Value="Visible" />
+                        </MultiTrigger>
+                        <Trigger Property="ResizeMode" Value="NoResize">
+                            <Setter TargetName="Minimize" Property="Visibility" Value="Hidden" />
+                            <Setter TargetName="Maximize" Property="Visibility" Value="Hidden" />
+                            <Setter TargetName="ResizeGrip" Property="Visibility" Value="Hidden" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+
+        <Setter Property="WindowChrome.WindowChrome">
+            <Setter.Value>
+                <!-- set the CaptionHeight to 0 if you want to disable the top "hotzone" for window dragging/maximization etc -->
+                <WindowChrome CornerRadius="0" GlassFrameThickness="1" UseAeroCaptionButtons="False" NonClientFrameEdges="None" />
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</ResourceDictionary>

@@ -1,0 +1,82 @@
+﻿<UserControl x:Class="Pose.Panels.Properties.SubPanels.KeySubPanelView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:controls="clr-namespace:Pose.Controls"
+             xmlns:curveEditor="clr-namespace:Pose.Controls.CurveEditor"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="250">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    </UserControl.Resources>
+    <Grid>
+        <StackPanel Orientation="Vertical">
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="88" />
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="32" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Text="Node" Margin="8,4" HorizontalAlignment="Right" />
+                <TextBlock Grid.Column="1" Grid.ColumnSpan="2" FontWeight="Bold" Text="{Binding NodeName}" Margin="0,4" />
+            </Grid>
+
+            <Grid Margin="0,0,0,16">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="88" />
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="32" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Text="Property" Margin="8,4" HorizontalAlignment="Right" />
+                <TextBlock Grid.Column="1" Grid.ColumnSpan="2" FontWeight="Bold" Text="{Binding PropertyName}" Margin="0,4" />
+            </Grid>
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="88" />
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="32" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Text="Key value" Margin="8,4" HorizontalAlignment="Right" />
+                <controls:NumericInputBox Visibility="{Binding IsValueNumeric, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.Column="1" Value="{Binding KeyValue}" TabIndex="0" ValueChanged="OnValueChanged" />
+                <ToggleButton Visibility="{Binding IsValueBoolean, Converter={StaticResource BooleanToVisibilityConverter}}" Grid.Column="1" IsChecked="{Binding KeyValueBool}" TabIndex="0" Checked="ToggleButton_OnChecked" Unchecked="ToggleButton_OnUnchecked" />
+            </Grid>
+
+            <curveEditor:CurveEditor Margin="0,4,32,0" IsReadOnly="{Binding CurveIsReadOnly}" LabelColumnWidth="88" BezierCurve="{Binding BezierCurve}" CurveType="{Binding CurveType}" BezierHandleReleased="CurveEditor_OnBezierHandleReleased"  />
+
+            <!-- curve shortcuts -->
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="88" />
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="32" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Text="Shortcuts" Margin="8,4" HorizontalAlignment="Right" />
+                <UniformGrid Grid.Column="1" Columns="4" Rows="4">
+                    <controls:IconButton IconGeometry="{StaticResource IconCurve11}" Foreground="Transparent" StrokeThickness="2" Stroke="#eeeeee" ToolTip="Soft ease in+out" Click="SoftInOut_Click" />
+                    <controls:IconButton IconGeometry="{StaticResource IconCurve22}" Foreground="Transparent" StrokeThickness="2" Stroke="#eeeeee" ToolTip="Medium ease in+out" Click="MediumInOut_Click"/>
+                    <controls:IconButton IconGeometry="{StaticResource IconCurve33}" Foreground="Transparent" StrokeThickness="2" Stroke="#eeeeee" ToolTip="Strong ease in+out" Click="StrongInOut_Click"/>
+                    <controls:IconButton IconGeometry="{StaticResource IconCurve44}" Foreground="Transparent" StrokeThickness="2" Stroke="#eeeeee" ToolTip="Overshoot in+out" Click="OvershootInOut_Click"/>
+
+                    <controls:IconButton IconGeometry="{StaticResource IconCurve01}" Foreground="Transparent" StrokeThickness="2" Stroke="#eeeeee" ToolTip="Soft ease out"  Click="SoftOut_Click"/>
+                    <controls:IconButton IconGeometry="{StaticResource IconCurve02}" Foreground="Transparent" StrokeThickness="2" Stroke="#eeeeee" ToolTip="Medium ease out" Click="MediumOut_Click"/>
+                    <controls:IconButton IconGeometry="{StaticResource IconCurve03}" Foreground="Transparent" StrokeThickness="2" Stroke="#eeeeee" ToolTip="Strong ease out" Click="StrongOut_Click"/>
+                    <controls:IconButton IconGeometry="{StaticResource IconCurve04}" Foreground="Transparent" StrokeThickness="2" Stroke="#eeeeee" ToolTip="Overshoot out" Click="OvershootOut_Click"/>
+
+                    <controls:IconButton IconGeometry="{StaticResource IconCurve10}" Foreground="Transparent" StrokeThickness="2" Stroke="#eeeeee" ToolTip="Soft ease in"  Click="SoftIn_Click"/>
+                    <controls:IconButton IconGeometry="{StaticResource IconCurve20}" Foreground="Transparent" StrokeThickness="2" Stroke="#eeeeee" ToolTip="Medium ease in"  Click="MediumIn_Click"/>
+                    <controls:IconButton IconGeometry="{StaticResource IconCurve30}" Foreground="Transparent" StrokeThickness="2" Stroke="#eeeeee" ToolTip="Strong ease in"  Click="StrongIn_Click"/>
+                    <controls:IconButton IconGeometry="{StaticResource IconCurve40}" Foreground="Transparent" StrokeThickness="2" Stroke="#eeeeee" ToolTip="Overshoot in" Click="OvershootIn_Click" />
+
+                    <controls:IconButton IconGeometry="{StaticResource IconCurve00}" StrokeThickness="2" Stroke="#eeeeee" ToolTip="Linear" Click="Linear_Click" />
+                    <controls:IconButton IconGeometry="{StaticResource IconCurveHold}" Foreground="Transparent" StrokeThickness="2" Stroke="#eeeeee" ToolTip="Hold" Click="Hold_Click" />
+                </UniformGrid>
+            </Grid>
+
+            
+        </StackPanel>
+    </Grid>
+</UserControl>

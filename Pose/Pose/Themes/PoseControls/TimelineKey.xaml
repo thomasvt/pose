@@ -1,0 +1,26 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:dopesheet1="clr-namespace:Pose.Controls.Dopesheet">
+
+    <Style TargetType="{x:Type dopesheet1:TimelineKey}">
+        <Setter Property="Panel.ZIndex" Value="1" />
+        <Setter Property="StrokeThickness" Value="2" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type dopesheet1:TimelineKey}">
+                    <Path x:Name="Diamond" Stroke="Transparent" StrokeThickness="{TemplateBinding StrokeThickness}" Fill="#517BBD" Data="M 0,1 L 1,0 2,1 1,2 Z" Stretch="Fill">
+                    </Path>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="Diamond" Property="Stroke" Value="#99FEAF29" />
+                        </Trigger>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter TargetName="Diamond" Property="Stroke" Value="#FEAF29" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</ResourceDictionary>

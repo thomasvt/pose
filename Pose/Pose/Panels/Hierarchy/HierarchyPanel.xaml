@@ -1,0 +1,48 @@
+﻿<UserControl x:Class="Pose.Panels.Hierarchy.HierarchyPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:dd="urn:gong-wpf-dragdrop"
+             xmlns:hierarchy="clr-namespace:Pose.Panels.Hierarchy"
+             xmlns:controls="clr-namespace:Pose.Controls"
+             mc:Ignorable="d" d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        <hierarchy:BoolToBoneFontWeightConverter x:Key="BoolToBoneFontWeightConverter" />
+    </UserControl.Resources>
+    <Grid>
+        <TreeView ItemsSource="{Binding RootNodes}" Margin="0,12,0,0" BorderThickness="0" KeyUp="UIElement_OnKeyUp" 
+              dd:DragDrop.IsDragSource="True" 
+              dd:DragDrop.IsDropTarget="True"
+              dd:DragDrop.DropHandler="{Binding DropHandler}"
+              dd:DragDrop.DropTargetAdornerBrush="#66FEAF29">
+            <TreeView.ItemContainerStyle>
+                <Style TargetType="{x:Type TreeViewItem}" BasedOn="{StaticResource {x:Type TreeViewItem}}">
+                    <!-- BasedOn makes our custom style in Themes folder being used. Else, it uses wpf default as base. -->
+                    <Setter Property="IsSelected" Value="{Binding IsSelected}" />
+                    <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
+                </Style>
+            </TreeView.ItemContainerStyle>
+            <TreeView.ItemTemplate>
+                <HierarchicalDataTemplate DataType="hierarchy:HierarchyNodeViewModel" ItemsSource="{Binding Children}">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Path Grid.Column="0" Width="10" Height="10" Fill="#ff2C8FFF"  Style="{StaticResource IconPath}" Data="{StaticResource IconBone}" Visibility="{Binding IsBone, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                        <Path Grid.Column="0" Width="10" Height="10" Fill="#cccccc" Style="{StaticResource IconPath}" Data="{StaticResource IconSprite}" Visibility="{Binding IsSprite, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                        <controls:EditableLabel Grid.Column="1" Height="24" Margin="8,0,8,0" Text="{Binding Name}"  TextBlock.FontWeight="{Binding IsBone, Converter={StaticResource BoolToBoneFontWeightConverter}}"
+                                            VerticalAlignment="Center" IsSelected="{Binding IsSelected}" />
+                        <controls:KeyCheckBox Grid.Column="2" VerticalAlignment="Center" Margin="0,0,8,0" IsKeyable="{Binding IsKeyable}"
+                                              MatchesKeyValue="{Binding MatchesKeyValue}"
+                                              IsChecked="{Binding IsNodeVisible}" ToolTip="Toggle visibility" />
+                    </Grid>
+                </HierarchicalDataTemplate>
+            </TreeView.ItemTemplate>
+        </TreeView>
+
+    </Grid>
+</UserControl>

@@ -1,0 +1,86 @@
+﻿syntax = "proto3";
+package Pose;
+
+option csharp_namespace = "Pose.Persistence";
+
+message Document {
+	string lastFilename = 1; 
+	uint64 idSequence = 2;
+	string assetFolder = 3;
+	DrawOrder drawOrder = 4;
+	repeated Node nodes = 5;
+	repeated Animation animations = 6;
+}
+
+message DrawOrder {
+	repeated uint64 nodeIds = 1;
+}
+
+message Node {
+	uint64 id = 1;	
+	string name = 2;
+	uint64 parentId = 3;
+	Point position = 4;
+	float angle = 5;
+
+	enum NodeType {
+		SPRITENODE = 0;
+		BONENODE = 1;
+	}
+
+	NodeType type = 6;
+
+	string spriteFile = 7; // the sprite's filepath relative to document.assetFolder when node.type == SPRITENODE
+	float boneLength = 8;
+}
+
+message Point {
+	float x = 1;
+	float y = 2;
+}
+
+message Animation {
+	uint64 id = 1;
+	string name = 2;
+	sint32 BeginFrame = 3;
+	sint32 EndFrame = 4;
+	uint32 FramesPerSecond = 5;
+	bool IsLoop = 6;
+	repeated NodeAnimation nodeAnimations = 7;
+}
+
+message NodeAnimation {
+	uint64 nodeId = 1;
+	repeated PropertyAnimation propertyAnimations = 2;
+}
+
+message PropertyAnimation {
+	uint64 id = 1;
+	uint32 property = 2;
+	uint32 vertex = 3;
+	repeated Key keys = 4;
+}
+
+message Key {
+	uint64 id = 1;
+	sint32 frame = 2;
+	float value = 3;
+
+	enum InterpolationTypeEnum {
+		Linear = 0;
+		Hold = 1;
+		Bezier = 2;
+	}
+
+	InterpolationTypeEnum InterpolationType = 4;
+	oneof optional_curve {
+		BezierCurve Curve = 5;
+	}
+}
+
+message BezierCurve {
+	Point p0 = 1;
+	Point p1 = 2;
+	Point p2 = 3;
+	Point p3 = 4;
+}

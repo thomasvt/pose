@@ -1,0 +1,11 @@
+{
+  "Configurations": {
+    "Debug": {
+      /* properties */
+    },
+
+    "Release": {
+      "BumpRevision": true
+    }
+  }
+}

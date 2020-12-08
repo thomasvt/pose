@@ -1,0 +1,68 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:controls="clr-namespace:Pose.Controls"
+                    xmlns:dopesheet1="clr-namespace:Pose.Controls.Dopesheet">
+
+    <Style TargetType="{x:Type dopesheet1:Dopesheet}" >
+        <Setter Property="FrameWidth" Value="16" />
+        <Setter Property="BarWidth" Value="11" />
+        <Setter Property="KeySize" Value="15" />
+        <Setter Property="FrameOffset" Value="0" />
+        <Setter Property="Background" Value="#333333" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type dopesheet1:Dopesheet}">
+                    <Border Background="{TemplateBinding Background}" BorderThickness="{TemplateBinding BorderThickness}" BorderBrush="{TemplateBinding BorderBrush}" Padding="{TemplateBinding Padding}" SnapsToDevicePixels="true">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="220" MinWidth="16" />
+                                <ColumnDefinition Width="5" />
+                                <ColumnDefinition />
+                            </Grid.ColumnDefinitions>
+
+                            <Rectangle Grid.Column="0" Grid.Row="0" Grid.RowSpan="4" Fill="#3a3a3a" />
+                            <Rectangle Grid.Column="1" Grid.ColumnSpan="2" Grid.Row="0" Grid.RowSpan="3" Fill="#3a3a3a" />
+                            <Border Grid.Column="0" Grid.ColumnSpan="3" Grid.Row="1" Grid.RowSpan="2" BorderThickness="0,1,0,0" BorderBrush="#444444" Background="Transparent" />
+
+                            <ContentPresenter ContentSource="TopLeftContent" Grid.Column="0" Grid.Row="0" />
+
+                            <StackPanel Grid.Row="0" Grid.Column="2" HorizontalAlignment="Right" Orientation="Horizontal" Height="46" Margin="16,0">
+                                <TextBlock Text="Start:" Foreground="#dddddd" Margin="0,0,8,0" VerticalAlignment="Center" />
+                                <controls:NumericInputBox x:Name="PART_BeginFrameInputBox" ToolTip="First frame of animation" VerticalAlignment="Center" Width="62" AllowDecimals="False" Margin="0,0,8,0" DragIncrementFactor="0.1" />
+                                <TextBlock Text="End:" Foreground="#dddddd" Margin="8,0" VerticalAlignment="Center" />
+                                <controls:NumericInputBox x:Name="PART_EndFrameInputBox" ToolTip="Last frame of animation" VerticalAlignment="Center" Width="62" AllowDecimals="False" Value="20" DragIncrementFactor="0.1" />
+                            </StackPanel>
+
+                            <!-- timeline: scrollbar, frame labels -->
+                            <ScrollBar Grid.Row="1" Grid.Column="2" x:Name="PART_TimelineScrollBar" Height="10" Margin="0,6,0,0" DockPanel.Dock="Top" Minimum="0" Maximum="50" SmallChange="1" Background="#3a3a3a" LargeChange="10" Value="{TemplateBinding FrameOffset}" Orientation="Horizontal" />
+                            <dopesheet1:TimelineRuler x:Name="PART_Ruler" Grid.Row="2" Grid.Column="2" Height="23" Margin="0,0,0,2" ClipToBounds="True" MinWidth="32" MinHeight="4" FrameWidth="{TemplateBinding FrameWidth}" FrameOffset="{TemplateBinding FrameOffset}" />
+
+                            <ScrollViewer Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3">
+                                <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
+                            </ScrollViewer>
+
+                            <dopesheet1:DopesheetTimelinePanel Grid.Row="2" Grid.RowSpan="2" Grid.Column="2" Height="{TemplateBinding ActualHeight}" IsHitTestVisible="False">
+                                <dopesheet1:FrameCursor x:Name="PART_FrameCursor" />
+                            </dopesheet1:DopesheetTimelinePanel>
+
+                            <!-- header/keyframes splitter and width-sensors: -->
+                            <Control x:Name="PART_HeaderColumnSensor" Grid.Column="0" Grid.Row="3" IsHitTestVisible="False" />
+                            <!-- sensor to get header column width changes -->
+                            <GridSplitter Grid.Column="1" Grid.Row="0" Grid.RowSpan="4" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#333333" Foreground="Transparent" />
+                            <Control x:Name="PART_TimelinesColumnSensor" Grid.Column="2" IsHitTestVisible="False" />
+                            <!-- sensor to get width of keyframes area -->
+                        </Grid>
+
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</ResourceDictionary>

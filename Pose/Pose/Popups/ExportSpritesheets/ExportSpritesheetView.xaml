@@ -1,0 +1,68 @@
+﻿<UserControl x:Class="Pose.Popups.ExportSpritesheets.ExportSpritesheetView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:controls="clr-namespace:Pose.Controls"
+             xmlns:viewport="clr-namespace:Pose.SceneEditor.Viewport"
+             xmlns:interop="clr-namespace:System.Windows.Interop;assembly=PresentationCore"
+             mc:Ignorable="d" Loaded="ExportSpritesheetView_OnLoaded"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="32" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.Row="1"  Grid.Column="0" Margin="32,8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition></RowDefinition>
+            </Grid.RowDefinitions>
+            <TextBlock Text="Scale" HorizontalAlignment="Right" Margin="0,0,8,0" />
+            <controls:NumericInputBox Grid.Column="1" AllowDecimals="True" DragIncrementFactor="0.005" Value="1" ValueChanged="Scale_Changed"  />
+
+            <TextBlock Grid.Row="1" Text="Frame from" HorizontalAlignment="Right" Margin="0,0,8,0" />
+            <controls:NumericInputBox Grid.Row="1" Grid.Column="1" />
+
+            <TextBlock Grid.Row="2" Text="to" HorizontalAlignment="Right" Margin="0,0,8,0" />
+            <controls:NumericInputBox Grid.Row="2" Grid.Column="1" />
+        </Grid>
+
+        <GridSplitter HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Row="1" Grid.Column="1" Width="4"></GridSplitter>
+        <Grid Grid.Row="1" Grid.Column="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,4">
+                <TextBlock Text="Preview:" Margin="8,4"></TextBlock>
+                <TextBox Text="{Binding DpiLabel}" Width="80" Margin="32,0,0,0" />
+                <ToggleButton Content="high DPI correct" IsChecked="{Binding IsHighDpiCorrected}" />
+            </StackPanel>
+            <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Visible">
+                <Image Source="{Binding PreviewImage}" UseLayoutRounding="True" Stretch="None">
+                    <Image.RenderTransform>
+                        <ScaleTransform ScaleX="{Binding BitmapScaleX}" ScaleY="{Binding BitmapScaleY}" />
+                    </Image.RenderTransform>
+                </Image>
+            </ScrollViewer>
+            
+        </Grid>
+        <ScrollViewer Grid.Row="1"  Grid.Column="3" HorizontalScrollBarVisibility="Auto">
+            <viewport:SceneViewport x:Name="RenderViewport" Width="500" Height="500" />
+        </ScrollViewer>
+    </Grid>
+</UserControl>

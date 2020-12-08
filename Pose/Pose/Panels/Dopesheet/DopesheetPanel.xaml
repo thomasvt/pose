@@ -1,0 +1,33 @@
+﻿<UserControl x:Class="Pose.Panels.DopeSheet.DopesheetPanel"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:dopesheet1="clr-namespace:Pose.Controls.Dopesheet"
+             xmlns:controls="clr-namespace:Pose.Controls"
+             mc:Ignorable="d" Loaded="DopesheetPanel_OnLoaded"
+             d:DesignHeight="200" d:DesignWidth="800">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+        
+    </UserControl.Resources>
+    <Grid>
+        <dopesheet1:Dopesheet HeaderColumnWidth="300"  FrameWidth="8"
+                              CurrentFrame="{Binding CurrentFrame}" BeginFrame="{Binding BeginFrame}" EndFrame="{Binding EndFrame}" 
+                              KeyDown="UIElement_OnKeyDown" BeginFrameCommitted="Dopesheet_OnBeginFrameCommitted" EndFrameCommitted="Dopesheet_OnEndFrameCommitted"
+                              ItemsSource="{Binding Rows}">
+            <dopesheet1:Dopesheet.TopLeftContent>
+                <StackPanel Orientation="Horizontal">
+                    <Border CornerRadius="5" Margin="8,4" Background="{Binding RecordButtonBrush}" VerticalAlignment="Center">
+                        <controls:IconButton IconGeometry="{StaticResource IconRecord}" Click="OnRecordButtonClick" Padding="6" Margin="4" ToolTip="Autokey - add animation keys for anything you change in the scene." />
+                    </Border>
+                    <controls:IconButton IconGeometry="{StaticResource IconToBegin}" ToolTip="Move cursor to beginning of animation." Margin="8,4" Padding="6" Click="JumpToBegin_Click" />
+                    <controls:IconButton IconGeometry="{StaticResource IconPlay}" Visibility="{Binding IsNotPlaying, Converter={StaticResource BooleanToVisibilityConverter}}" ToolTip="Play animation" Margin="8,4" Padding="6" Click="Play_Click" />
+                    <controls:IconButton IconGeometry="{StaticResource IconPause}" Visibility="{Binding IsPlaying, Converter={StaticResource BooleanToVisibilityConverter}}" Background="#2C8FFF" ToolTip="Pause animation" Margin="8,4" Padding="6" Click="Play_Click" />
+                    <ToggleButton Content="Loop" ToolTip="Loop animation" Margin="8,4" IsChecked="{Binding IsLoop}"  />
+                </StackPanel>
+            </dopesheet1:Dopesheet.TopLeftContent>
+        </dopesheet1:Dopesheet>
+    </Grid>
+
+</UserControl>

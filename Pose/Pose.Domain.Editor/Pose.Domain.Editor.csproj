@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Pose.Domain\Pose.Domain.csproj" />
+    <ProjectReference Include="..\Pose.Persistence.Editor\Pose.Persistence.Editor.csproj" />
+  </ItemGroup>
+
+</Project>

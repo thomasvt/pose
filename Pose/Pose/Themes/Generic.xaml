@@ -1,0 +1,48 @@
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+
+    <ResourceDictionary.MergedDictionaries>
+
+        <ResourceDictionary Source="pack://application:,,,/Pose;component/Themes/Icons.xaml" />
+
+
+        <!-- !!! alphabetically plz !!! -->
+
+
+        <!-- restyling standard controls -->
+
+        <ResourceDictionary Source="pack://application:,,,/Pose;component/Themes/StandardControls/Button.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Pose;component/Themes/StandardControls/CheckBox.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Pose;component/Themes/StandardControls/ComboBox.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Pose;component/Themes/StandardControls/ComboBoxItem.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Pose;component/Themes/StandardControls/GridSplitter.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Pose;component/Themes/StandardControls/ListBox.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Pose;component/Themes/StandardControls/Menu.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Pose;component/Themes/StandardControls/ScrollBar.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Pose;component/Themes/StandardControls/ToggleButton.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Pose;component/Themes/StandardControls/EditorModeToggleButton.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Pose;component/Themes/StandardControls/TabControl.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Pose;component/Themes/StandardControls/TreeView.xaml" />
+        
+        <!-- Pose's custom controls -->
+
+        <ResourceDictionary Source="pack://application:,,,/Pose;component/Themes/PoseControls/BezierHandle.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Pose;component/Themes/PoseControls/CurveEditor.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Pose;component/Themes/PoseControls/Dopesheet.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Pose;component/Themes/PoseControls/DopesheetRow.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Pose;component/Themes/PoseControls/EditableLabel.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Pose;component/Themes/PoseControls/FrameCursor.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Pose;component/Themes/PoseControls/IconButton.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Pose;component/Themes/PoseControls/KeyButton.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Pose;component/Themes/PoseControls/KeyCheckBox.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Pose;component/Themes/PoseControls/ModernWindow.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Pose;component/Themes/PoseControls/NumericInputBox.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Pose;component/Themes/PoseControls/TimelineKey.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Pose;component/Themes/PoseControls/TimelineBar.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Pose;component/Themes/PoseControls/ToolBar.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Pose;component/Themes/PoseControls/ToolBarButton.xaml" />
+
+    </ResourceDictionary.MergedDictionaries>
+
+
+    
+</ResourceDictionary>

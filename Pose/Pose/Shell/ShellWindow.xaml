@@ -1,0 +1,81 @@
+﻿<controls:ModernWindow x:Class="Pose.Shell.ShellWindow" 
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:shell="clr-namespace:Pose.Shell"
+        xmlns:sceneEditor="clr-namespace:Pose.SceneEditor"
+        xmlns:dopeSheet="clr-namespace:Pose.Panels.DopeSheet"
+        xmlns:controls="clr-namespace:Pose.Controls"
+        Background="#222222" Foreground="#cccccc" ContentRendered="ShellWindow_OnContentRendered"
+        Loaded="ShellWindow_OnLoaded" Deactivated="ShellWindow_OnDeactivated" Activated="ShellWindow_OnActivated"
+        mc:Ignorable="d" Title="{Binding Title}" Width="{Binding Width}" Height="{Binding Height}">
+
+    <controls:ModernWindow.CommandBindings>
+            <CommandBinding Command="New" Executed="NewExecute"  />
+            <CommandBinding Command="Open" Executed="OpenExecute"  />
+
+            <CommandBinding Command="Save" Executed="SaveExecute"  />
+            <CommandBinding Command="SaveAs" Executed="SaveAsExecute"  />
+
+            <CommandBinding Command="Undo" CanExecute="UndoCanExecute" Executed="UndoExecuted" />
+            <CommandBinding Command="Redo" CanExecute="RedoCanExecute" Executed="RedoExecuted" />
+
+            <CommandBinding Command="shell:ShellWindow.ExportSpritesheet" Executed="ExportSpritesheetExecute"  />
+
+            <CommandBinding Command="shell:ShellWindow.Exit" Executed="ExitExecute" />
+
+            <CommandBinding Command="shell:ShellWindow.Cancel" Executed="CancelExecute" />
+    </controls:ModernWindow.CommandBindings>
+    <controls:ModernWindow.InputBindings>
+        <KeyBinding Command="SaveAs" Gesture="CTRL+SHIFT+S" />
+        <KeyBinding Command="shell:ShellWindow.ExportSpritesheet" Gesture="CTRL+ALT+SHIFT+S" />
+    </controls:ModernWindow.InputBindings>
+
+    <DockPanel>
+        <shell:PoseMainMenu DockPanel.Dock="Top" />
+        <!--<StatusBar DockPanel.Dock="Bottom" Height="24" Background="#2a2a2a" />-->
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="340" />
+                <ColumnDefinition Width="5" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="5" />
+                <ColumnDefinition Width="250" />
+            </Grid.ColumnDefinitions>
+
+            <shell:ColumnLeft Grid.Column="0" />
+            <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch" />
+            <Grid Grid.Column="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="250" MaxHeight="{Binding DopesheetMaxHeight}" />
+                </Grid.RowDefinitions>
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="48" />
+                        <ColumnDefinition  />
+                        <ColumnDefinition Width="48"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="48" />
+                        <RowDefinition  />
+                        <RowDefinition Height="48" />
+                    </Grid.RowDefinitions>
+                    <sceneEditor:SceneEditor Grid.ColumnSpan="3" Grid.RowSpan="3" Focusable="True" DataContext="{Binding SceneEditor}" />
+                    <Border Visibility="{Binding AutoKeyVisibility}" BorderThickness="4,4,0,0" BorderBrush="#bb2222" Background="{x:Null}" Grid.Row="0" Grid.Column="0" />
+                    <Border Visibility="{Binding AutoKeyVisibility}" BorderThickness="4,0,0,4" BorderBrush="#bb2222" Background="{x:Null}" Grid.Row="2" Grid.Column="0" />
+                    <Border Visibility="{Binding AutoKeyVisibility}" BorderThickness="0,4,4,0" BorderBrush="#bb2222" Background="{x:Null}" Grid.Row="0" Grid.Column="2" />
+                    <Border Visibility="{Binding AutoKeyVisibility}" BorderThickness="0,0,4,4" BorderBrush="#bb2222" Background="{x:Null}" Grid.Row="2" Grid.Column="2" />
+                </Grid>
+                <GridSplitter Grid.Row="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" IsEnabled="{Binding DopesheetIsVisible}" Height="5" MaxHeight="{Binding DopesheetMaxHeight}" />
+                <Grid Grid.Row="2" IsEnabled="{Binding DopesheetIsVisible}">
+                    <dopeSheet:DopesheetPanel DataContext="{Binding DopesheetPanel}" />
+                </Grid> 
+            </Grid>
+            <GridSplitter Grid.Column="3" HorizontalAlignment="Stretch" />
+            <shell:ColumnRight Grid.Column="4" />
+        </Grid>
+    </DockPanel>
+</controls:ModernWindow>

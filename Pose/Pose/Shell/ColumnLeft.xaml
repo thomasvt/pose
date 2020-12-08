@@ -1,0 +1,54 @@
+﻿<UserControl x:Class="Pose.Shell.ColumnLeft"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:hierarchy="clr-namespace:Pose.Panels.Hierarchy"
+             xmlns:assets1="clr-namespace:Pose.Panels.Assets"
+             xmlns:drawOrder="clr-namespace:Pose.Panels.DrawOrder"
+             xmlns:modeSwitching="clr-namespace:Pose.Panels.ModeSwitching"
+             xmlns:animations="clr-namespace:Pose.Panels.Animations"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+    </UserControl.Resources>
+    <Grid Background="#222222">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition />
+            <RowDefinition Height="5" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <Border Grid.Row="0" >
+            <modeSwitching:ModeSwitchPanel Margin="0,16" DataContext="{Binding ModeSwitchPanel}" />
+        </Border>
+        <TabControl Grid.Row="1" BorderThickness="0">
+            <TabItem BorderThickness="0">
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal" Margin="4">
+                        <Path Style="{StaticResource IconPath}" Data="{StaticResource IconPoseRest}" Margin="0, 0, 8, 0" />
+                        <TextBlock Text="Scene tree" FontWeight="Bold" FontSize="14" />
+                    </StackPanel>
+                </TabItem.Header>
+                <hierarchy:HierarchyPanel DataContext="{Binding HierarchyPanel}" />
+            </TabItem>
+            <TabItem BorderThickness="0">
+                <TabItem.Header>
+                    <StackPanel Orientation="Horizontal" Margin="4">
+                        <Path Style="{StaticResource IconPath}" Data="{StaticResource IconDrawOrder}" Margin="0, 0, 8, 0" />
+                        <TextBlock Text="Draw order" FontWeight="Bold" FontSize="14" />
+                    </StackPanel>
+                </TabItem.Header>
+                <drawOrder:DrawOrderPanel DataContext="{Binding DrawOrderPanel}" />
+            </TabItem>
+        </TabControl>
+        <GridSplitter Grid.Row="2" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" />
+        <Grid Grid.Row="3" Visibility="{Binding IsAssetPanelVisible, Converter={StaticResource BooleanToVisibilityConverter}}" IsEnabled="{Binding IsAssetPanelVisible}">
+            <assets1:AssetPanel DataContext="{Binding AssetPanel}" />
+        </Grid>
+        <Grid Grid.Row="3" Visibility="{Binding IsAnimationsPanelVisible, Converter={StaticResource BooleanToVisibilityConverter}}" IsEnabled="{Binding IsAnimationsPanelVisible}">
+        <animations:AnimationsPanelView DataContext="{Binding AnimationsPanel}" />
+        </Grid>
+    </Grid>
+</UserControl>
