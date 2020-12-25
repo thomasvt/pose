@@ -28,7 +28,10 @@ namespace Pose.Controls.Dopesheet
 
             return isEmpty ? (FrameRange?)null : new FrameRange(min, max);
         }
-        
+
+        public string SortingText { get; set; }
+        public ulong NodeId { get; set; }
+
         #region HeaderColumnWidth
 
         public static readonly DependencyProperty HeaderColumnWidthProperty;
@@ -37,6 +40,19 @@ namespace Pose.Controls.Dopesheet
         {
             get => (double)GetValue(HeaderColumnWidthProperty);
             set => SetValue(HeaderColumnWidthProperty, value);
+        }
+
+        #endregion
+
+        #region IsHighlighted
+
+        public static readonly DependencyProperty IsHighlightedProperty = DependencyProperty.Register(
+            "IsHighlighted", typeof(bool), typeof(DopesheetRow), new PropertyMetadata(default(bool)));
+
+        public bool IsHighlighted
+        {
+            get => (bool) GetValue(IsHighlightedProperty);
+            set => SetValue(IsHighlightedProperty, value);
         }
 
         #endregion

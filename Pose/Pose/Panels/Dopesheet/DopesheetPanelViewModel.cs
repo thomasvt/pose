@@ -31,6 +31,7 @@ namespace Pose.Panels.Dopesheet
         private bool _isPlaying;
         private bool _isNotPlaying;
         private bool _isLoop;
+        private ObservableCollection<DopesheetRow> _rows;
 
         public DopesheetPanelViewModel(Editor editor)
         {
@@ -53,8 +54,19 @@ namespace Pose.Panels.Dopesheet
             MessageBus.Default.Subscribe<KeyDeselected>(OnKeyDeselected);
             MessageBus.Default.Subscribe<AutoKeyToggled>(OnAutoKeyToggled);
             MessageBus.Default.Subscribe<AnimationIsLoopChanged>(OnAnimationIsLoopChanged);
+            MessageBus.Default.Subscribe<NodeSelected>(m => UpdateRowHighlighting());
+            MessageBus.Default.Subscribe<NodeDeselected>(m => UpdateRowHighlighting());
 
             ConfigureButtonBrushes();
+        }
+
+
+        private void UpdateRowHighlighting()
+        {
+            foreach (var row in Rows)
+            {
+                row.IsHighlighted = row.NodeId == _editor.NodeSelection.FirstOrDefault(0);
+            }
         }
 
         private void OnAnimationIsLoopChanged(AnimationIsLoopChanged msg)
@@ -71,7 +83,7 @@ namespace Pose.Panels.Dopesheet
             _transparentBrush = MakeBrush("#00000000");
         }
 
-        private Brush MakeBrush(string color)
+        private static Brush MakeBrush(string color)
         {
             var brush = new SolidColorBrush(ColorUtils.FromHex(color));
             brush.Freeze();
@@ -108,14 +120,31 @@ namespace Pose.Panels.Dopesheet
             AddPropertyAnimation(msg.PropertyAnimationId, msg.NodeId, msg.Property);
         }
 
-        private void AddPropertyAnimation(ulong propertyAnimationId, ulong nodeId, PropertyType property)
+        private void AddPropertyAnimation(ulong propertyAnimationId, ulong nodeId, PropertyType propertyType)
         {
+            var node = _editor.CurrentDocument.GetNode(nodeId);
+            var header = $"[{node.Name}] {GetPropertyLabel(propertyType)}";
             var row = new DopesheetRow
             {
-                Header = $"[{_editor.CurrentDocument.GetNode(nodeId).Name}].{property}"
+                Header = header,
+                SortingText = header,
+                NodeId = nodeId,
+                IsHighlighted = _editor.NodeSelection.FirstOrDefault(0) == nodeId
             };
             _rowsPerPropertyAnimationIdIndex.Add(propertyAnimationId, row);
-            Rows.Add(row);
+            Rows.SortedInsert(row, (a, b) => string.Compare(a.SortingText, b.SortingText, StringComparison.OrdinalIgnoreCase));
+        }
+
+        private static string GetPropertyLabel(PropertyType propertyType)
+        {
+            return propertyType switch
+            {
+                PropertyType.TranslationX => "X",
+                PropertyType.TranslationY => "Y",
+                PropertyType.RotationAngle => "Angle",
+                PropertyType.Visibility => "Visible",
+                _ => propertyType.ToString()
+            };
         }
 
         private void OnPropertyAnimationRemoved(PropertyAnimationRemoved msg)
@@ -144,7 +173,7 @@ namespace Pose.Panels.Dopesheet
         private void AddKey(ulong keyId, ulong propertyAnimationId, int frame)
         {
             var row = _rowsPerPropertyAnimationIdIndex[propertyAnimationId];
-            var timelineKey = new TimelineKey {Frame = frame};
+            var timelineKey = new TimelineKey { Frame = frame };
             timelineKey.MouseDown += TimelineKeyOnMouseDown;
             row.Items.Add(timelineKey);
             _keyIndex.Add(keyId, timelineKey);
@@ -384,6 +413,15 @@ namespace Pose.Panels.Dopesheet
         }
 
 
-        public ObservableCollection<DopesheetRow> Rows { get; }
+        public ObservableCollection<DopesheetRow> Rows
+        {
+            get => _rows;
+            set
+            {
+                if (Equals(value, _rows)) return;
+                _rows = value;
+                OnPropertyChanged();
+            }
+        }
     }
 }

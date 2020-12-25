@@ -91,5 +91,6 @@ namespace Pose.Domain.Editor
 
         public int Count => _selectedItems.Count;
         public T First => _selectedItems.First();
+        public T FirstOrDefault(T defaultValue) => _selectedItems.Any() ? First : defaultValue;
     }
 }

@@ -15,7 +15,7 @@
                         </Grid.ColumnDefinitions>
 
                         <DockPanel x:Name="Border" Grid.Column="0" Width="{TemplateBinding HeaderColumnWidth}" Margin="0,0,5,0"> <!-- 5px margin is for the gridsplitter, which exists only in the layer above us in the Dopesheet control, but we need to skip its visual width -->
-                            <ContentPresenter ContentSource="Header" VerticalAlignment="Center" DockPanel.Dock="Left" Margin="8,0,0,0" />
+                            <ContentPresenter x:Name="HeaderContent" ContentSource="Header" VerticalAlignment="Center" DockPanel.Dock="Left" Margin="8,0,0,0" />
                             <Line X1="0" X2="1" Y1="0" Y2="0" StrokeThickness="1" Stroke="#4a4a4a" Stretch="Fill" Margin="8,0,0,0" />
                         </DockPanel>
 
@@ -26,6 +26,9 @@
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsMouseOver" Value="True">
                             <Setter TargetName="Grid" Property="Background" Value="#773B5689" />
+                        </Trigger>
+                        <Trigger Property="IsHighlighted" Value="True">
+                            <Setter TargetName="HeaderContent" Property="TextBlock.Foreground" Value="#D6972B" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

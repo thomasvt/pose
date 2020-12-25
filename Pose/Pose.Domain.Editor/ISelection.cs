@@ -21,5 +21,6 @@ namespace Pose.Domain.Editor
         bool Contains(T item);
         int Count { get; }
         T First { get; }
+        T FirstOrDefault(T defaultValue);
     }
 }
