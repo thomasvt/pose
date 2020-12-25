@@ -91,7 +91,7 @@ namespace Pose.Domain.Nodes
         /// <summary>
         /// Adjusts the BaseValue of the Properties that form the local transform of this node so their global transform equals the one requested.
         /// </summary>
-        public void UpdatePropertiesDesignValuesForGlobalTransform(IUnitOfWork uow, Matrix globalTransform)
+        internal void UpdatePropertiesDesignValuesForGlobalTransform(IUnitOfWork uow, Matrix globalTransform)
         {
             // todo temporary until shear and scale operators are added, maybe change to only correct translate+rotate ? See other apps.
             Matrix correctedLocalTransform;
@@ -173,7 +173,7 @@ namespace Pose.Domain.Nodes
             }
         }
 
-        public void Rename(IUnitOfWork uow, string name)
+        internal void Rename(IUnitOfWork uow, string name)
         {
             if (name == Name)
                 return;

@@ -26,6 +26,7 @@ namespace Pose.SceneEditor.Gizmos
         private Path _path;
         private BonePath _gizmoPath;
         private float _angle;
+        private float _lastZoom;
 
         private bool _geometryIsDirty;
 
@@ -33,6 +34,7 @@ namespace Pose.SceneEditor.Gizmos
         {
             _sceneEditor = sceneEditor;
             _boneNodeEditorItem = boneNodeEditorItem;
+            _lastZoom = float.MinValue;
             CreateGizmo();
         }
 
@@ -101,8 +103,12 @@ namespace Pose.SceneEditor.Gizmos
 
         private void UpdateGeometry()
         {
-            if (!_geometryIsDirty)
+            if (!_geometryIsDirty && _sceneEditor.SceneViewport.Zoom == _lastZoom) // rebuild geometry if it has changed, or the editor's zoom had changed. We cannot zoom bones with a scale-transform because their width in screenspace is the same in any zoom)
                 return;
+
+            // todo optimization: recreating bone geometry is a top bottleneck when animating. So, we could rewrite this to use a wpf visual transform instead op recreating geometry. But animation performance is good enough for the moment.
+
+            _lastZoom = _sceneEditor.SceneViewport.Zoom;
 
             if (_tailLengthWorld < 5)
             {

@@ -16,7 +16,7 @@ namespace Pose.Persistence
             {
                 LastFilename = document.Filename ?? string.Empty,
                 IdSequence = document.Data.IdSequence.GetCurrentValue(),
-                AssetFolder = GetRelativeAssetFolder(document.AssetFolder, document.Filename)
+                AssetFolder = GetRelativeAssetFolder(document.AbsoluteAssetFolder, document.Filename)
             };
             AddNodes(document.Data.RootNodes, doc);
             AddAnimations(document.Data.Animations, doc);

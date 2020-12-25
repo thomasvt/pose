@@ -53,7 +53,7 @@ namespace Pose.Panels.Assets
 
         public void DoSetAssetFolderWorkflow()
         {
-            var selectedPath = _editor.HasDocument ? _editor.CurrentDocument.AssetFolder : Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+            var selectedPath = _editor.HasDocument ? _editor.CurrentDocument.AbsoluteAssetFolder : Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
             var dialog = new FolderBrowserDialog
             {
                 SelectedPath = selectedPath,
@@ -93,7 +93,7 @@ namespace Pose.Panels.Assets
 
         private async void OnProjectLoadedEvent(DocumentLoaded e)
         {
-            await ChangeAssetFolderAsync(e.Document.AssetFolder);
+            await ChangeAssetFolderAsync(e.Document.AbsoluteAssetFolder);
         }
 
         private async void OnAssetFolderChanged(AssetFolderChanged msg)

@@ -190,7 +190,7 @@ namespace Pose.Shell
                 if (Directory.Exists(previousAssetFolder))
                 {
                     if (MessageBox.Show(
-                            $"It seems this file has moved. This changes the relative asset folder and may cause missing sprites.\n\nOriginal: {previousAssetFolder}\nChanged to: {_editor.CurrentDocument.AssetFolder}\n\nDo you want me to repair the link to point to the Original folder? (you can undo this with Ctrl-Z afterwards)",
+                            $"It seems this file has moved. This changes the relative asset folder and may cause missing sprites.\n\nOriginal: {previousAssetFolder}\nChanged to: {_editor.CurrentDocument.AbsoluteAssetFolder}\n\nDo you want me to repair the link to point to the Original folder? (you can undo this with Ctrl-Z afterwards)",
                             "Asset folder link severed", MessageBoxButton.YesNo, MessageBoxImage.Warning) ==
                         MessageBoxResult.Yes)
                     {
@@ -226,6 +226,26 @@ namespace Pose.Shell
 
             IsExiting = true;
             System.Windows.Application.Current.Shutdown(0); // healthy shutdown
+        }
+
+        public bool CanUndo()
+        {
+            return _editor.CanUndo();
+        }
+
+        public void Undo()
+        {
+            _editor.Undo();
+        }
+
+        public bool CanRedo()
+        {
+            return _editor.CanRedo();
+        }
+
+        public void Redo()
+        {
+            _editor.Redo();
         }
 
         public HierarchyPanelViewModel HierarchyPanel { get; }

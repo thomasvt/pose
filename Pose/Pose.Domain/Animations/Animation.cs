@@ -25,7 +25,7 @@ namespace Pose.Domain.Animations
         /// <summary>
         /// Stores the current value of the <see cref="PropertyType"/> in the <see cref="Key"/> at the current frame in the animation.
         /// </summary>
-        public void KeyCurrentPropertyValue(IUnitOfWork uow, ulong nodeId, PropertyType property)
+        internal void KeyCurrentPropertyValue(IUnitOfWork uow, ulong nodeId, PropertyType property)
         {
             if (!AnimationsPerNode.ContainsKey(nodeId))
             {
@@ -36,7 +36,7 @@ namespace Pose.Domain.Animations
             nodeAnimations.AddOrUpdateKey(uow, CurrentFrame, property);
         }
 
-        public void RemoveKeyAtCurrentFrame(IUnitOfWork uow, ulong nodeId, PropertyType property)
+        internal void RemoveKeyAtCurrentFrame(IUnitOfWork uow, ulong nodeId, PropertyType property)
         {
             if (!AnimationsPerNode.TryGetValue(nodeId, out var nodeAnimations))
                 throw new Exception($"That Node has no animated properties in this animation.");
@@ -83,7 +83,7 @@ namespace Pose.Domain.Animations
             uow.Execute(new NodeAnimationCollectionRemovedEvent(Id, nodeAnimationCollection.Node.Id));
         }
 
-        public void RemoveKeys(IUnitOfWork uow, HashSet<ulong> keyIds)
+        internal void RemoveKeys(IUnitOfWork uow, HashSet<ulong> keyIds)
         {
             foreach (var nodeAnimationCollection in AnimationsPerNode.Values)
             {
@@ -122,7 +122,7 @@ namespace Pose.Domain.Animations
             (this as IEditableAnimation).ChangeBeginFrame(beginFrame);
         }
 
-        public void ChangeBeginFrame(IUnitOfWork uow, in int undoValue, in int value)
+        internal void ChangeBeginFrame(IUnitOfWork uow, in int undoValue, in int value)
         {
             uow.Execute(new AnimationBeginFrameChangedEvent(Id, undoValue, value));
         }
@@ -135,7 +135,7 @@ namespace Pose.Domain.Animations
             (this as IEditableAnimation).ChangeEndFrame(endFrame);
         }
 
-        public void ChangeEndFrame(IUnitOfWork uow, in int undoValue, in int value)
+        internal void ChangeEndFrame(IUnitOfWork uow, in int undoValue, in int value)
         {
             uow.Execute(new AnimationEndFrameChangedEvent(Id, undoValue, value));
         }
@@ -169,7 +169,7 @@ namespace Pose.Domain.Animations
             }
         }
 
-        public void ToggleIsLoop(IUnitOfWork uow)
+        internal void ToggleIsLoop(IUnitOfWork uow)
         {
             uow.Execute(new AnimationIsLoopChangedEvent(Id, IsLoop, !IsLoop));
         }

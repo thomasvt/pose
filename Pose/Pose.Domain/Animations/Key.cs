@@ -20,14 +20,14 @@ namespace Pose.Domain.Animations
             Interpolation = interpolation;
         }
 
-        public void ChangeValue(IUnitOfWork uow, in float value)
+        internal void ChangeValue(IUnitOfWork uow, in float value)
         {
             if (Value == value)
                 return;
             uow.Execute(new KeyValueChangedEvent(Id, Value, value));
         }
 
-        public void ChangeInterpolation(IUnitOfWork uow, InterpolationData interpolationData)
+        internal void ChangeInterpolation(IUnitOfWork uow, InterpolationData interpolationData)
         {
             uow.Execute(new KeyInterpolationDataChangedEvent(Id, Interpolation, interpolationData));
         }

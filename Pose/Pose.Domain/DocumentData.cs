@@ -7,6 +7,7 @@ using Pose.Framework.Messaging;
 
 // allow Pose.Persistence.Editor to read/set the internal data directly
 [assembly: InternalsVisibleTo("Pose.Persistence")]
+[assembly: InternalsVisibleTo("Pose.Domain.Editor")]
 
 namespace Pose.Domain
 {
@@ -22,7 +23,7 @@ namespace Pose.Domain
         internal readonly EntityCollection<Key> Keys;
         internal readonly DrawOrder DrawOrder;
         internal readonly NodeCollection RootNodes;
-        internal string AssetFolder;
+        internal string AbsoluteAssetFolder;
         internal string RelativeAssetFolder;
 
         public DocumentData(IMessageBus messageBus, ulong highestEntityId)

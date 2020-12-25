@@ -27,7 +27,7 @@ namespace Pose.Persistence
             var data = new DocumentData(messageBus, document.IdSequence)
             {
                 RelativeAssetFolder = relativeAssetFolder,
-                AssetFolder = relativeAssetFolder != null ? GetAbsoluteAssetFolder(document.AssetFolder, filename) : null
+                AbsoluteAssetFolder = relativeAssetFolder != null ? GetAbsoluteAssetFolder(document.AssetFolder, filename) : null
             };
             AddNodes(data, document);
             AddAnimations(data, document.Animations);

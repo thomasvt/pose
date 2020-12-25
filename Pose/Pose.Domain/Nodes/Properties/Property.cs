@@ -36,7 +36,7 @@ namespace Pose.Domain.Nodes.Properties
         /// <summary>
         /// Sets the animation value of the property.
         /// </summary>
-        public void SetAnimateValue(IUnitOfWork uow, float value)
+        internal void SetAnimateValue(IUnitOfWork uow, float value)
         {
             var increment = _isIncrementalValueProperty ? value - DesignValue : value;
 
@@ -71,7 +71,7 @@ namespace Pose.Domain.Nodes.Properties
         /// <summary>
         /// Sets the BaseValue of this property. 
         /// </summary>
-        public void SetDesignValue(IUnitOfWork uow, float value)
+        internal void SetDesignValue(IUnitOfWork uow, float value)
         {
             if (DesignValue == value)
                 return;

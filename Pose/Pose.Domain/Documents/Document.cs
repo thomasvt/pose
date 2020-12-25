@@ -56,9 +56,9 @@ namespace Pose.Domain.Documents
             return document;
         }
 
-        public void SetAssetFolder(IUnitOfWork uow, string path)
+        internal void SetAssetFolder(IUnitOfWork uow, string path)
         {
-            uow.Execute(new AssetFolderChangedEvent(Data.AssetFolder, path));
+            uow.Execute(new AssetFolderChangedEvent(Data.AbsoluteAssetFolder, path));
         }
 
         #region Nodes
@@ -78,7 +78,7 @@ namespace Pose.Domain.Documents
             return Data.Nodes[nodeId];
         }
 
-        public void MoveNodeInHierarchy(IUnitOfWork uow, ulong nodeId, ulong? targetNodeId, InsertPosition insertPosition)
+        internal void MoveNodeInHierarchy(IUnitOfWork uow, ulong nodeId, ulong? targetNodeId, InsertPosition insertPosition)
         {
             var node = GetNode(nodeId);
             if (insertPosition == InsertPosition.Child && node.Parent?.Id == targetNodeId)
@@ -123,7 +123,7 @@ namespace Pose.Domain.Documents
         /// <summary>
         /// Adjusts the draw order of a sprite by moving it to another position.
         /// </summary>
-        public void MoveSpriteInDrawOrder(IUnitOfWork uow, in ulong nodeId, int destinationIndex)
+        internal void MoveSpriteInDrawOrder(IUnitOfWork uow, in ulong nodeId, int destinationIndex)
         {
             var node = GetNode(nodeId);
             if (!(node is SpriteNode))
@@ -139,7 +139,7 @@ namespace Pose.Domain.Documents
         /// <summary>
         /// Adds a new SpriteNode in the root-level, at the end.
         /// </summary>
-        public ulong AddSpriteNode(IUnitOfWork uow, string name, SpriteReference spriteRef)
+        internal ulong AddSpriteNode(IUnitOfWork uow, string name, SpriteReference spriteRef)
         {
             var id = uow.GetNewEntityId();
             uow.Execute(new SpriteNodeAddedEvent(id, name, spriteRef, null, Data.RootNodes.Count));
@@ -149,7 +149,7 @@ namespace Pose.Domain.Documents
         /// <summary>
         /// Adds a new BoneNode.
         /// </summary>
-        public ulong AddBoneNode(IUnitOfWork uow, string name, Vector2 position, float angle, float boneLength)
+        internal ulong AddBoneNode(IUnitOfWork uow, string name, Vector2 position, float angle, float boneLength)
         {
             var nodeId = uow.GetNewEntityId();
             uow.Execute(new BoneNodeAddedEvent(nodeId, name, null, Data.RootNodes.Count));
@@ -161,7 +161,7 @@ namespace Pose.Domain.Documents
             return nodeId;
         }
 
-        public void RemoveNode(IUnitOfWork uow, ulong nodeId)
+        internal void RemoveNode(IUnitOfWork uow, ulong nodeId)
         {
             var node = GetNode(nodeId);
             RemoveNodeAndChildren(uow, node);
@@ -205,14 +205,14 @@ namespace Pose.Domain.Documents
             return Data.Animations[animationId];
         }
 
-        public ulong AddAnimation(IUnitOfWork uow, string name, int beginFrame, int endFrame, uint framesPerSecond, bool isLoop)
+        internal ulong AddAnimation(IUnitOfWork uow, string name, int beginFrame, int endFrame, uint framesPerSecond, bool isLoop)
         {
             var animationId = uow.GetNewEntityId();
             uow.Execute(new AnimationAddedEvent(animationId, name, beginFrame, endFrame, framesPerSecond, isLoop));
             return animationId;
         }
 
-        public void RemoveAnimation(IUnitOfWork uow, ulong animationId)
+        internal void RemoveAnimation(IUnitOfWork uow, ulong animationId)
         {
             var animation = Data.Animations[animationId];
             animation.RemoveAll(uow);
@@ -241,7 +241,7 @@ namespace Pose.Domain.Documents
 
         #endregion
 
-        public IUnitOfWork StartUnitOfWork(string operationName)
+        internal IUnitOfWork StartUnitOfWork(string operationName)
         {
             return _history.StartUnitOfWork(operationName);
         }
@@ -310,7 +310,7 @@ namespace Pose.Domain.Documents
             return Data.IdSequence.GetNext();
         }
 
-        public void SetMetaData(IUnitOfWork uow, string key, object undoValue, object value)
+        internal void SetMetaData(IUnitOfWork uow, string key, object undoValue, object value)
         {
             uow.Execute(new MetaDataChangedEvent(key, undoValue, value));
         }
@@ -328,7 +328,7 @@ namespace Pose.Domain.Documents
 
         public bool IsModified { get; private set; }
 
-        public string AssetFolder => Data.AssetFolder;
+        public string AbsoluteAssetFolder => Data.AbsoluteAssetFolder;
         public string RelativeAssetFolder => Data.RelativeAssetFolder;
 
         public event Action Modified;
@@ -408,7 +408,7 @@ namespace Pose.Domain.Documents
 
         public string GetAbsoluteAssetPath(string path)
         {
-            return Path.Combine(AssetFolder, path);
+            return Path.Combine(AbsoluteAssetFolder, path);
         }
     }
 }

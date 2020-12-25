@@ -79,12 +79,6 @@ namespace Pose.SceneEditor.Viewport
             base.EndInit();
 
             Camera = SceneCamera;
-
-            _lightVisual = new ModelVisual3D
-            {
-                Content = new AmbientLight(Colors.White)
-            };
-            Children.Add(_lightVisual);
         }
 
         protected override Size ArrangeOverride(Size finalSize)

@@ -8,7 +8,7 @@
         xmlns:dopeSheet="clr-namespace:Pose.Panels.DopeSheet"
         xmlns:controls="clr-namespace:Pose.Controls"
         Background="#222222" Foreground="#cccccc" ContentRendered="ShellWindow_OnContentRendered"
-        Loaded="ShellWindow_OnLoaded" Deactivated="ShellWindow_OnDeactivated" Activated="ShellWindow_OnActivated"
+        Deactivated="ShellWindow_OnDeactivated" Activated="ShellWindow_OnActivated"
         mc:Ignorable="d" Title="{Binding Title}" Width="{Binding Width}" Height="{Binding Height}">
 
     <controls:ModernWindow.CommandBindings>

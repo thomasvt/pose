@@ -153,7 +153,7 @@ namespace Pose.Domain.Documents
 
         void IEditableDocument.SetAssetFolder(string path)
         {
-            Data.AssetFolder = path;
+            Data.AbsoluteAssetFolder = path;
             _messageBus.Publish(new AssetFolderChanged(path));
         }
 

@@ -2,9 +2,7 @@
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Input;
-using Microsoft.Extensions.DependencyInjection;
 using Pose.Controls;
-using Pose.Domain.Editor;
 using Pose.Framework.Messaging;
 using Pose.Framework.ViewModels;
 
@@ -12,16 +10,9 @@ namespace Pose.Shell
 {
     public partial class ShellWindow : ModernWindow
     {
-        private Editor _editor;
-
         public ShellWindow()
         {
             InitializeComponent();
-        }
-
-        private void ShellWindow_OnLoaded(object sender, RoutedEventArgs e)
-        {
-            _editor = ((App)System.Windows.Application.Current).ServiceProvider.GetRequiredService<Editor>();
         }
 
         private void ShellWindow_OnContentRendered(object sender, EventArgs e)
@@ -69,22 +60,22 @@ namespace Pose.Shell
         
         private void UndoCanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = _editor.CanUndo();
+            e.CanExecute = ViewModel.CanUndo();
         }
 
         private void UndoExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            _editor.Undo();
+            ViewModel.Undo();
         }
 
         private void RedoCanExecute(object sender, CanExecuteRoutedEventArgs e)
         {
-            e.CanExecute = _editor.CanRedo();
+            e.CanExecute = ViewModel.CanRedo();
         }
 
         private void RedoExecuted(object sender, ExecutedRoutedEventArgs e)
         {
-            _editor.Redo();
+            ViewModel.Redo();
         }
 
         private void NewExecute(object sender, ExecutedRoutedEventArgs e)

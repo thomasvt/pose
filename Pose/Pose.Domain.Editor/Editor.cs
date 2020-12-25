@@ -249,7 +249,7 @@ namespace Pose.Domain.Editor
         private void RequireMode(EditorMode mode)
         {
             if (Mode != mode)
-                throw new UserActionException($"Can only do that in {mode} mode.");
+                throw new UserActionException($"Sorry, you must be in {mode} mode to do that.");
         }
 
         public Animations.Animation GetCurrentAnimation()

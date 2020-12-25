@@ -21,7 +21,7 @@ namespace Pose.Popups.ExportSpritesheets
 
         public ExportSpritesheetViewModel ViewModel => DataContext as ExportSpritesheetViewModel;
 
-        private void Scale_Changed(object? sender, ValueChangedEventArgs e)
+        private void Scale_Changed(object sender, ValueChangedEventArgs e)
         {
             if (!e.DuringMouseDrag)
             {

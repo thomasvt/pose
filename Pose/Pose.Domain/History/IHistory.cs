@@ -1,6 +1,6 @@
 ﻿namespace Pose.Domain.History
 {
-    public interface IHistory
+    internal interface IHistory
     {
         void Undo();
         void Redo();

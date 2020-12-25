@@ -23,7 +23,7 @@ namespace Pose.Domain.Animations
             _keys = new SortedList<int, Key>();
         }
 
-        public void AddOrUpdateKey(IUnitOfWork uow, in int frame, float value)
+        internal void AddOrUpdateKey(IUnitOfWork uow, in int frame, float value)
         {
             if (_keys.TryGetValue(frame, out var key))
             {
@@ -43,13 +43,13 @@ namespace Pose.Domain.Animations
                 : InterpolationData.EasingLow;
         }
 
-        public void Clear(IUnitOfWork uow)
+        internal void Clear(IUnitOfWork uow)
         {
             while (_keys.Any())
                 RemoveKey(uow, _keys.Values.First());
         }
 
-        public void RemoveKey(IUnitOfWork uow, int frame)
+        internal void RemoveKey(IUnitOfWork uow, int frame)
         {
             if (!_keys.ContainsKey(frame))
                 throw new Exception($"Cannot delete Key: PropertyAnimation has no key at frame {frame}.");
@@ -63,7 +63,7 @@ namespace Pose.Domain.Animations
             uow.Execute(new AnimationKeyRemovedEvent(Id, key.Id, key.Frame, key.Value, key.Interpolation));
         }
 
-        public void RemoveKeys(IUnitOfWork uow, HashSet<ulong> keyIds)
+        internal void RemoveKeys(IUnitOfWork uow, HashSet<ulong> keyIds)
         {
             foreach (var key in _keys.Values.ToList())
             {

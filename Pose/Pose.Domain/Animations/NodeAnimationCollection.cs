@@ -35,7 +35,7 @@ namespace Pose.Domain.Animations
             propertyAnimation.AddOrUpdateKey(uow, frame, property.AnimateIncrement);
         }
 
-        public void RemoveKey(IUnitOfWork uow, in int frame, PropertyType propertyType)
+        internal void RemoveKey(IUnitOfWork uow, in int frame, PropertyType propertyType)
         {
             if (!PropertyAnimations.TryGetValue(propertyType, out var propertyAnimation))
                 throw new Exception($"Node \"{Node.Name}\" has no animation for property {propertyType}.");
@@ -64,7 +64,7 @@ namespace Pose.Domain.Animations
                 : null;
         }
 
-        public void RemoveAllAnimations(IUnitOfWork uow)
+        internal void RemoveAllAnimations(IUnitOfWork uow)
         {
             while (PropertyAnimations.Any())
             {
@@ -84,7 +84,7 @@ namespace Pose.Domain.Animations
             }
         }
 
-        public void RemoveKeys(IUnitOfWork uow, HashSet<ulong> keyIds)
+        internal void RemoveKeys(IUnitOfWork uow, HashSet<ulong> keyIds)
         {
             foreach (var propertyAnimation in PropertyAnimations.Values)
             {

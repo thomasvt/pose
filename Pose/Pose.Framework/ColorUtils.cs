@@ -160,16 +160,21 @@ namespace Pose.Framework
             var match = HexColorRegex.Match(hexCode);
             if (!match.Success)
                 throw new Exception($"Could not parse color from \"{hexCode}\".");
-            var r = (byte)int.Parse(match.Groups["r"].Value, NumberStyles.HexNumber);
-            var g = (byte)int.Parse(match.Groups["g"].Value, NumberStyles.HexNumber);
-            var b = (byte)int.Parse(match.Groups["b"].Value, NumberStyles.HexNumber);
+            var r = ParseChannelValue(match.Groups["r"].Value);
+            var g = ParseChannelValue(match.Groups["g"].Value);
+            var b = ParseChannelValue(match.Groups["b"].Value);
             if (match.Groups["a"].Success)
             {
-                var a = (byte)int.Parse(match.Groups["a"].Value, NumberStyles.HexNumber);
+                var a = ParseChannelValue(match.Groups["a"].Value);
                 return Color.FromArgb(a, r, g, b);
             }
 
             return Color.FromRgb(r, g, b);
+        }
+
+        private static byte ParseChannelValue(string hexValue)
+        {
+            return (byte)int.Parse(hexValue, NumberStyles.HexNumber);
         }
     }
 }
