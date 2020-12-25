@@ -54,12 +54,13 @@ The Editor is also responsible for creating a UnitOfWork (for the History system
 
 ### Pose assembly
 
-This assemlbly contains the UI (WPF) and is the glue that combines all parts of the application. It uses MVVM but, because MVVM has nasty downsides for more complex applications: to distinguish between user-initiated changes and code-initiated changes of properties, I often use events when a change originates from user interaction instead of twoway binding. 
-    * Folder 'Controls' contains some custom WPF controls
-    * Folder 'Panels' contains all panels of the editor (each visual part of the editor is called a Panel)
-    * Folder 'SceneEditor' contains the 2D viewport that shows and edits the visual scene. It uses WPF's Viewport3D which is a fairly thin layer over DirectX.
-    * Folder 'Shell' is the visual root of the application, splitting the main window in sections on which panels (from folder Panels) are positioned.
-    * Folder 'Startup' contains the bootstrapper and IoC container setup. If you don't know what that is, you can probably ignore it most of the time. (I do :) )
-    * Folder 'Themes' is WPF's styling etc for the custom controls used by the editor.
+This assemlbly contains the UI (WPF) and is the glue that combines all parts of the application. It uses MVVM, but because MVVM has nasty downsides for more complex applications I use some deviations: to distinguish between user-initiated changes and code-initiated changes of properties, I tend to use .NET events when a change originates from user interaction instead of relying on the twoway binding.
+
+* Folder 'Controls' contains some custom WPF controls
+* Folder 'Panels' contains all panels of the editor (each visual part of the editor is called a Panel)
+* Folder 'SceneEditor' contains the 2D viewport that shows and edits the visual scene. It uses WPF's Viewport3D which is a fairly thin layer over DirectX.
+* Folder 'Shell' is the visual root of the application, splitting the main window in sections on which panels (from folder Panels) are positioned.
+* Folder 'Startup' contains the bootstrapper and IoC container setup. If you don't know what that is, you can probably ignore it most of the time. (I do :) )
+* Folder 'Themes' is WPF's styling etc for the custom controls used by the editor.
     
 
