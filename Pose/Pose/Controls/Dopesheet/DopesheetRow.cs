@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace Pose.Controls.Dopesheet
 {
@@ -27,6 +28,14 @@ namespace Pose.Controls.Dopesheet
             }
 
             return isEmpty ? (FrameRange?)null : new FrameRange(min, max);
+        }
+
+        protected override void OnMouseDown(MouseButtonEventArgs e)
+        {
+            base.OnMouseDown(e);
+            // copied from ListBox code:
+            var dopesheet = ItemsControlFromItemContainer(this) as Dopesheet;
+            dopesheet?.NotifyDopesheetRowClicked(this, e.ChangedButton);
         }
 
         public string SortingText { get; set; }

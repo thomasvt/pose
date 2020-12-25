@@ -3,6 +3,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using Microsoft.Extensions.DependencyInjection;
 using Pose.Controls;
+using Pose.Controls.Dopesheet;
 using Pose.Domain.Editor;
 using Pose.Panels.Dopesheet;
 
@@ -54,6 +55,11 @@ namespace Pose.Panels.DopeSheet
         private void JumpToBegin_Click(object sender, RoutedEventArgs e)
         {
             ViewModel.JumpToAnimationBegin();
+        }
+
+        private void Dopesheet_OnRowClicked(DopesheetRow obj)
+        {
+            ViewModel.RowClicked(obj);
         }
 
         private DopesheetPanelViewModel ViewModel => DataContext as DopesheetPanelViewModel;

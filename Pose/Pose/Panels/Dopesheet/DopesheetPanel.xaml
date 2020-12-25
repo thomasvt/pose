@@ -12,7 +12,7 @@
         
     </UserControl.Resources>
     <Grid>
-        <dopesheet1:Dopesheet HeaderColumnWidth="300"  FrameWidth="8"
+        <dopesheet1:Dopesheet HeaderColumnWidth="300"  FrameWidth="8" RowClicked="Dopesheet_OnRowClicked"
                               CurrentFrame="{Binding CurrentFrame}" BeginFrame="{Binding BeginFrame}" EndFrame="{Binding EndFrame}" 
                               KeyDown="UIElement_OnKeyDown" BeginFrameCommitted="Dopesheet_OnBeginFrameCommitted" EndFrameCommitted="Dopesheet_OnEndFrameCommitted"
                               ItemsSource="{Binding Rows}">

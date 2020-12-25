@@ -326,6 +326,11 @@ namespace Pose.Panels.Dopesheet
             }
         }
 
+        public void RowClicked(DopesheetRow row)
+        {
+            _editor.NodeSelection.SelectSingle(row.NodeId);
+        }
+
         public void ToggleAutoKeying()
         {
             _editor.ToggleAutoKeying();

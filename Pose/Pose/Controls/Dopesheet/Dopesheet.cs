@@ -14,7 +14,7 @@ namespace Pose.Controls.Dopesheet
     [TemplatePart(Name = "PART_EndFrameInputBox", Type = typeof(NumericInputBox))]
     [TemplatePart(Name = "PART_FrameCursor", Type = typeof(FrameCursor))]
     [TemplatePart(Name = "PART_Ruler", Type = typeof(TimelineRuler))]
-    public class Dopesheet : ItemsControl
+    public class Dopesheet : ListBox
     {
         private FrameCursor _frameCursor;
         private ScrollBar _timelineScrollBar;
@@ -160,6 +160,12 @@ namespace Pose.Controls.Dopesheet
         protected override DependencyObject GetContainerForItemOverride()
         {
             return new DopesheetRow();
+        }
+
+        public void NotifyDopesheetRowClicked(DopesheetRow item, MouseButton mouseButton)
+        {
+            if (mouseButton == MouseButton.Left)
+                RowClicked?.Invoke(item);
         }
 
         #region HeaderColumnWidth
@@ -413,9 +419,12 @@ namespace Pose.Controls.Dopesheet
         /// Triggered when BeginFrame was changed in a non temporary fashion (mid-mousedrag)
         /// </summary>
         public event EventHandler<ValueChangedEventArgs> BeginFrameCommitted;
+
         /// <summary>
         /// Triggered when EndFrame was changed in a non temporary fashion (mid-mousedrag)
         /// </summary>
         public event EventHandler<ValueChangedEventArgs> EndFrameCommitted;
+
+        public event Action<DopesheetRow> RowClicked;
     }
 }
