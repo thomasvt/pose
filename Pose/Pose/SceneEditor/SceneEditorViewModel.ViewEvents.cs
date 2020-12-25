@@ -14,10 +14,12 @@ namespace Pose.SceneEditor
             {
                 case MouseButton.Left:
                 {
+                    SceneViewport.CaptureMouse();
                     _currentMouseTool.MouseLeftDown(mousePosition);
                     break;
                 }
                 case MouseButton.Middle:
+                    SceneViewport.CaptureMouse();
                     _currentMiddleMouseDragOperation = new PanCameraOperation(this, mousePosition.ToVector());
                     break;
             }
@@ -54,6 +56,8 @@ namespace Pose.SceneEditor
 
         internal void OnMouseUp(object sender, MouseButtonEventArgs e)
         {
+            SceneViewport.ReleaseMouseCapture();
+
             // end any mousedrag operation
             if (e.ChangedButton == MouseButton.Left)
             {
