@@ -166,10 +166,8 @@ namespace Pose.Domain.Editor
 
         public void RenameNode(in ulong nodeId, string name)
         {
-            RequireMode(EditorMode.Design);
-
-            using var uow = CurrentDocument.StartUnitOfWork($"Rename node to [{name}]");
             var node = CurrentDocument.GetNode(nodeId);
+            using var uow = CurrentDocument.StartUnitOfWork($"Rename {node} to [{name}]");
             node.Rename(uow, name);
         }
 
@@ -268,10 +266,10 @@ namespace Pose.Domain.Editor
         {
             RequireMode(EditorMode.Animate);
 
-            if ((bezierCurve == null) && (type == CurveType.Bezier))
-                throw new Exception("BezierCurve must be non null when type is Bezier.");
-            if ((bezierCurve != null) && (type != CurveType.Bezier))
-                throw new Exception("BezierCurve must be null when type is not Bezier.");
+            if (bezierCurve == null && type == CurveType.Bezier)
+                throw new Exception("BezierCurve cannot be null when CurveType is Bezier.");
+            if (bezierCurve != null && type != CurveType.Bezier)
+                throw new Exception("BezierCurve must be null when CurveType is not Bezier.");
 
             var key = CurrentDocument.GetKey(keyId);
             var interpolationData = new InterpolationData(type, bezierCurve);
@@ -280,6 +278,15 @@ namespace Pose.Domain.Editor
 
             using var uow = CurrentDocument.StartUnitOfWork($"Change Key {type.ToString()} curve");
             key.ChangeInterpolation(uow, interpolationData);
+        }
+
+        public void RenameAnimation(in ulong animationId, string newName)
+        {
+            RequireMode(EditorMode.Animate);
+
+            var animation = CurrentDocument.GetAnimation(animationId);
+            using var uow = CurrentDocument.StartUnitOfWork($"Rename {animation} to [{newName}]");
+            animation.Rename(uow, newName);
         }
 
         #region NodeProperties
@@ -428,6 +435,5 @@ namespace Pose.Domain.Editor
 
         #endregion
 
-        
     }
 }

@@ -11,5 +11,6 @@ namespace Pose.Domain.Animations
         void AddPropertyAnimation(PropertyAnimation propertyAnimation);
         void RemovePropertyAnimation(PropertyAnimation propertyAnimation);
         void SetIsLoop(in bool isLoop);
+        void ChangeName(string name);
     }
 }

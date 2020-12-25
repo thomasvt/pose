@@ -132,7 +132,7 @@ namespace Pose.Panels.Dopesheet
                 IsHighlighted = _editor.NodeSelection.FirstOrDefault(0) == nodeId
             };
             _rowsPerPropertyAnimationIdIndex.Add(propertyAnimationId, row);
-            Rows.SortedInsert(row, (a, b) => string.Compare(a.SortingText, b.SortingText, StringComparison.OrdinalIgnoreCase));
+            Rows.SortedInsertByString(row, item => item.SortingText);
         }
 
         private static string GetPropertyLabel(PropertyType propertyType)

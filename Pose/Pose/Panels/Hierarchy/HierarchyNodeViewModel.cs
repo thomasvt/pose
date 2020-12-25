@@ -51,6 +51,19 @@ namespace Pose.Panels.Hierarchy
             return keyValue == IsNodeVisible ? (bool?)true : null;
         }
 
+        public void SetName(string name)
+        {
+            _isUpdating = true;
+            try
+            {
+                Name = name;
+            }
+            finally
+            {
+                _isUpdating = false;
+            }
+        }
+
         public string Name
         {
             get => _name;
@@ -59,8 +72,12 @@ namespace Pose.Panels.Hierarchy
                 if (value == _name) 
                     return;
                 _name = value;
-                NameChanged?.Invoke();
                 OnPropertyChanged();
+
+                if (_isUpdating)
+                    return;
+
+                NameChanged?.Invoke();
             } 
         }
 
@@ -144,5 +161,7 @@ namespace Pose.Panels.Hierarchy
         public event Action Deselected;
         public event Action IsExpandedChanged;
         public event Action NameChanged;
+
+        
     }
 }

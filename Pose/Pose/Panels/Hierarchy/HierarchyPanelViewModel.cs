@@ -60,12 +60,12 @@ namespace Pose.Panels.Hierarchy
             var node = _editor.CurrentDocument.GetNode(nodeId);
             var nodeViewModel = new HierarchyNodeViewModel(_editor, nodeId)
             {
-                Name = name,
                 IsNodeVisible = isActive,
                 IsExpanded = false,
                 IsBone = node is BoneNode,
                 IsSprite = node is SpriteNode
             };
+            nodeViewModel.SetName(name);
             nodeViewModel.NameChanged += () => _editor.RenameNode(nodeId, nodeViewModel.Name);
             nodeViewModel.Selected += () => _editor.SelectNodeAndChangeToModifyTool(nodeId); ;
             nodeViewModel.Deselected += () => _editor.NodeSelection.Remove(nodeId);
@@ -104,7 +104,5 @@ namespace Pose.Panels.Hierarchy
         }
 
         public HierarchyDropHandler DropHandler { get; }
-
-        
     }
 }

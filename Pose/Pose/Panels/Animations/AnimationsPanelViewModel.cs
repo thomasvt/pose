@@ -1,8 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using Pose.Domain.Animations.Messages;
 using Pose.Domain.Documents.Messages;
 using Pose.Domain.Editor;
 using Pose.Domain.Editor.Messages;
+using Pose.Framework;
 using Pose.Framework.Messaging;
 
 namespace Pose.Panels.Animations
@@ -27,6 +30,7 @@ namespace Pose.Panels.Animations
             MessageBus.Default.Subscribe<CurrentAnimationChanged>(OnCurrentAnimationChanged);
             MessageBus.Default.Subscribe<AnimationAdded>(OnAnimationAdded);
             MessageBus.Default.Subscribe<AnimationRemoved>(OnAnimationRemoved);
+            MessageBus.Default.Subscribe<AnimationNameChanged>(OnAnimationNameChanged);
         }
 
         public void AddNewAnimation()
@@ -53,6 +57,11 @@ namespace Pose.Panels.Animations
             _selectedAnimation = null;
         }
 
+        private void OnAnimationNameChanged(AnimationNameChanged msg)
+        {
+            _index[msg.AnimationId].SetName(msg.Name);
+        }
+
         private void OnCurrentAnimationChanged(CurrentAnimationChanged msg)
         {
             SelectedAnimation = _index[msg.AnimationId];
@@ -66,14 +75,7 @@ namespace Pose.Panels.Animations
         private void AddAnimation(ulong animationId, string name)
         {
             var animationViewModel = MapAnimationViewModel(animationId, name);
-            var i = 0;
-            for (; i < Animations.Count; i++)
-            {
-                var compare = Animations[i].Label.ToLower().CompareTo(animationViewModel.Label.ToLower());
-                if (compare > 0)
-                    break;
-            }
-            Animations.Insert(i, animationViewModel);
+            Animations.SortedInsertByString(animationViewModel, item => item.Name);
             _index.Add(animationId, animationViewModel);
             UpdateCanDeleteAnimation();
         }
@@ -85,9 +87,11 @@ namespace Pose.Panels.Animations
             UpdateCanDeleteAnimation();
         }
 
-        private static AnimationViewModel MapAnimationViewModel(ulong animationId, string name)
+        private AnimationViewModel MapAnimationViewModel(ulong animationId, string name)
         {
-            return new AnimationViewModel(animationId, name);
+            var vm = new AnimationViewModel(animationId, name);
+            vm.NameChanged += newName => _editor.RenameAnimation(animationId, newName);
+            return vm;
         }
 
         private void UpdateCanDeleteAnimation()
@@ -105,6 +109,9 @@ namespace Pose.Panels.Animations
 
                 _selectedAnimation = value;
                 OnPropertyChanged();
+
+                if (value == null)
+                    return;
 
                 _editor.ChangeCurrentAnimation(value.AnimationId);
             }

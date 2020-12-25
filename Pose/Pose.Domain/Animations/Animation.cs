@@ -174,12 +174,20 @@ namespace Pose.Domain.Animations
             uow.Execute(new AnimationIsLoopChangedEvent(Id, IsLoop, !IsLoop));
         }
 
+        internal void Rename(IUnitOfWork uow, string newName)
+        {
+            if (Name == newName)
+                return;
+
+            uow.Execute(new AnimationRenamedEvent(Id, Name, newName));
+        }
+
         public override string ToString()
         {
             return $"Animation [{Name}]";
         }
 
-        public string Name { get; }
+        public string Name { get; private set; }
 
         public int CurrentFrame { get; private set; }
 

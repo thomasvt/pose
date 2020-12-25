@@ -55,5 +55,11 @@ namespace Pose.Domain.Animations
             IsLoop = isLoop;
             MessageBus.Publish(new AnimationIsLoopChanged(Id, isLoop));
         }
+
+        void IEditableAnimation.ChangeName(string name)
+        {
+            Name = name;
+            MessageBus.Publish(new AnimationNameChanged(Id, name));
+        }
     }
 }

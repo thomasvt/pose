@@ -82,7 +82,7 @@ namespace Pose.Panels.Hierarchy
 
         private void OnNodeRenamed(NodeRenamed msg)
         {
-            _index[msg.NodeId].Name = msg.Name;
+            _index[msg.NodeId].SetName(msg.Name);
         }
 
         private void OnNodeSelected(NodeSelected msg)
