@@ -30,19 +30,21 @@ The editor is created in Visual Studio, uses .NET Core and WPF for UI.
 
 This assembly models a Pose document that is opened in the editor and the operations you can perform on it. **all** changes to a document must go through the domain, which provides an API to do so. The UI of the editor will never change document data by itself, it's even impossible to reach that data without the domain. The root object of the Domain is the ```Document```, which contains a ```DocumentData``` containing all data representing a single Pose document. It is this ```DocumentData``` that is saved and loaded from/to a .pose file.
 
+Some important concepts to understand in the Domain:
+
 #### History (undo/redo)
 
-All changes through the domain automatically are recorded by the History system (for undo/redo purposes). When you delete a Node in the hierarchy, all its possible children are also removed. To make this undoable, we need to record all data involving these children. Therefore, we need to store this information in a list of all nodes that were deleted and store it in the undoable item. To solve this problem in a generic way, we define two layers of operations that can be performed on a document: 
-* simple, atomic operations: these change simple things, and store the data to undo themselved. These are stored as Events. Each Event in the Domain assembly stored the data and logic for doing and undoing the atomic operation.
-* user operations: these trigger (sometimes complex) algorithms that perform one or more atomic operations that are recorded onto a *UnitOfWork*. After the algoritm finishes, the UnitOfWork contains a list of all atomic operations that were performed. This is the list that is stored into the History system and can be undone or redone upon user request.
+All changes through the domain automatically are recorded by the History system (for undo/redo purposes). When a user deletes a Bone, all the child-bones are also removed. When we want to undo that delete, all child-bones need to be restored to. To implement this, we need to record all data involving these children. Therefore, we need to store this information in a list of all nodes that were deleted and store it in the History item. To solve this problem in a generic way, we define two layers of operations that can be performed on a document: 
+* Events aka atomic operations: these represent simple, individual changes on the domain (a name change, a value change). These are stored as Events (eg. AnimationRenamedEvent). Each Event in the Domain assembly stores the necessary data and logic to both *do* and *undo* that atomic operation.
+* User operations: these trigger (sometimes complex) algorithms that perform one or more atomic operations that belong together (for instance deleting a Bone and all its children). All atomic operations triggered during the algorithm are recorded onto a *UnitOfWork*. After the algoritm finishes, the UnitOfWork contains a list of all atomic operations that were performed. This is the list that is stored into the History system and can be used for undoing or redoing the complex chain of changes that the user action caused.
 
 #### MessageBus
 
-The domain emits Messages through a central MessageBus. The different parts of the editor application (eg. the UI panels) can subscribe to certain messages they are interested in, so they can update the data they show on screen when things change in the domain (the document).
+The domain emits Messages through a central MessageBus. The different parts of the editor application (eg. the various visualisations of data throughout the UI) can subscribe to certain change-messages they are interested in, so they can update what they show on screen when things change in the domain (=the document).
 
-Do not confuse Events with Messages: Events are created when a user changes something, the *Event* is recorded in History and also applied to the domain. Applying the event causes the domain to change, which publishes a *Message* for the UI to update itself. In constrast: when a user undoes and then redoes a user action, there is no recording of a new Event because we are redoing an already existing event. So, the event is reapplied to the domain, causing changes to the domain, causing messages to be raised so the UI can update itself. 
+### Events vs Messages
 
-So, the sum up: *events* get recorded, once, when a user performs actions on the document; while *messages* get raised when the domain is changed by playing, undoing, or redoing events. Therefore, Event classes must be internal, they should not be visible from the UI assembly.
+Do not confuse Events with Messages: Events represent a user changing the document while a Message represents the actual document change, so the UI can update itself when data changes. We need to separate these concepts because a single Event can cause many Messages if the user choses to undo/redo that same Event over and over again. So, the UI needs to listen for Messages, not Events. In fact, Events are internal classes (in the domain assembly), only used by the History system. The UI cannot even see them.
 
 ### Pose.Domain.Editor assembly
 
