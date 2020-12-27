@@ -5,6 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Pose.Common\Pose.Common.csproj" />
     <ProjectReference Include="..\Pose.Framework\Pose.Framework.csproj" />
   </ItemGroup>
 

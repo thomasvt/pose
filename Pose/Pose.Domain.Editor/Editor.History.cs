@@ -26,7 +26,7 @@
         }
 
         /// <summary>
-        /// Plays History backward or forward until a certain document version is reached.
+        /// Plays history backward or forward until a certain document version is reached.
         /// </summary>
         public void NavigateHistoryTo(in ulong version)
         {

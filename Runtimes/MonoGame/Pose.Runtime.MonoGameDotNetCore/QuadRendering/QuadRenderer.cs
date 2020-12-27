@@ -38,7 +38,7 @@ namespace Pose.Runtime.MonoGameDotNetCore.QuadRendering
 
         public void RenderQuad(SpriteQuad spriteQuad, Matrix worldTransform)
         {
-            // we transform on cpu and sends thousands of quads to gpu in one drawcall, because it's a lot faster than having the gpu do the transformation but having to do a drawcall for each quad.
+            // we transform on cpu and send thousands of quads to gpu in one drawcall, because it's a lot faster than having the gpu do the transformation but having to do a drawcall for each quad.
             var a = Vector2.Transform(spriteQuad.Vertices[0], worldTransform);
             var b = Vector2.Transform(spriteQuad.Vertices[1], worldTransform);
             var c = Vector2.Transform(spriteQuad.Vertices[2], worldTransform);
@@ -52,13 +52,13 @@ namespace Pose.Runtime.MonoGameDotNetCore.QuadRendering
             );
         }
 
-        public void RenderPretransformedQuad(SpriteQuad quad, ref Vector2 a, ref Vector2 b, ref Vector2 c, ref Vector2 d)
+        public void RenderPretransformedQuad(SpriteQuad quad, ref Vector3 a, ref Vector3 b, ref Vector3 c, ref Vector3 d)
         {
             _quadBatchPerTexture[quad.Texture].Append(
-                new VertexPositionColorTexture(new Vector3(a, 0f), Color.White, quad.TextureCoords[0]),
-                new VertexPositionColorTexture(new Vector3(b, 0f), Color.White, quad.TextureCoords[1]),
-                new VertexPositionColorTexture(new Vector3(c, 0f), Color.White, quad.TextureCoords[2]),
-                new VertexPositionColorTexture(new Vector3(d, 0f), Color.White, quad.TextureCoords[3])
+                new VertexPositionColorTexture(a, Color.White, quad.TextureCoords[0]),
+                new VertexPositionColorTexture(b, Color.White, quad.TextureCoords[1]),
+                new VertexPositionColorTexture(c, Color.White, quad.TextureCoords[2]),
+                new VertexPositionColorTexture(d, Color.White, quad.TextureCoords[3])
             );
         }
 

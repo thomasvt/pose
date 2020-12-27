@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using Microsoft.Xna.Framework;
@@ -42,7 +41,7 @@ namespace Pose.Runtime.MonoGame.TestGame
                 UseMultiCore = true
             };
 
-            var poseDocument = Content.LoadPoseDocument("demo");
+            var poseDocument = Content.LoadPoseDocument("poser.pose");
             var skeletonDefinition = factory.Create(poseDocument);
             _skeletons = new List<Skeleton>();
 
@@ -50,17 +49,17 @@ namespace Pose.Runtime.MonoGame.TestGame
 
             // DEMO 1 -----------
 
-            //_cameraZoom = 1f;
-            //_skeletons.Add(_poseRuntime.AddSkeleton(skeletonDefinition, new Vector3(0, 0, 0), 0));
+            _cameraZoom = 1f;
+            _skeletons.Add(_poseRuntime.AddSkeleton(skeletonDefinition, new Vector3(0, 0, 0), 0));
 
             // DEMO 2 ------------------
 
-            _cameraZoom = 0.2f;
-            var r = new Random();
-            for (var i = 0; i < 5000; i++)
-            {
-                _skeletons.Add(_poseRuntime.AddSkeleton(skeletonDefinition, new Vector3((i % 100 - 50) * 200, (i / 100 - 25) * 200, 0), (float)r.NextDouble() * 6.283f));
-            }
+            //_cameraZoom = 0.2f;
+            //var r = new Random();
+            //for (var i = 0; i < 5000; i++)
+            //{
+            //    _skeletons.Add(_poseRuntime.AddSkeleton(skeletonDefinition, new Vector3((i % 100 - 50) * 200, (i / 100 - 25) * 200, 0), (float)r.NextDouble() * 6.283f));
+            //}
         }
 
         protected override void UnloadContent()

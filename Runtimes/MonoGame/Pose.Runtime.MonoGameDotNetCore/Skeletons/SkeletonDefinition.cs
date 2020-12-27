@@ -2,9 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
+using Pose.Domain;
+using Pose.Domain.Curves;
 using Pose.Persistence;
 using Pose.Runtime.MonoGameDotNetCore.Animations;
 using Pose.Runtime.MonoGameDotNetCore.QuadRendering;
+using BezierCurve = Pose.Domain.Curves.BezierCurve;
+using Vector2 = Pose.Domain.Vector2;
 
 namespace Pose.Runtime.MonoGameDotNetCore.Skeletons
 {
@@ -27,7 +31,7 @@ namespace Pose.Runtime.MonoGameDotNetCore.Skeletons
             // todo Z value of the position should be used for depth sorting multiple skeletons
 
             var nodes = BuildRuntimeNodes(out var nodeIndices);
-            var drawSequenceIndices = _document.DrawOrder.NodeIds.Select(id => nodeIndices[id]).Reverse().ToArray();
+            var drawSequenceIndices = _document.DrawOrder.NodeIds.Select(id => nodeIndices[id]).ToArray();
             var animations = BuildRuntimeAnimations(nodeIndices);
 
             return new Skeleton(position, nodes, drawSequenceIndices, animations)
@@ -76,7 +80,7 @@ namespace Pose.Runtime.MonoGameDotNetCore.Skeletons
                 // first key is not on first frame -> add a segment for the part before that first key
                 var key = sortedKeys[0];
                 var frameIndex = key.Frame - animation.BeginFrame;
-                segments.Add(new RTSegment(new RTKey(0, key.Value), new RTKey((float)frameIndex / animation.FramesPerSecond, key.Value)));
+                segments.Add(new RTSegment(new RTKey(0, key.Value), new RTKey((float)frameIndex / animation.FramesPerSecond, key.Value), CurveType.Hold));
             }
 
             // add segments for each key to the next key
@@ -89,17 +93,40 @@ namespace Pose.Runtime.MonoGameDotNetCore.Skeletons
                 {
                     // last key, add an end-segment with constant value.
                     // This allows us to ensures that non-looping animations end at the exact endkey-value by allowing to render 1 frame beyond the last keyframe.
-                    segments.Add(new RTSegment(new RTKey(keyTime, key.Value), new RTKey(float.MaxValue, key.Value)));
+                    segments.Add(new RTSegment(new RTKey(keyTime, key.Value), new RTKey(float.MaxValue, key.Value), CurveType.Hold));
                 }
                 else
                 {
                     var nextKey = sortedKeys[i + 1];
                     var nextKeyTime = (float)(nextKey.Frame - animation.BeginFrame) / animation.FramesPerSecond;
-                    segments.Add(new RTSegment(new RTKey(keyTime, key.Value), new RTKey(nextKeyTime, nextKey.Value)));
+                    segments.Add(new RTSegment(new RTKey(keyTime, key.Value), new RTKey(nextKeyTime, nextKey.Value), MapInterpolationType(key.InterpolationType), MapBezierCurve(key.Curve)));
                 }
             }
 
             return segments.ToArray();
+        }
+
+        private BezierCurve? MapBezierCurve(Persistence.BezierCurve curve)
+        {
+            if (curve == null)
+                return null;
+
+            return new BezierCurve(new Vector2(curve.P0.X, curve.P0.Y), new Vector2(curve.P1.X, curve.P1.Y), new Vector2(curve.P2.X, curve.P2.Y), new Vector2(curve.P3.X, curve.P3.Y));
+        }
+
+        private CurveType MapInterpolationType(Key.Types.InterpolationTypeEnum type)
+        {
+            switch (type)
+            {
+                case Key.Types.InterpolationTypeEnum.Linear:
+                    return CurveType.Linear;
+                case Key.Types.InterpolationTypeEnum.Hold:
+                    return CurveType.Hold;
+                case Key.Types.InterpolationTypeEnum.Bezier:
+                    return CurveType.Bezier;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(type), type, null);
+            }
         }
 
         private RTNode[] BuildRuntimeNodes(out Dictionary<ulong, int> nodeIndices)
@@ -109,7 +136,7 @@ namespace Pose.Runtime.MonoGameDotNetCore.Skeletons
             var nodeCount = _document.Nodes.Count(n => n.Type == Node.Types.NodeType.Spritenode) + 1; // +1 -> for the extra runtime root 
             var nodes = new List<RTNode>(nodeCount)
             {
-                new RTNode(0, new Transformation(), new Transformation()) // root of the skeleton
+                new RTNode(0, new Transformation(), new Transformation(), 0) // root of the skeleton
             };
             nodeIndices = new Dictionary<ulong, int>(nodeCount)
             {
@@ -121,9 +148,15 @@ namespace Pose.Runtime.MonoGameDotNetCore.Skeletons
             {
                 var node = _document.Nodes[i];
                 var parentIdx = nodeIndices[node.ParentId];
+
+                var drawOrderIndex = 0;
+                if (node.Type == Node.Types.NodeType.Spritenode)
+                    drawOrderIndex = _document.DrawOrder.NodeIds.Count - _document.DrawOrder.NodeIds.IndexOf(node.Id);
+
                 nodes.Add(new RTNode(parentIdx,
-                    new Transformation(node.X, node.Y, node.Angle),
+                    new Transformation(node.Position.X, node.Position.Y, node.Angle),
                     new Transformation(0,0,0),
+                    drawOrderIndex,
                     node.Type == Node.Types.NodeType.Spritenode ? _spritesPerFilePath[node.SpriteFile] : null));
                 nodeIndices.Add(node.Id, i + 1);
             }
@@ -131,11 +164,15 @@ namespace Pose.Runtime.MonoGameDotNetCore.Skeletons
             return nodes.ToArray();
         }
 
+        /// <summary>
+        /// Registers all sprites needed for this skeleton to the QuadRenderer so it can initialize resources.
+        /// </summary>
         public void RegisterTextures(QuadRenderer quadRenderer)
         {
-            foreach (var spriteQuad in _spritesPerFilePath.Values)
+            foreach (var nodeId in _document.DrawOrder.NodeIds.Reverse())
             {
-                quadRenderer.RegisterTexture(spriteQuad.Texture);
+                var node = _document.Nodes.Single(n => n.Id == nodeId);
+                quadRenderer.RegisterTexture(_spritesPerFilePath[node.SpriteFile].Texture);
             }
         }
     }

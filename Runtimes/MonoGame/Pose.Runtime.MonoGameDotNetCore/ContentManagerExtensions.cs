@@ -1,18 +1,17 @@
 ﻿using System.IO;
 using Microsoft.Xna.Framework.Content;
 using Pose.Persistence;
-using Pose.Runtime.MonoGameDotNetCore.Skeletons;
 
 namespace Pose.Runtime.MonoGameDotNetCore
 {
     public static class ContentManagerExtensions
     {
         /// <summary>
-        /// Loads a Pose skeleton from a .pose file and all its required resources (sprites) for making <see cref="Skeleton"/> instances of the definition.
+        /// Loads a Pose document containing a skeleton and its animation(s) from a file created the Pose editor. Also automatically loads necessary resources (sprites).
         /// </summary>
-        public static Document LoadPoseDocument(this ContentManager content, string name)
+        public static Document LoadPoseDocument(this ContentManager content, string filename)
         {
-            var poseFile = Path.Combine(Path.GetFullPath(content.RootDirectory), name + ".pose");
+            var poseFile = Path.Combine(Path.GetFullPath(content.RootDirectory), filename);
             if (!File.Exists(poseFile))
                 throw new FileNotFoundException($"Pose file not found: \"{poseFile}\".");
 

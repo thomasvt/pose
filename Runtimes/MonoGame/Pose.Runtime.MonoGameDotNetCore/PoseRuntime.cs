@@ -35,7 +35,7 @@ namespace Pose.Runtime.MonoGameDotNetCore
         }
 
         /// <summary>
-        /// Draws all skeletons. PoseRuntime uses Y+ means up convention. Position (0,0) with view = Identity is the center of the screen. Z can be used for depth occlusion, and must lie within [0,1].
+        /// Draws all skeletons. PoseRuntime uses Y+ = up convention. Position (0,0) with view = Identity is the center of the screen. Z can be used for depth occlusion.
         /// </summary>
         /// <param name="gameTime">Time information as received from MonoGame. Used to update the Pose animations.</param>
         public void Draw(GameTime gameTime)
@@ -67,7 +67,7 @@ namespace Pose.Runtime.MonoGameDotNetCore
         {
             _quadRenderer.ProjectionTransform = ProjectionTransform;
             _quadRenderer.ViewTransform = ViewTransform;
-            _quadRenderer.BlendState = BlendState.NonPremultiplied;
+            _quadRenderer.BlendState = BlendState.AlphaBlend;
 
             var sw = Stopwatch.StartNew();
             _quadRenderer.BeginRender();
@@ -90,12 +90,15 @@ namespace Pose.Runtime.MonoGameDotNetCore
         /// The camera's view has the same size as the MonoGame viewport (pixels) and has X+ pointing to the right and Y+ pointing up.
         /// Alternatively, if you want more control over ViewTransform and Projection matrices, set them directly using their properties and don't call this method.
         /// </summary>
-        public void SetCameraPosition(Vector2 position, float zoom = 1f)
+        /// <param name="zoom">1 means: 1 world unit == 1 screen pixel, 2 means: 1 world unit == 2 pixels, ...</param>
+        /// <param name="nearPlane">Z is used for defining sprite depth order. Higher Z is drawn behind lower Z. Sprites' Z must be between nearplane and farplane. Higher plane range causes inaccuracies in Z ordering, so keep it close to what you need.</param>
+        /// <param name="farPlane">Z is used for defining sprite depth order. Higher Z is drawn behind lower Z. Sprites' Z must be between nearplane and farplane. Higher plane range causes inaccuracies in Z ordering, so keep it close to what you need.</param>
+        public void SetCameraPosition(Vector2 position, float zoom = 1f, float nearPlane = 0f, float farPlane = 100f)
         {
             var viewport = _quadRenderer.GraphicsDevice.Viewport;
             var halfWidth = viewport.Width * 0.5f / zoom;
             var halfHeight = viewport.Height * 0.5f / zoom;
-            ProjectionTransform = Matrix.CreateOrthographicOffCenter(-halfWidth, +halfWidth, -halfHeight, +halfHeight, 0f, 1f);
+            ProjectionTransform = Matrix.CreateOrthographicOffCenter(-halfWidth, +halfWidth, -halfHeight, +halfHeight, nearPlane, farPlane);
             ViewTransform = Matrix.CreateTranslation(-position.X, -position.Y, -1f);
         }
 

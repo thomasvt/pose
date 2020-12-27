@@ -1,4 +1,5 @@
 ﻿using System;
+using Pose.Domain.Curves;
 
 namespace Pose.Runtime.MonoGameDotNetCore.Animations
 {
@@ -41,8 +42,20 @@ namespace Pose.Runtime.MonoGameDotNetCore.Animations
                 currentSegment = ref _segments[_currentSegmentIdx];
             }
 
+            // calc where we are on this segment in [0,1] percent
             var t = (time - currentSegment.BeginKey.Time) / currentSegment.Duration;
-            return currentSegment.BeginKey.Value * (1 - t) + currentSegment.EndKey.Value * t;
+            // get interpolation value according to interpolationtype
+            var y = 0f;
+            if (currentSegment.CurveType == CurveType.Bezier)
+            {
+                y = currentSegment.BezierCurveSolver.SolveYAtX(t);
+            }
+            else if (currentSegment.CurveType == CurveType.Linear)
+            {
+                y = t;
+            }
+
+            return currentSegment.BeginKey.Value * (1 - y) + currentSegment.EndKey.Value * y;
         }
     }
 }

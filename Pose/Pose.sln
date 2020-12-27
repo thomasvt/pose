@@ -17,6 +17,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pose.Persistence.Editor", "
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Pose.Domain.Editor", "Pose.Domain.Editor\Pose.Domain.Editor.csproj", "{EF94C23D-9575-4BE6-9FFA-BDF3646E1288}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Pose.Common", "Pose.Common\Pose.Common.csproj", "{ECC59224-1DB0-4C1D-8876-C3B21945D663}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -51,6 +53,10 @@ Global
 		{EF94C23D-9575-4BE6-9FFA-BDF3646E1288}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EF94C23D-9575-4BE6-9FFA-BDF3646E1288}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EF94C23D-9575-4BE6-9FFA-BDF3646E1288}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ECC59224-1DB0-4C1D-8876-C3B21945D663}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ECC59224-1DB0-4C1D-8876-C3B21945D663}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ECC59224-1DB0-4C1D-8876-C3B21945D663}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ECC59224-1DB0-4C1D-8876-C3B21945D663}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
