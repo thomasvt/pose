@@ -11,9 +11,9 @@ namespace Pose.Runtime.MonoGameDotNetCore.QuadRendering
         private readonly int _quadCapacityPerTexture;
         private readonly Dictionary<Texture2D, QuadBatch> _quadBatchPerTexture;
 
-        public QuadRenderer(GraphicsDeviceManager graphicsDeviceManager, int quadCapacityPerTexture, BlendState blendState = null)
+        public QuadRenderer(GraphicsDeviceManager graphicsDeviceManager, int quadCapacityPerTexture, BlendState blendState = null, DepthStencilState depthStencilState = null)
         {
-            _gpuMeshRenderer = new GpuMeshRenderer(graphicsDeviceManager, blendState ?? BlendState.NonPremultiplied);
+            _gpuMeshRenderer = new GpuMeshRenderer(graphicsDeviceManager, blendState ?? BlendState.NonPremultiplied, depthStencilState ?? DepthStencilState.Default);
             _quadCapacityPerTexture = quadCapacityPerTexture;
             _quadBatchPerTexture = new Dictionary<Texture2D, QuadBatch>();
         }
@@ -66,7 +66,6 @@ namespace Pose.Runtime.MonoGameDotNetCore.QuadRendering
         {
             _gpuMeshRenderer.ProjectionTransform = ProjectionTransform;
             _gpuMeshRenderer.ViewTransform = ViewTransform;
-            _gpuMeshRenderer.BlendState = BlendState;
 
             foreach (var quadBatch in _quadBatchPerTexture.Values)
             {
@@ -86,8 +85,6 @@ namespace Pose.Runtime.MonoGameDotNetCore.QuadRendering
         public Matrix ProjectionTransform { get; set; }
 
         public Matrix ViewTransform { get; set; }
-
-        public BlendState BlendState { get; set; }
 
         public GraphicsDevice GraphicsDevice => _gpuMeshRenderer.GraphicsDevice;
 

@@ -20,7 +20,7 @@ namespace Pose.Runtime.MonoGameDotNetCore.Skeletons
             _drawSequenceIndices = drawSequenceIndices;
             _animations = animations ?? throw new ArgumentNullException(nameof(animations));
             Position = position;
-            DrawOrderZFactor = 0.001f;
+            DrawOrderZFactor = 0f;
         }
 
         /// <summary>
@@ -63,6 +63,7 @@ namespace Pose.Runtime.MonoGameDotNetCore.Skeletons
 
         private void ApplyTransforms()
         {
+            // loop over all nodes and calc their transform matrix. The nodes array is in hierarchical order, so children will always be calculated after their parent.
             ref var node = ref _nodes[0];
             node.DesignTransformation = new Transformation(Position.X, Position.Y, Angle);
             node.GlobalTransform = GetTransform(ref node, Position.Z);

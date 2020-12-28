@@ -36,7 +36,7 @@ namespace Pose.Runtime.MonoGame.TestGame
             _textureStore = new MonoGameTextureStore(Content);
             _spriteStore = new MonoGameSpriteStore(_textureStore);
             var factory = new SkeletonDefinitionFactory(_spriteStore);
-            _poseRuntime = new PoseRuntime(new QuadRenderer(_graphicsDeviceManager, 100000, BlendState.NonPremultiplied))
+            _poseRuntime = new PoseRuntime(new QuadRenderer(_graphicsDeviceManager, 50, BlendState.AlphaBlend, DepthStencilState.None))
             {
                 UseMultiCore = true
             };
@@ -51,6 +51,7 @@ namespace Pose.Runtime.MonoGame.TestGame
 
             _cameraZoom = 1f;
             _skeletons.Add(_poseRuntime.AddSkeleton(skeletonDefinition, new Vector3(0, 0, 0), 0));
+            _skeletons.Add(_poseRuntime.AddSkeleton(skeletonDefinition, new Vector3(-100, 0, -20), 0)); // todo Z- is away from user. Fix ordering logic...
 
             // DEMO 2 ------------------
 
@@ -95,7 +96,7 @@ namespace Pose.Runtime.MonoGame.TestGame
             GraphicsDevice.Clear(Color.DarkGray);
 
             _poseRuntime.SetCameraPosition(new Vector2(0, 0), _cameraZoom);
-            _poseRuntime.Draw(gameTime);
+            _poseRuntime.Draw((float)gameTime.TotalGameTime.TotalSeconds / 2f);
             _averageUpdate += ((float)_poseRuntime.UpdateTime - _averageUpdate) * 0.1f;
             _averageDraw += ((float)_poseRuntime.DrawTime - _averageDraw) * 0.1f;
             if (frameCount++ % 60 == 0)

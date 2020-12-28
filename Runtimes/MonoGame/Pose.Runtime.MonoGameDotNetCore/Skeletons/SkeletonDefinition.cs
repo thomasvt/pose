@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
-using Pose.Domain;
 using Pose.Domain.Curves;
 using Pose.Persistence;
 using Pose.Runtime.MonoGameDotNetCore.Animations;

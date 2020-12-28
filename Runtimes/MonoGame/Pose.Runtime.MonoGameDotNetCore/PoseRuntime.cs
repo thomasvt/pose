@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -37,11 +38,10 @@ namespace Pose.Runtime.MonoGameDotNetCore
         /// <summary>
         /// Draws all skeletons. PoseRuntime uses Y+ = up convention. Position (0,0) with view = Identity is the center of the screen. Z can be used for depth occlusion.
         /// </summary>
-        /// <param name="gameTime">Time information as received from MonoGame. Used to update the Pose animations.</param>
-        public void Draw(GameTime gameTime)
+        /// <param name="gameTime">Gametime in seconds. Used to update the Pose animations.</param>
+        public void Draw(float gameTime)
         {
-            var gameTimeSeconds = (float) gameTime.TotalGameTime.TotalSeconds;
-            UpdateAnimations(gameTimeSeconds);
+            UpdateAnimations(gameTime);
             RenderSprites();
         }
 
@@ -67,15 +67,15 @@ namespace Pose.Runtime.MonoGameDotNetCore
         {
             _quadRenderer.ProjectionTransform = ProjectionTransform;
             _quadRenderer.ViewTransform = ViewTransform;
-            _quadRenderer.BlendState = BlendState.AlphaBlend;
 
             var sw = Stopwatch.StartNew();
-            _quadRenderer.BeginRender();
-            foreach (var skeleton in _skeletons)
+            
+            foreach (var skeleton in _skeletons.OrderBy(s => s.Position.Z))
             {
+                _quadRenderer.BeginRender();
                 skeleton.Draw(_quadRenderer);
+                _quadRenderer.EndRender();
             }
-            _quadRenderer.EndRender();
 
             DrawTime = sw.Elapsed.TotalMilliseconds;
         }
@@ -91,8 +91,8 @@ namespace Pose.Runtime.MonoGameDotNetCore
         /// Alternatively, if you want more control over ViewTransform and Projection matrices, set them directly using their properties and don't call this method.
         /// </summary>
         /// <param name="zoom">1 means: 1 world unit == 1 screen pixel, 2 means: 1 world unit == 2 pixels, ...</param>
-        /// <param name="nearPlane">Z is used for defining sprite depth order. Higher Z is drawn behind lower Z. Sprites' Z must be between nearplane and farplane. Higher plane range causes inaccuracies in Z ordering, so keep it close to what you need.</param>
-        /// <param name="farPlane">Z is used for defining sprite depth order. Higher Z is drawn behind lower Z. Sprites' Z must be between nearplane and farplane. Higher plane range causes inaccuracies in Z ordering, so keep it close to what you need.</param>
+        /// <param name="nearPlane">Z is used for sprite depth order. High Z is drawn behind low Z. Z must be between nearplane and farplane. Using a large plane range causes inaccuracies in Z ordering, so keep it close to what you need.</param>
+        /// <param name="farPlane">Z is used for sprite depth order. High Z is drawn behind low Z. Z must be between nearplane and farplane. Using a large plane range causes inaccuracies in Z ordering, so keep it close to what you need.</param>
         public void SetCameraPosition(Vector2 position, float zoom = 1f, float nearPlane = 0f, float farPlane = 100f)
         {
             var viewport = _quadRenderer.GraphicsDevice.Viewport;

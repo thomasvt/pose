@@ -10,9 +10,10 @@ namespace Pose.Runtime.MonoGameDotNetCore.QuadRendering
         private BasicEffect _effect;
         private GraphicsDevice _graphicsDevice;
 
-        public GpuMeshRenderer(GraphicsDeviceManager graphicsDeviceManager, BlendState blendState)
+        public GpuMeshRenderer(GraphicsDeviceManager graphicsDeviceManager, BlendState blendState, DepthStencilState depthStencilState)
         {
             BlendState = blendState;
+            DepthStencilState = depthStencilState;
             _graphicsDeviceManager = graphicsDeviceManager;
             graphicsDeviceManager.DeviceCreated += (s, e) => OnGraphicsDeviceCreated();
             OnGraphicsDeviceCreated();
@@ -51,6 +52,7 @@ namespace Pose.Runtime.MonoGameDotNetCore.QuadRendering
             _effect.Texture = gpuMesh.Texture;
 
             _graphicsDevice.BlendState = BlendState;
+            _graphicsDevice.DepthStencilState = DepthStencilState;
             _graphicsDevice.SetVertexBuffer(gpuMesh.GetVertexBuffer(_graphicsDevice));
             _graphicsDevice.Indices = gpuMesh.GetIndexBuffer(_graphicsDevice);
 
@@ -70,5 +72,6 @@ namespace Pose.Runtime.MonoGameDotNetCore.QuadRendering
         public Matrix ProjectionTransform { get; set; }
         public BlendState BlendState { get; set; }
         public GraphicsDevice GraphicsDevice => _graphicsDeviceManager.GraphicsDevice;
+        public DepthStencilState DepthStencilState { get; set; }
     }
 }
