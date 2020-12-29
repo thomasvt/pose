@@ -147,7 +147,7 @@ namespace Pose.Runtime.MonoGameDotNetCore.Skeletons
 
                 var drawOrderIndex = 0;
                 if (node.Type == Node.Types.NodeType.Spritenode)
-                    drawOrderIndex = _document.DrawOrder.NodeIds.Count - _document.DrawOrder.NodeIds.IndexOf(node.Id);
+                    drawOrderIndex = _document.DrawOrder.NodeIds.IndexOf(node.Id);
 
                 nodes.Add(new RTNode(parentIdx,
                     new Transformation(node.Position.X, node.Position.Y, node.Angle),

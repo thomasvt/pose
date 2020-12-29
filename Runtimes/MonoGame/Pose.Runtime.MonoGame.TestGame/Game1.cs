@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using Microsoft.Xna.Framework;
@@ -33,7 +34,7 @@ namespace Pose.Runtime.MonoGame.TestGame
         {
             _poseRuntime = new PoseRuntime(new GpuMeshRenderer(_graphicsDeviceManager, BlendState.AlphaBlend, DepthStencilState.None))
             {
-                UseMultiCore = false
+                UseMultiCore = true
             };
 
             var poseDocument = Content.LoadPoseDocument("poser.pose");
@@ -44,18 +45,18 @@ namespace Pose.Runtime.MonoGame.TestGame
 
             // DEMO 1 -----------
 
-            _cameraZoom = 1f;
-            _skeletons.Add(_poseRuntime.AddSkeleton(skeletonDefinition, new Vector2(0, 0), 0, 0));
-            _skeletons.Add(_poseRuntime.AddSkeleton(skeletonDefinition, new Vector2(-100, 0), 20, 0));
+            //_cameraZoom = 1f;
+            //_skeletons.Add(_poseRuntime.AddSkeleton(skeletonDefinition, new Vector2(0, 0), 0, 0));
+            //_skeletons.Add(_poseRuntime.AddSkeleton(skeletonDefinition, new Vector2(-100, 0), 20, 0));
 
             // DEMO 2 ------------------
 
-            //_cameraZoom = 0.2f;
-            //var r = new Random();
-            //for (var i = 0; i < 5000; i++)
-            //{
-            //    _skeletons.Add(_poseRuntime.AddSkeleton(skeletonDefinition, new Vector3((i % 100 - 50) * 200, (i / 100 - 25) * 200, 0), (float)r.NextDouble() * 6.283f));
-            //}
+            _cameraZoom = 0.2f;
+            var r = new Random();
+            for (var i = 0; i < 5000; i++)
+            {
+                _skeletons.Add(_poseRuntime.AddSkeleton(skeletonDefinition, new Vector2((i % 100 - 50) * 200, (i / 100 - 25) * 200), 0, (float)r.NextDouble() * 6.283f));
+            }
         }
 
         protected override void UnloadContent()
@@ -76,7 +77,7 @@ namespace Pose.Runtime.MonoGame.TestGame
             var i = 0f;
             foreach (var skeleton in _skeletons)
             {
-                skeleton.StartAnimation("Rest", t - i);
+                skeleton.StartAnimation("Run", t - i);
                 i += 0.097f;
             }
             _isFirst = false;

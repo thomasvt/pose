@@ -22,7 +22,6 @@ namespace Pose.Runtime.MonoGameDotNetCore.Skeletons
             _nodes = nodes;
             _drawSequenceIndices = drawSequenceIndices;
             _animations = animations ?? throw new ArgumentNullException(nameof(animations));
-            DrawOrderZFactor = 0f;
             var spriteNodeCount = nodes.Count(n => n.SpriteQuad != null);
             _gpuMesh = new GpuMesh(spriteNodeCount * 4, spriteNodeCount * 6, texture, true);
             _gpuMesh.PrepareQuadIndices(spriteNodeCount);
@@ -88,30 +87,6 @@ namespace Pose.Runtime.MonoGameDotNetCore.Skeletons
 
         internal void Draw(GpuMeshRenderer quadRenderer)
         {
-            var vertexIdx = 0;
-            for (var i = 0; i < _drawSequenceIndices.Length; i++)
-            {
-                ref var spriteNode = ref _nodes[_drawSequenceIndices[i]];
-
-                ref var v = ref _gpuMesh.Vertices[vertexIdx++];
-                v.Position.X = spriteNode.A.X;
-                v.Position.Y = spriteNode.A.Y;
-
-                v = ref _gpuMesh.Vertices[vertexIdx++];
-                v.Position.X = spriteNode.B.X;
-                v.Position.Y = spriteNode.B.Y;
-
-                v = ref _gpuMesh.Vertices[vertexIdx++];
-                v.Position.X = spriteNode.C.X;
-                v.Position.Y = spriteNode.C.Y;
-
-                v = ref _gpuMesh.Vertices[vertexIdx++];
-                v.Position.X = spriteNode.D.X;
-                v.Position.Y = spriteNode.D.Y;
-            }
-
-            _gpuMesh.MarkVerticesChanged(_drawSequenceIndices.Length * 4);
-
             var worldTransform = Matrix.Identity;
             quadRenderer.Render(_gpuMesh, ref worldTransform);
         }
@@ -126,17 +101,23 @@ namespace Pose.Runtime.MonoGameDotNetCore.Skeletons
             {
                 node = ref _nodes[i];
                 ref var parentNode = ref _nodes[node.ParentNodeIdx];
-                var z = node.DrawOrderIndex * DrawOrderZFactor;
                 node.GlobalTransform = GetTransform(ref node) * parentNode.GlobalTransform;
-
-                if (node.SpriteQuad == null)
-                    continue;
-
-                node.A = Vector2.Transform(node.SpriteQuad.Vertices[0], node.GlobalTransform);
-                node.B = Vector2.Transform(node.SpriteQuad.Vertices[1], node.GlobalTransform);
-                node.C = Vector2.Transform(node.SpriteQuad.Vertices[2], node.GlobalTransform);
-                node.D = Vector2.Transform(node.SpriteQuad.Vertices[3], node.GlobalTransform);
             }
+
+            var vertexIdx = 0;
+            for (var i = 0; i < _drawSequenceIndices.Length; i++)
+            {
+                ref var spriteNode = ref _nodes[_drawSequenceIndices[i]];
+
+                for (var j = 0; j < 4; j++)
+                {
+                    ref var vertex = ref _gpuMesh.Vertices[vertexIdx++];
+                    var result = Vector2.Transform(spriteNode.SpriteQuad.Vertices[j], spriteNode.GlobalTransform);
+                    vertex.Position = new Vector3(result, 0);
+                }
+            }
+
+            _gpuMesh.MarkVerticesChanged(_drawSequenceIndices.Length << 2);
         }
 
         private static Matrix GetTransform(ref RTNode node)
@@ -158,12 +139,7 @@ namespace Pose.Runtime.MonoGameDotNetCore.Skeletons
         /// For drawordering. More is further back.
         /// </summary>
         public float Depth { get; set; }
-
-        /// <summary>
-        /// The draworder of individual sprites in a single skeleton is obtained by giving sprites different Z positions. Each sprite's Z = index-in-draworder * DrawOrderZFactor
-        /// </summary>
-        public float DrawOrderZFactor { get; set; }
-
+        
         public float Angle { get; set; }
 
         public RTAnimation CurrentAnimation { get; private set; }
