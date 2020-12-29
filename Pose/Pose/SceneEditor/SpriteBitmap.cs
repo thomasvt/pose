@@ -2,7 +2,8 @@
 using System.Drawing;
 using System.Windows;
 using System.Windows.Media.Imaging;
-using Size = System.Windows.Size;
+using SkiaSharp;
+using SkiaSharp.Views.WPF;
 
 namespace Pose.SceneEditor
 {
@@ -12,35 +13,33 @@ namespace Pose.SceneEditor
     public class SpriteBitmap
     : IDisposable
     {
-        // Note: because we cannot easily query pixels in WPF's BitmapImage (prolly because it's in videoram), we need to load the sprite in a Bitmap too. This class encapsulates both as one object.
+        // Note: because we cannot easily query individual pixels in WPF's BitmapImage, we keep a Skia Bitmap version of the same image too for all the application's pixel needs.
 
         /// <summary>
-        /// The image for querying the pixel data inside.
+        /// The sprite image as a SKBitmap for use in Pose features that use Skia, and convenient querying of pixeldata.
         /// </summary>
-        private Bitmap _bitmap;
+        public SKBitmap Bitmap { get; private set; }
 
         /// <summary>
-        /// The imagesource used for rendering in WPF.
+        /// The image as a BitmapImage for rendering in WPF. 
         /// </summary>
         public BitmapImage BitmapImage { get; private set; }
 
-        public Size Size => new Size(_bitmap.Width, _bitmap.Height);
-
-        public SpriteBitmap(BitmapImage bitmapImage, Bitmap bitmap)
+        public SpriteBitmap(BitmapImage bitmapImage)
         {
             BitmapImage = bitmapImage;
-            _bitmap = bitmap;
+            Bitmap = bitmapImage.ToSKBitmap();
         }
 
-        public Color GetPixelAtUv(Vector uv)
+        public SKColor GetPixelAtUv(Vector uv)
         {
-            return _bitmap.GetPixel((int)(uv.X * _bitmap.Width), (int)(uv.Y * _bitmap.Height));
+            return Bitmap.GetPixel((int)(uv.X * Bitmap.Width), (int)(uv.Y * Bitmap.Height));
         }
 
-        public void RefreshResources(BitmapImage bitmapImage, Bitmap bitmap)
+        public void RefreshResources(BitmapImage bitmapImage)
         {
             BitmapImage = bitmapImage;
-            _bitmap = bitmap;
+            Bitmap = bitmapImage.ToSKBitmap();
             ResourcesReloaded?.Invoke();
         }
 
@@ -48,7 +47,7 @@ namespace Pose.SceneEditor
 
         public void Dispose()
         {
-            _bitmap?.Dispose();
+            Bitmap?.Dispose();
         }
     }
 }

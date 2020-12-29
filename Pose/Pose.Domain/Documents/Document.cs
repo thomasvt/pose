@@ -320,7 +320,21 @@ namespace Pose.Domain.Documents
         /// </summary>
         public IList<ulong> GetNodeIdsInDrawOrder() => Data.DrawOrder.GetNodeIdsInOrder();
 
+        /// <summary>
+        /// The full path of the .pose filename for this Document.
+        /// </summary>
         public string Filename { get; private set; }
+
+        /// <summary>
+        /// Returns the full path of the spritesheet image file.
+        /// </summary>
+        public string GetSpritesheetImageFile() => Path.ChangeExtension(Filename, ".png");
+
+        /// <summary>
+        /// Returns the full path of the spritesheet data file describing the sprite positions inside the spritesheet image.
+        /// </summary>
+        public string GetSpritesheetDataFile() => Path.ChangeExtension(Filename, ".sheet");
+
         /// <summary>
         /// This contains the full file path to which Pose last saved this document. It's value is saved inside the file and loaded into this property. It helps finding the original AssetFolder if the pose file was moved.
         /// </summary>
@@ -336,6 +350,7 @@ namespace Pose.Domain.Documents
         public bool HasFilename => Filename != null;
         public int AnimationCount => Data.Animations.Count;
         
+
 
         public string GetUniqueBoneName()
         {

@@ -18,10 +18,9 @@ namespace Pose.SceneEditor
         : ViewModel
     {
         /// The SceneEditor abandons the MVVM pattern for the Viewport and Gizmo layers for performance reasons.
-        /// It renders the spritenodes of the document as textured meshes with a global WPF transform applied.
-        /// We don't build the skeleton in a WPF hierarchy. Instead, all nodes - including childnodes - are ROOT-visuals in the WPF Viewport.
-        /// The editor sets their global transform based on Pose domain logic.
-        /// This guarantees that we see exactly the same animations in the editor as in the runtimes, because we use the same math and ideas.
+        /// It renders the spritenodes of the document as textured meshes (quads, 2 triangles) with a global WPF transform applied.
+        /// All nodes - including childnodes - are ROOT-visuals in the WPF Viewport that get applied their single global transform matrix by the domain logic.
+        /// This guarantees that we see exactly the same results in the editor as in the runtimes; we use the same math.
 
         internal readonly Editor Editor;
         internal SceneViewport SceneViewport;
@@ -82,6 +81,7 @@ namespace Pose.SceneEditor
                 return;
 
             Clear();
+            _spriteBitmapStore.ChangeAssetFolder(Editor.CurrentDocument.AbsoluteAssetFolder);
             foreach (var node in Editor.CurrentDocument.GetAllNodes())
             {
                 switch (node)

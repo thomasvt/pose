@@ -1,5 +1,4 @@
-﻿using Pose.Domain.Nodes.Properties;
-using Pose.Framework.Messaging;
+﻿using Pose.Framework.Messaging;
 
 namespace Pose.Domain.Nodes
 {

@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.IO;
 using System.Reflection;
 using System.Windows.Media.Imaging;
-using Pose.Domain.Editor;
 
 namespace Pose.SceneEditor
 {
@@ -13,12 +11,11 @@ namespace Pose.SceneEditor
     /// </summary>
     public class SpriteBitmapStore
     {
-        private readonly Editor _editor;
         private readonly Dictionary<string, SpriteBitmap> _sprites;
+        private string _assetFolder;
 
-        public SpriteBitmapStore(Editor editor)
+        public SpriteBitmapStore()
         {
-            _editor = editor;
             _sprites = new Dictionary<string, SpriteBitmap>();
         }
 
@@ -27,31 +24,34 @@ namespace Pose.SceneEditor
             if (_sprites.TryGetValue(relativePath, out var sprite))
                 return sprite;
 
-            LoadSpriteBitmap(relativePath, out var bitmapImage, out var bitmap);
-            sprite = new SpriteBitmap(bitmapImage, bitmap);
+            var bitmapImage = LoadSpriteBitmap(relativePath);
+            sprite = new SpriteBitmap(bitmapImage);
             _sprites.Add(relativePath, sprite);
             return sprite;
         }
 
-        private void LoadSpriteBitmap(string relativePath, out BitmapImage bitmapImage, out Bitmap bitmap)
+        private BitmapImage LoadSpriteBitmap(string relativePath)
         {
-            var absolutePath = _editor.CurrentDocument.GetAbsoluteAssetPath(relativePath);
+            var absolutePath = GetAbsoluteAssetPath(relativePath);
 
-            if (!File.Exists(absolutePath))
-                absolutePath = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location),
-                    "Assets\\sprite-missing.png");
+            if (!File.Exists(absolutePath)) 
+                absolutePath = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), "Assets\\sprite-missing.png");
 
-            bitmapImage = new BitmapImage(new Uri(absolutePath, UriKind.Absolute));
-            bitmap = new Bitmap(absolutePath);
+            return new BitmapImage(new Uri(absolutePath, UriKind.Absolute));
         }
 
-        public void ReloadAll()
+        public void ChangeAssetFolder(string assetFolder)
         {
+            _assetFolder = assetFolder;
             foreach (var kvp in _sprites)
             {
-                LoadSpriteBitmap(kvp.Key, out var bitmapImage, out var bitmap);
-                kvp.Value.RefreshResources(bitmapImage, bitmap);
+                kvp.Value.RefreshResources(LoadSpriteBitmap(kvp.Key));
             }
+        }
+
+        public string GetAbsoluteAssetPath(string path)
+        {
+            return Path.Combine(_assetFolder, path);
         }
 
         public void Clear()

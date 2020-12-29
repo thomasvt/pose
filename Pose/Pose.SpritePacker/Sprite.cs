@@ -4,10 +4,10 @@
     {
         public int Width { get; }
         public int Height { get; }
-        public string Name { get; }
-        public Sprite(string name, int width, int height)
+        public object Reference { get; }
+        public Sprite(object reference, int width, int height)
         {
-            Name = name;
+            Reference = reference;
             Width = width;
             Height = height;
         }

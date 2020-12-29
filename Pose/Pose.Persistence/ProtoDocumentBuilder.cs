@@ -8,7 +8,7 @@ using Pose.Domain.Nodes.Properties;
 
 namespace Pose.Persistence
 {
-    public static class ProtoModelBuilder
+    public static class ProtoDocumentBuilder
     {
         public static Document CreateProtobufDocument(Domain.Documents.Document document)
         {

@@ -157,7 +157,7 @@ namespace Pose.SceneEditor.Viewport
                     {
                         var textureHitLocation = GetHitUv(result);
                         var pixel = spriteNodeItem.SpriteBitmap.GetPixelAtUv(textureHitLocation);
-                        if (pixel.A != 0)
+                        if (pixel.Alpha != 0)
                             list.Add(nodeItem);
                     }
 

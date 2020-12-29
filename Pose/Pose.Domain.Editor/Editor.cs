@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Linq;
 using Pose.Domain.Animations.Messages;
 using Pose.Domain.Documents.Messages;
 using Pose.Domain.Editor.Messages;
+using Pose.Domain.Nodes;
 using Pose.Domain.Nodes.Messages;
 using Pose.Domain.Nodes.Properties;
 using Pose.Framework.Messaging;
@@ -17,15 +19,17 @@ namespace Pose.Domain.Editor
     public partial class Editor
     {
         private readonly IMessageBus _messageBus;
+        private readonly ISceneSpritesheetExporter _sceneSpritesheetExporter;
         private Document _currentDocument;
         private bool _isAutoKeying;
         private ulong _currentAnimationId;
         
         public Document CurrentDocument => _currentDocument ?? throw new Exception("There's no open document.");
 
-        public Editor(IMessageBus messageBus)
+        public Editor(IMessageBus messageBus, ISceneSpritesheetExporter sceneSpritesheetExporter)
         {
             _messageBus = messageBus;
+            _sceneSpritesheetExporter = sceneSpritesheetExporter;
             NodeSelection = new Selection<ulong>
             {
                 DeselectAction = id => _messageBus.Publish(new NodeDeselected(id)),
@@ -148,9 +152,17 @@ namespace Pose.Domain.Editor
             if (!CurrentDocument.HasFilename)
                 throw new Exception("No filepath set for document yet.");
 
-            new DocumentSaver().SaveToFile(CurrentDocument);
+            ProtobufSaver.SaveDocument(CurrentDocument);
+            ExportSceneSpritesheet();
             CurrentDocument.MarkSaved();
             _messageBus.Publish(new CurrentDocumentSaved());
+        }
+
+        private void ExportSceneSpritesheet()
+        {
+            // get all used sprites in the scene and export a spritesheet of them.
+            var spritePaths = CurrentDocument.GetAllNodes().OfType<SpriteNode>().Select(sn => sn.SpriteRef).Distinct();
+            _sceneSpritesheetExporter.ExportUsedSprites(spritePaths, CurrentDocument.GetSpritesheetImageFile(), CurrentDocument.GetSpritesheetDataFile());
         }
 
         public void ChangeCurrentAnimation(ulong animationId)
@@ -348,8 +360,8 @@ namespace Pose.Domain.Editor
         /// </summary>
         public Document CloneDocument(IMessageBus messageBus)
         {
-            var protoDocument = ProtoModelBuilder.CreateProtobufDocument(CurrentDocument);
-            return DomainModelBuilder.CreateDocument(messageBus, protoDocument, CurrentDocument.Filename);
+            var protoDocument = ProtoDocumentBuilder.CreateProtobufDocument(CurrentDocument);
+            return DomainDocumentBuilder.CreateDocument(messageBus, protoDocument, CurrentDocument.Filename);
         }
     }
 }

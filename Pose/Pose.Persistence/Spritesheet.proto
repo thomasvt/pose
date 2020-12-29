@@ -1,0 +1,17 @@
+﻿syntax = "proto3";
+package Pose;
+
+option csharp_namespace = "Pose.Persistence";
+
+message Spritesheet {
+	uint32 width = 1;
+	uint32 height = 2;
+	repeated Sprite sprites = 3;
+}
+
+message Sprite {
+	uint32 x = 1;
+	uint32 y = 2;
+	uint32 width = 3;
+	uint32 height = 4;
+}

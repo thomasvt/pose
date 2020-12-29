@@ -28,7 +28,7 @@ namespace Pose.SceneEditor
 
         private void OnAssetFolderChanged(AssetFolderChanged msg)
         {
-            _spriteBitmapStore.ReloadAll();
+            _spriteBitmapStore.ChangeAssetFolder(msg.Path);
         }
 
         private void OnEditorModeChanged(EditorModeChanged msg)

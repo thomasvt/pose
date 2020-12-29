@@ -16,7 +16,7 @@ namespace Pose.SpritePacker.Tests
 
             foreach (var sprite in result.Sprites)
             {
-                Console.WriteLine($"{sprite.Sprite.Name} = {sprite.X}x{sprite.Y} {sprite.Sprite.Width}x{sprite.Sprite.Height}");
+                Console.WriteLine($"{sprite.Sprite.Reference} = {sprite.X}x{sprite.Y} {sprite.Sprite.Width}x{sprite.Sprite.Height}");
             }
         }
     }

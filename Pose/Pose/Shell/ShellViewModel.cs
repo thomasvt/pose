@@ -19,7 +19,6 @@ using Pose.Panels.Properties;
 using Pose.Persistence.Editor;
 using Pose.Popups.ExportSpritesheets;
 using Pose.SceneEditor;
-
 namespace Pose.Shell
 {
     public class ShellViewModel
@@ -103,8 +102,13 @@ namespace Pose.Shell
             {
                 return DoSaveAsWorkflow();
             }
-            _editor.SaveDocument();
+            Save();
             return true;
+        }
+
+        private void Save()
+        {
+            _editor.SaveDocument();
         }
 
         public bool DoSaveAsWorkflow()
@@ -124,7 +128,7 @@ namespace Pose.Shell
             if (dialog.ShowDialog(System.Windows.Application.Current.MainWindow) == true)
             {
                 _editor.SetDocumentFilename(dialog.FileName);
-                _editor.SaveDocument();
+                Save();
                 return true;
             }
 

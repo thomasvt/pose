@@ -12,7 +12,7 @@ namespace Pose.Persistence.Editor
             using var stream = File.Open(filePath, FileMode.Open, FileAccess.Read, FileShare.Read);
             using var codedStream = new CodedInputStream(stream);
             var doc = Document.Parser.ParseFrom(codedStream);
-            return DomainModelBuilder.CreateDocument(messageBus, doc, filePath);
+            return DomainDocumentBuilder.CreateDocument(messageBus, doc, filePath);
         }
     }
 }

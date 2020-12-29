@@ -10,7 +10,7 @@ using Pose.Framework.Messaging;
 
 namespace Pose.Persistence
 {
-    public static class DomainModelBuilder
+    public static class DomainDocumentBuilder
     {
         public static Domain.Documents.Document CreateDocument(IMessageBus messageBus, Document doc, string filePath)
         {
