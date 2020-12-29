@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-namespace Pose.Runtime.MonoGameDotNetCore.QuadRendering
+namespace Pose.Runtime.MonoGameDotNetCore.Rendering
 {
     public class Spritesheet
     {

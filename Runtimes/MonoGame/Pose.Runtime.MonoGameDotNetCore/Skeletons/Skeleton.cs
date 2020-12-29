@@ -4,7 +4,7 @@ using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Pose.Runtime.MonoGameDotNetCore.Animations;
-using Pose.Runtime.MonoGameDotNetCore.QuadRendering;
+using Pose.Runtime.MonoGameDotNetCore.Rendering;
 
 namespace Pose.Runtime.MonoGameDotNetCore.Skeletons
 {
@@ -13,7 +13,7 @@ namespace Pose.Runtime.MonoGameDotNetCore.Skeletons
         private readonly RTNode[] _nodes;
         private readonly int[] _drawSequenceIndices;
         private readonly Dictionary<string, RTAnimation> _animations;
-        private readonly GpuMesh _gpuMesh;
+        private readonly CpuMesh _cpuMesh;
 
         /// <param name="nodes">all nodes of the hierarchy, in hierarchic order, for updating transforms</param>
         /// <param name="drawSequenceIndices">the indices of the spritenodes in nodes, in draw order</param>
@@ -23,13 +23,17 @@ namespace Pose.Runtime.MonoGameDotNetCore.Skeletons
             _drawSequenceIndices = drawSequenceIndices;
             _animations = animations ?? throw new ArgumentNullException(nameof(animations));
             var spriteNodeCount = nodes.Count(n => n.SpriteQuad != null);
-            _gpuMesh = new GpuMesh(spriteNodeCount * 4, spriteNodeCount * 6, texture, true);
-            _gpuMesh.PrepareQuadIndices(spriteNodeCount);
+            _cpuMesh = new CpuMesh(spriteNodeCount * 4, spriteNodeCount * 6, texture)
+            {
+                VertexCount = spriteNodeCount * 4, 
+                IndexCount = spriteNodeCount * 6
+            };
+            _cpuMesh.PrepareQuadIndices(spriteNodeCount);
             PrepareVertices();
         }
 
         /// <summary>
-        /// Initialize the vertex data that never changes in the <see cref="GpuMesh"/>.
+        /// Initialize the vertex data that never changes in the <see cref="CpuMesh"/>.
         /// </summary>
         private void PrepareVertices()
         {
@@ -38,19 +42,19 @@ namespace Pose.Runtime.MonoGameDotNetCore.Skeletons
             {
                 ref var spriteNode = ref _nodes[_drawSequenceIndices[i]];
                 
-                ref var vertex = ref _gpuMesh.Vertices[vertexIdx++];
+                ref var vertex = ref _cpuMesh.Vertices[vertexIdx++];
                 vertex.Color = Color.White;
                 vertex.TextureCoordinate = spriteNode.SpriteQuad.TextureCoords[0];
 
-                vertex = ref _gpuMesh.Vertices[vertexIdx++];
+                vertex = ref _cpuMesh.Vertices[vertexIdx++];
                 vertex.Color = Color.White;
                 vertex.TextureCoordinate = spriteNode.SpriteQuad.TextureCoords[1];
 
-                vertex = ref _gpuMesh.Vertices[vertexIdx++];
+                vertex = ref _cpuMesh.Vertices[vertexIdx++];
                 vertex.Color = Color.White;
                 vertex.TextureCoordinate = spriteNode.SpriteQuad.TextureCoords[2];
 
-                vertex = ref _gpuMesh.Vertices[vertexIdx++];
+                vertex = ref _cpuMesh.Vertices[vertexIdx++];
                 vertex.Color = Color.White;
                 vertex.TextureCoordinate = spriteNode.SpriteQuad.TextureCoords[3];
             }
@@ -85,10 +89,9 @@ namespace Pose.Runtime.MonoGameDotNetCore.Skeletons
             ApplyTransforms(); // apply the changed transforms to all vertices
         }
 
-        internal void Draw(GpuMeshRenderer quadRenderer)
+        internal void Draw(Renderer quadRenderer)
         {
-            var worldTransform = Matrix.Identity;
-            quadRenderer.Render(_gpuMesh, ref worldTransform);
+            quadRenderer.Render(_cpuMesh);
         }
 
         private void ApplyTransforms()
@@ -111,13 +114,11 @@ namespace Pose.Runtime.MonoGameDotNetCore.Skeletons
 
                 for (var j = 0; j < 4; j++)
                 {
-                    ref var vertex = ref _gpuMesh.Vertices[vertexIdx++];
+                    ref var vertex = ref _cpuMesh.Vertices[vertexIdx++];
                     var result = Vector2.Transform(spriteNode.SpriteQuad.Vertices[j], spriteNode.GlobalTransform);
                     vertex.Position = new Vector3(result, 0);
                 }
             }
-
-            _gpuMesh.MarkVerticesChanged(_drawSequenceIndices.Length << 2);
         }
 
         private static Matrix GetTransform(ref RTNode node)

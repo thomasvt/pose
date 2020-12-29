@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using Microsoft.Xna.Framework;
-using Pose.Runtime.MonoGameDotNetCore.QuadRendering;
+using Pose.Runtime.MonoGameDotNetCore.Rendering;
 using Pose.Runtime.MonoGameDotNetCore.Skeletons;
 
 namespace Pose.Runtime.MonoGameDotNetCore
@@ -12,10 +13,10 @@ namespace Pose.Runtime.MonoGameDotNetCore
     public class PoseRuntime
     : IDisposable
     {
-        private readonly GpuMeshRenderer _gpuMeshRenderer;
+        private readonly Renderer _gpuMeshRenderer;
         private readonly List<Skeleton> _skeletons;
 
-        public PoseRuntime(GpuMeshRenderer gpuMeshRenderer)
+        public PoseRuntime(Renderer gpuMeshRenderer)
         {
             _gpuMeshRenderer = gpuMeshRenderer;
             _skeletons = new List<Skeleton>();
@@ -68,10 +69,12 @@ namespace Pose.Runtime.MonoGameDotNetCore
 
             var sw = Stopwatch.StartNew();
             
-            foreach (var skeleton in _skeletons.OrderByDescending(s => s.Depth))
+            _gpuMeshRenderer.Begin();
+            foreach (var skeleton in _skeletons.OrderByDescending(s => s.Depth)) // todo optimize for infrequent Depth changing, IsDepthDirty -> move item
             {
                 skeleton.Draw(_gpuMeshRenderer);
             }
+            _gpuMeshRenderer.End();
 
             DrawTime = sw.Elapsed.TotalMilliseconds;
         }

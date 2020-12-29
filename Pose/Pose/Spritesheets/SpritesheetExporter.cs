@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Newtonsoft.Json;
 using Pose.Persistence.Editor;
 using Pose.SpritePacker;
 using SkiaSharp;

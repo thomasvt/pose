@@ -1,5 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
-using Pose.Runtime.MonoGameDotNetCore.QuadRendering;
+using Pose.Runtime.MonoGameDotNetCore.Rendering;
 using Pose.Runtime.MonoGameDotNetCore.Skeletons;
 
 namespace Pose.Runtime.MonoGameDotNetCore.Animations

@@ -1,5 +1,5 @@
 ﻿
-using Pose.Runtime.MonoGameDotNetCore.QuadRendering;
+using Pose.Runtime.MonoGameDotNetCore.Rendering;
 
 namespace Pose.Runtime.MonoGameDotNetCore
 {

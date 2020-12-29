@@ -1,6 +1,6 @@
 ﻿using Microsoft.Xna.Framework;
 
-namespace Pose.Runtime.MonoGameDotNetCore.QuadRendering
+namespace Pose.Runtime.MonoGameDotNetCore.Rendering
 {
     /// <summary>
     /// Represents 4 corner vertices and UV coords of a quad with a width, height symmetrically around the 0,0 point in the center.
