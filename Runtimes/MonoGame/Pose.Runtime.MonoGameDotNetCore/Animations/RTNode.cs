@@ -29,10 +29,7 @@ namespace Pose.Runtime.MonoGameDotNetCore.Animations
         /// The transform of this node at its pivotpoint.
         /// </summary>
         internal Matrix GlobalTransform;
-        /// <summary>
-        /// The positions of the 4 corners of the quad in the world (Z is used for draworder).
-        /// </summary>
-        internal Vector3 A, B, C, D;
+        internal Vector2 A, B, C, D;
 
         public RTNode(int parentNodeIdx, Transformation designTransformation, Transformation animateTransformation, int drawOrderIndex, SpriteQuad spriteQuad = null)
         {
@@ -41,7 +38,7 @@ namespace Pose.Runtime.MonoGameDotNetCore.Animations
             DesignTransformation = designTransformation;
             AnimateTransformation = animateTransformation;
             GlobalTransform = Matrix.Identity;
-            A = B = C = D = new Vector3();
+            A = B = C = D = new Vector2();
             DrawOrderIndex = drawOrderIndex;
         }
     }

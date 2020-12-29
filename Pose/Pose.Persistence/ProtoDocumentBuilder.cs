@@ -61,7 +61,7 @@ namespace Pose.Persistence
                 {
                     case SpriteNode spriteNode:
                         node.Type = Node.Types.NodeType.Spritenode;
-                        node.SpriteFile = spriteNode.SpriteRef.RelativePath;
+                        node.SpriteKey = spriteNode.SpriteRef.RelativePath;
                         break;
                     case BoneNode boneNode:
                         node.Type = Node.Types.NodeType.Bonenode;

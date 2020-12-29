@@ -2,12 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Pose.Domain.Curves;
 using Pose.Persistence;
 using Pose.Runtime.MonoGameDotNetCore.Animations;
-using Pose.Runtime.MonoGameDotNetCore.QuadRendering;
 using BezierCurve = Pose.Domain.Curves.BezierCurve;
-using Vector2 = Pose.Domain.Vector2;
+using Spritesheet = Pose.Runtime.MonoGameDotNetCore.QuadRendering.Spritesheet;
 
 namespace Pose.Runtime.MonoGameDotNetCore.Skeletons
 {
@@ -17,25 +17,26 @@ namespace Pose.Runtime.MonoGameDotNetCore.Skeletons
     public class SkeletonDefinition
     {
         private readonly Document _document;
-        private readonly Dictionary<string, SpriteQuad> _spritesPerFilePath;
+        private readonly Spritesheet _spritesheet;
 
-        internal SkeletonDefinition(Document document, Dictionary<string, SpriteQuad> spritesPerFilePath)
+        public SkeletonDefinition(Document document, Spritesheet spritesheet, Texture2D texture)
         {
+            Texture = texture;
             _document = document;
-            _spritesPerFilePath = spritesPerFilePath;
+            _spritesheet = spritesheet;
         }
         
-        internal Skeleton CreateInstance(Vector3 position, float angle)
+        internal Skeleton CreateInstance(Vector2 position, float depth, float angle)
         {
-            // todo Z value of the position should be used for depth sorting multiple skeletons
-
+            // TODO we could optimize by mapping a Document into a form more prepped for creating instances. But making instances isn't hot code.
             var nodes = BuildRuntimeNodes(out var nodeIndices);
-            var drawSequenceIndices = _document.DrawOrder.NodeIds.Select(id => nodeIndices[id]).ToArray();
+            var drawSequenceIndices = _document.DrawOrder.NodeIds.Select(id => nodeIndices[id]).Reverse().ToArray();
             var animations = BuildRuntimeAnimations(nodeIndices);
 
-            return new Skeleton(position, nodes, drawSequenceIndices, animations)
+            return new Skeleton(nodes, drawSequenceIndices, animations, Texture)
             {
                 Position = position,
+                Depth = depth,
                 Angle = angle
             };
         }
@@ -110,22 +111,18 @@ namespace Pose.Runtime.MonoGameDotNetCore.Skeletons
             if (curve == null)
                 return null;
 
-            return new BezierCurve(new Vector2(curve.P0.X, curve.P0.Y), new Vector2(curve.P1.X, curve.P1.Y), new Vector2(curve.P2.X, curve.P2.Y), new Vector2(curve.P3.X, curve.P3.Y));
+            return new BezierCurve(new Domain.Vector2(curve.P0.X, curve.P0.Y), new Domain.Vector2(curve.P1.X, curve.P1.Y), new Domain.Vector2(curve.P2.X, curve.P2.Y), new Domain.Vector2(curve.P3.X, curve.P3.Y));
         }
 
-        private CurveType MapInterpolationType(Key.Types.InterpolationTypeEnum type)
+        private static CurveType MapInterpolationType(Key.Types.InterpolationTypeEnum type)
         {
-            switch (type)
+            return type switch
             {
-                case Key.Types.InterpolationTypeEnum.Linear:
-                    return CurveType.Linear;
-                case Key.Types.InterpolationTypeEnum.Hold:
-                    return CurveType.Hold;
-                case Key.Types.InterpolationTypeEnum.Bezier:
-                    return CurveType.Bezier;
-                default:
-                    throw new ArgumentOutOfRangeException(nameof(type), type, null);
-            }
+                Key.Types.InterpolationTypeEnum.Linear => CurveType.Linear,
+                Key.Types.InterpolationTypeEnum.Hold => CurveType.Hold,
+                Key.Types.InterpolationTypeEnum.Bezier => CurveType.Bezier,
+                _ => throw new ArgumentOutOfRangeException(nameof(type), type, null)
+            };
         }
 
         private RTNode[] BuildRuntimeNodes(out Dictionary<ulong, int> nodeIndices)
@@ -156,23 +153,13 @@ namespace Pose.Runtime.MonoGameDotNetCore.Skeletons
                     new Transformation(node.Position.X, node.Position.Y, node.Angle),
                     new Transformation(0,0,0),
                     drawOrderIndex,
-                    node.Type == Node.Types.NodeType.Spritenode ? _spritesPerFilePath[node.SpriteFile] : null));
+                    node.Type == Node.Types.NodeType.Spritenode ? _spritesheet.Sprites[node.SpriteKey] : null));
                 nodeIndices.Add(node.Id, i + 1);
             }
 
             return nodes.ToArray();
         }
 
-        /// <summary>
-        /// Registers all sprites needed for this skeleton to the QuadRenderer so it can initialize resources.
-        /// </summary>
-        public void RegisterTextures(QuadRenderer quadRenderer)
-        {
-            foreach (var nodeId in _document.DrawOrder.NodeIds.Reverse())
-            {
-                var node = _document.Nodes.Single(n => n.Id == nodeId);
-                quadRenderer.RegisterTexture(_spritesPerFilePath[node.SpriteFile].Texture);
-            }
-        }
+        public Texture2D Texture { get; }
     }
 }

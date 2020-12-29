@@ -38,7 +38,7 @@ namespace Pose.Runtime.MonoGameDotNetCore.QuadRendering
             };
         }
 
-        public void Render(GpuMesh gpuMesh, Matrix worldTransform)
+        public void Render(GpuMesh gpuMesh, ref Matrix worldTransform)
         {
             if (gpuMesh == null)
                 throw new ArgumentNullException(nameof(gpuMesh));

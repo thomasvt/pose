@@ -29,34 +29,34 @@ namespace Pose.Persistence {
             "ZXIYAyABKAkSIgoJZHJhd09yZGVyGAQgASgLMg8uUG9zZS5EcmF3T3JkZXIS",
             "GQoFbm9kZXMYBSADKAsyCi5Qb3NlLk5vZGUSIwoKYW5pbWF0aW9ucxgGIAMo",
             "CzIPLlBvc2UuQW5pbWF0aW9uIhwKCURyYXdPcmRlchIPCgdub2RlSWRzGAEg",
-            "AygEItUBCgROb2RlEgoKAmlkGAEgASgEEgwKBG5hbWUYAiABKAkSEAoIcGFy",
+            "AygEItQBCgROb2RlEgoKAmlkGAEgASgEEgwKBG5hbWUYAiABKAkSEAoIcGFy",
             "ZW50SWQYAyABKAQSHQoIcG9zaXRpb24YBCABKAsyCy5Qb3NlLlBvaW50Eg0K",
             "BWFuZ2xlGAUgASgCEiEKBHR5cGUYBiABKA4yEy5Qb3NlLk5vZGUuTm9kZVR5",
-            "cGUSEgoKc3ByaXRlRmlsZRgHIAEoCRISCgpib25lTGVuZ3RoGAggASgCIigK",
-            "CE5vZGVUeXBlEg4KClNQUklURU5PREUQABIMCghCT05FTk9ERRABIh0KBVBv",
-            "aW50EgkKAXgYASABKAISCQoBeRgCIAEoAiKhAQoJQW5pbWF0aW9uEgoKAmlk",
-            "GAEgASgEEgwKBG5hbWUYAiABKAkSEgoKQmVnaW5GcmFtZRgDIAEoERIQCghF",
-            "bmRGcmFtZRgEIAEoERIXCg9GcmFtZXNQZXJTZWNvbmQYBSABKA0SDgoGSXNM",
-            "b29wGAYgASgIEisKDm5vZGVBbmltYXRpb25zGAcgAygLMhMuUG9zZS5Ob2Rl",
-            "QW5pbWF0aW9uIlQKDU5vZGVBbmltYXRpb24SDgoGbm9kZUlkGAEgASgEEjMK",
-            "EnByb3BlcnR5QW5pbWF0aW9ucxgCIAMoCzIXLlBvc2UuUHJvcGVydHlBbmlt",
-            "YXRpb24iWgoRUHJvcGVydHlBbmltYXRpb24SCgoCaWQYASABKAQSEAoIcHJv",
-            "cGVydHkYAiABKA0SDgoGdmVydGV4GAMgASgNEhcKBGtleXMYBCADKAsyCS5Q",
-            "b3NlLktleSLcAQoDS2V5EgoKAmlkGAEgASgEEg0KBWZyYW1lGAIgASgREg0K",
-            "BXZhbHVlGAMgASgCEjoKEUludGVycG9sYXRpb25UeXBlGAQgASgOMh8uUG9z",
-            "ZS5LZXkuSW50ZXJwb2xhdGlvblR5cGVFbnVtEiIKBUN1cnZlGAUgASgLMhEu",
-            "UG9zZS5CZXppZXJDdXJ2ZUgAIjkKFUludGVycG9sYXRpb25UeXBlRW51bRIK",
-            "CgZMaW5lYXIQABIICgRIb2xkEAESCgoGQmV6aWVyEAJCEAoOb3B0aW9uYWxf",
-            "Y3VydmUicQoLQmV6aWVyQ3VydmUSFwoCcDAYASABKAsyCy5Qb3NlLlBvaW50",
-            "EhcKAnAxGAIgASgLMgsuUG9zZS5Qb2ludBIXCgJwMhgDIAEoCzILLlBvc2Uu",
-            "UG9pbnQSFwoCcDMYBCABKAsyCy5Qb3NlLlBvaW50QhOqAhBQb3NlLlBlcnNp",
-            "c3RlbmNlYgZwcm90bzM="));
+            "cGUSEQoJc3ByaXRlS2V5GAcgASgJEhIKCmJvbmVMZW5ndGgYCCABKAIiKAoI",
+            "Tm9kZVR5cGUSDgoKU1BSSVRFTk9ERRAAEgwKCEJPTkVOT0RFEAEiHQoFUG9p",
+            "bnQSCQoBeBgBIAEoAhIJCgF5GAIgASgCIqEBCglBbmltYXRpb24SCgoCaWQY",
+            "ASABKAQSDAoEbmFtZRgCIAEoCRISCgpCZWdpbkZyYW1lGAMgASgREhAKCEVu",
+            "ZEZyYW1lGAQgASgREhcKD0ZyYW1lc1BlclNlY29uZBgFIAEoDRIOCgZJc0xv",
+            "b3AYBiABKAgSKwoObm9kZUFuaW1hdGlvbnMYByADKAsyEy5Qb3NlLk5vZGVB",
+            "bmltYXRpb24iVAoNTm9kZUFuaW1hdGlvbhIOCgZub2RlSWQYASABKAQSMwoS",
+            "cHJvcGVydHlBbmltYXRpb25zGAIgAygLMhcuUG9zZS5Qcm9wZXJ0eUFuaW1h",
+            "dGlvbiJaChFQcm9wZXJ0eUFuaW1hdGlvbhIKCgJpZBgBIAEoBBIQCghwcm9w",
+            "ZXJ0eRgCIAEoDRIOCgZ2ZXJ0ZXgYAyABKA0SFwoEa2V5cxgEIAMoCzIJLlBv",
+            "c2UuS2V5ItwBCgNLZXkSCgoCaWQYASABKAQSDQoFZnJhbWUYAiABKBESDQoF",
+            "dmFsdWUYAyABKAISOgoRSW50ZXJwb2xhdGlvblR5cGUYBCABKA4yHy5Qb3Nl",
+            "LktleS5JbnRlcnBvbGF0aW9uVHlwZUVudW0SIgoFQ3VydmUYBSABKAsyES5Q",
+            "b3NlLkJlemllckN1cnZlSAAiOQoVSW50ZXJwb2xhdGlvblR5cGVFbnVtEgoK",
+            "BkxpbmVhchAAEggKBEhvbGQQARIKCgZCZXppZXIQAkIQCg5vcHRpb25hbF9j",
+            "dXJ2ZSJxCgtCZXppZXJDdXJ2ZRIXCgJwMBgBIAEoCzILLlBvc2UuUG9pbnQS",
+            "FwoCcDEYAiABKAsyCy5Qb3NlLlBvaW50EhcKAnAyGAMgASgLMgsuUG9zZS5Q",
+            "b2ludBIXCgJwMxgEIAEoCzILLlBvc2UuUG9pbnRCE6oCEFBvc2UuUGVyc2lz",
+            "dGVuY2ViBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
             new pbr::GeneratedClrTypeInfo(typeof(global::Pose.Persistence.Document), global::Pose.Persistence.Document.Parser, new[]{ "LastFilename", "IdSequence", "AssetFolder", "DrawOrder", "Nodes", "Animations" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Pose.Persistence.DrawOrder), global::Pose.Persistence.DrawOrder.Parser, new[]{ "NodeIds" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Pose.Persistence.Node), global::Pose.Persistence.Node.Parser, new[]{ "Id", "Name", "ParentId", "Position", "Angle", "Type", "SpriteFile", "BoneLength" }, null, new[]{ typeof(global::Pose.Persistence.Node.Types.NodeType) }, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Pose.Persistence.Node), global::Pose.Persistence.Node.Parser, new[]{ "Id", "Name", "ParentId", "Position", "Angle", "Type", "SpriteKey", "BoneLength" }, null, new[]{ typeof(global::Pose.Persistence.Node.Types.NodeType) }, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Pose.Persistence.Point), global::Pose.Persistence.Point.Parser, new[]{ "X", "Y" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Pose.Persistence.Animation), global::Pose.Persistence.Animation.Parser, new[]{ "Id", "Name", "BeginFrame", "EndFrame", "FramesPerSecond", "IsLoop", "NodeAnimations" }, null, null, null, null),
             new pbr::GeneratedClrTypeInfo(typeof(global::Pose.Persistence.NodeAnimation), global::Pose.Persistence.NodeAnimation.Parser, new[]{ "NodeId", "PropertyAnimations" }, null, null, null, null),
@@ -606,7 +606,7 @@ namespace Pose.Persistence {
       position_ = other.position_ != null ? other.position_.Clone() : null;
       angle_ = other.angle_;
       type_ = other.type_;
-      spriteFile_ = other.spriteFile_;
+      spriteKey_ = other.spriteKey_;
       boneLength_ = other.boneLength_;
       _unknownFields = pb::UnknownFieldSet.Clone(other._unknownFields);
     }
@@ -682,17 +682,17 @@ namespace Pose.Persistence {
       }
     }
 
-    /// <summary>Field number for the "spriteFile" field.</summary>
-    public const int SpriteFileFieldNumber = 7;
-    private string spriteFile_ = "";
+    /// <summary>Field number for the "spriteKey" field.</summary>
+    public const int SpriteKeyFieldNumber = 7;
+    private string spriteKey_ = "";
     /// <summary>
     /// the sprite's filepath relative to document.assetFolder when node.type == SPRITENODE
     /// </summary>
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public string SpriteFile {
-      get { return spriteFile_; }
+    public string SpriteKey {
+      get { return spriteKey_; }
       set {
-        spriteFile_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+        spriteKey_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
       }
     }
 
@@ -726,7 +726,7 @@ namespace Pose.Persistence {
       if (!object.Equals(Position, other.Position)) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(Angle, other.Angle)) return false;
       if (Type != other.Type) return false;
-      if (SpriteFile != other.SpriteFile) return false;
+      if (SpriteKey != other.SpriteKey) return false;
       if (!pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.Equals(BoneLength, other.BoneLength)) return false;
       return Equals(_unknownFields, other._unknownFields);
     }
@@ -740,7 +740,7 @@ namespace Pose.Persistence {
       if (position_ != null) hash ^= Position.GetHashCode();
       if (Angle != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(Angle);
       if (Type != global::Pose.Persistence.Node.Types.NodeType.Spritenode) hash ^= Type.GetHashCode();
-      if (SpriteFile.Length != 0) hash ^= SpriteFile.GetHashCode();
+      if (SpriteKey.Length != 0) hash ^= SpriteKey.GetHashCode();
       if (BoneLength != 0F) hash ^= pbc::ProtobufEqualityComparers.BitwiseSingleEqualityComparer.GetHashCode(BoneLength);
       if (_unknownFields != null) {
         hash ^= _unknownFields.GetHashCode();
@@ -782,9 +782,9 @@ namespace Pose.Persistence {
         output.WriteRawTag(48);
         output.WriteEnum((int) Type);
       }
-      if (SpriteFile.Length != 0) {
+      if (SpriteKey.Length != 0) {
         output.WriteRawTag(58);
-        output.WriteString(SpriteFile);
+        output.WriteString(SpriteKey);
       }
       if (BoneLength != 0F) {
         output.WriteRawTag(69);
@@ -823,9 +823,9 @@ namespace Pose.Persistence {
         output.WriteRawTag(48);
         output.WriteEnum((int) Type);
       }
-      if (SpriteFile.Length != 0) {
+      if (SpriteKey.Length != 0) {
         output.WriteRawTag(58);
-        output.WriteString(SpriteFile);
+        output.WriteString(SpriteKey);
       }
       if (BoneLength != 0F) {
         output.WriteRawTag(69);
@@ -858,8 +858,8 @@ namespace Pose.Persistence {
       if (Type != global::Pose.Persistence.Node.Types.NodeType.Spritenode) {
         size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) Type);
       }
-      if (SpriteFile.Length != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeStringSize(SpriteFile);
+      if (SpriteKey.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(SpriteKey);
       }
       if (BoneLength != 0F) {
         size += 1 + 4;
@@ -896,8 +896,8 @@ namespace Pose.Persistence {
       if (other.Type != global::Pose.Persistence.Node.Types.NodeType.Spritenode) {
         Type = other.Type;
       }
-      if (other.SpriteFile.Length != 0) {
-        SpriteFile = other.SpriteFile;
+      if (other.SpriteKey.Length != 0) {
+        SpriteKey = other.SpriteKey;
       }
       if (other.BoneLength != 0F) {
         BoneLength = other.BoneLength;
@@ -944,7 +944,7 @@ namespace Pose.Persistence {
             break;
           }
           case 58: {
-            SpriteFile = input.ReadString();
+            SpriteKey = input.ReadString();
             break;
           }
           case 69: {
@@ -993,7 +993,7 @@ namespace Pose.Persistence {
             break;
           }
           case 58: {
-            SpriteFile = input.ReadString();
+            SpriteKey = input.ReadString();
             break;
           }
           case 69: {

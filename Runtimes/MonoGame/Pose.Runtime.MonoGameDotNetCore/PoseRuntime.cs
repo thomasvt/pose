@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Pose.Runtime.MonoGameDotNetCore.QuadRendering;
 using Pose.Runtime.MonoGameDotNetCore.Skeletons;
 
@@ -13,12 +12,12 @@ namespace Pose.Runtime.MonoGameDotNetCore
     public class PoseRuntime
     : IDisposable
     {
-        private readonly QuadRenderer _quadRenderer;
+        private readonly GpuMeshRenderer _gpuMeshRenderer;
         private readonly List<Skeleton> _skeletons;
 
-        public PoseRuntime(QuadRenderer quadRenderer)
+        public PoseRuntime(GpuMeshRenderer gpuMeshRenderer)
         {
-            _quadRenderer = quadRenderer;
+            _gpuMeshRenderer = gpuMeshRenderer;
             _skeletons = new List<Skeleton>();
 
             ViewTransform = Matrix.Identity;
@@ -27,10 +26,9 @@ namespace Pose.Runtime.MonoGameDotNetCore
         /// <summary>
         /// Adds the skeleton to the runtime, the runtime will dispose the skeleton.
         /// </summary>
-        public Skeleton AddSkeleton(SkeletonDefinition skeletonDefinition, Vector3 position, float angle)
+        public Skeleton AddSkeleton(SkeletonDefinition skeletonDefinition, Vector2 position, float depth, float angle)
         {
-            skeletonDefinition.RegisterTextures(_quadRenderer);
-            var skeleton = skeletonDefinition.CreateInstance(position, angle);
+            var skeleton = skeletonDefinition.CreateInstance(position, depth, angle);
             _skeletons.Add(skeleton);
             return skeleton;
         }
@@ -65,16 +63,14 @@ namespace Pose.Runtime.MonoGameDotNetCore
 
         private void RenderSprites()
         {
-            _quadRenderer.ProjectionTransform = ProjectionTransform;
-            _quadRenderer.ViewTransform = ViewTransform;
+            _gpuMeshRenderer.ProjectionTransform = ProjectionTransform;
+            _gpuMeshRenderer.ViewTransform = ViewTransform;
 
             var sw = Stopwatch.StartNew();
             
-            foreach (var skeleton in _skeletons.OrderBy(s => s.Position.Z))
+            foreach (var skeleton in _skeletons.OrderByDescending(s => s.Depth))
             {
-                _quadRenderer.BeginRender();
-                skeleton.Draw(_quadRenderer);
-                _quadRenderer.EndRender();
+                skeleton.Draw(_gpuMeshRenderer);
             }
 
             DrawTime = sw.Elapsed.TotalMilliseconds;
@@ -82,7 +78,7 @@ namespace Pose.Runtime.MonoGameDotNetCore
 
         public void Dispose()
         {
-            _quadRenderer?.Dispose();
+            //_quadRenderer?.Dispose();
         }
 
         /// <summary>
@@ -95,7 +91,7 @@ namespace Pose.Runtime.MonoGameDotNetCore
         /// <param name="farPlane">Z is used for sprite depth order. High Z is drawn behind low Z. Z must be between nearplane and farplane. Using a large plane range causes inaccuracies in Z ordering, so keep it close to what you need.</param>
         public void SetCameraPosition(Vector2 position, float zoom = 1f, float nearPlane = 0f, float farPlane = 100f)
         {
-            var viewport = _quadRenderer.GraphicsDevice.Viewport;
+            var viewport = _gpuMeshRenderer.GraphicsDevice.Viewport;
             var halfWidth = viewport.Width * 0.5f / zoom;
             var halfHeight = viewport.Height * 0.5f / zoom;
             ProjectionTransform = Matrix.CreateOrthographicOffCenter(-halfWidth, +halfWidth, -halfHeight, +halfHeight, nearPlane, farPlane);
@@ -113,7 +109,7 @@ namespace Pose.Runtime.MonoGameDotNetCore
         public Matrix ProjectionTransform { get; set; }
 
         /// <summary>
-        /// Multi-core processing or not. Multi-core processing comes at an overhead cost so only enable it when you have enough animations to justify the overhead. Test the performance difference.
+        /// Distributed animation calculations of all skeletons among all processors. Multi-core processing comes at an overhead cost so only enable it when you have many skeletons. Test the performance difference.
         /// </summary>
         public bool UseMultiCore { get; set; }
 

@@ -24,16 +24,16 @@ namespace Pose.Persistence {
     static SpritesheetReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "ChFzcHJpdGVzaGVldC5wcm90bxIEUG9zZSJcCgtTcHJpdGVzaGVldBIPCgd2",
-            "ZXJzaW9uGAEgASgNEg0KBXdpZHRoGAIgASgNEg4KBmhlaWdodBgDIAEoDRId",
-            "CgdzcHJpdGVzGAQgAygLMgwuUG9zZS5TcHJpdGUiPQoGU3ByaXRlEgkKAXgY",
-            "ASABKA0SCQoBeRgCIAEoDRINCgV3aWR0aBgDIAEoDRIOCgZoZWlnaHQYBCAB",
-            "KA1CE6oCEFBvc2UuUGVyc2lzdGVuY2ViBnByb3RvMw=="));
+            "ChFzcHJpdGVzaGVldC5wcm90bxIEUG9zZSJLCgtTcHJpdGVzaGVldBINCgV3",
+            "aWR0aBgBIAEoDRIOCgZoZWlnaHQYAiABKA0SHQoHc3ByaXRlcxgDIAMoCzIM",
+            "LlBvc2UuU3ByaXRlIkoKBlNwcml0ZRILCgNrZXkYASABKAkSCQoBeBgCIAEo",
+            "DRIJCgF5GAMgASgNEg0KBXdpZHRoGAQgASgNEg4KBmhlaWdodBgFIAEoDUIT",
+            "qgIQUG9zZS5QZXJzaXN0ZW5jZWIGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
           new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::Pose.Persistence.Spritesheet), global::Pose.Persistence.Spritesheet.Parser, new[]{ "Version", "Width", "Height", "Sprites" }, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Pose.Persistence.Sprite), global::Pose.Persistence.Sprite.Parser, new[]{ "X", "Y", "Width", "Height" }, null, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Pose.Persistence.Spritesheet), global::Pose.Persistence.Spritesheet.Parser, new[]{ "Width", "Height", "Sprites" }, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Pose.Persistence.Sprite), global::Pose.Persistence.Sprite.Parser, new[]{ "Key", "X", "Y", "Width", "Height" }, null, null, null, null)
           }));
     }
     #endregion
@@ -69,7 +69,6 @@ namespace Pose.Persistence {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public Spritesheet(Spritesheet other) : this() {
-      version_ = other.version_;
       width_ = other.width_;
       height_ = other.height_;
       sprites_ = other.sprites_.Clone();
@@ -81,19 +80,8 @@ namespace Pose.Persistence {
       return new Spritesheet(this);
     }
 
-    /// <summary>Field number for the "version" field.</summary>
-    public const int VersionFieldNumber = 1;
-    private uint version_;
-    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public uint Version {
-      get { return version_; }
-      set {
-        version_ = value;
-      }
-    }
-
     /// <summary>Field number for the "width" field.</summary>
-    public const int WidthFieldNumber = 2;
+    public const int WidthFieldNumber = 1;
     private uint width_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public uint Width {
@@ -104,7 +92,7 @@ namespace Pose.Persistence {
     }
 
     /// <summary>Field number for the "height" field.</summary>
-    public const int HeightFieldNumber = 3;
+    public const int HeightFieldNumber = 2;
     private uint height_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public uint Height {
@@ -115,9 +103,9 @@ namespace Pose.Persistence {
     }
 
     /// <summary>Field number for the "sprites" field.</summary>
-    public const int SpritesFieldNumber = 4;
+    public const int SpritesFieldNumber = 3;
     private static readonly pb::FieldCodec<global::Pose.Persistence.Sprite> _repeated_sprites_codec
-        = pb::FieldCodec.ForMessage(34, global::Pose.Persistence.Sprite.Parser);
+        = pb::FieldCodec.ForMessage(26, global::Pose.Persistence.Sprite.Parser);
     private readonly pbc::RepeatedField<global::Pose.Persistence.Sprite> sprites_ = new pbc::RepeatedField<global::Pose.Persistence.Sprite>();
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public pbc::RepeatedField<global::Pose.Persistence.Sprite> Sprites {
@@ -137,7 +125,6 @@ namespace Pose.Persistence {
       if (ReferenceEquals(other, this)) {
         return true;
       }
-      if (Version != other.Version) return false;
       if (Width != other.Width) return false;
       if (Height != other.Height) return false;
       if(!sprites_.Equals(other.sprites_)) return false;
@@ -147,7 +134,6 @@ namespace Pose.Persistence {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override int GetHashCode() {
       int hash = 1;
-      if (Version != 0) hash ^= Version.GetHashCode();
       if (Width != 0) hash ^= Width.GetHashCode();
       if (Height != 0) hash ^= Height.GetHashCode();
       hash ^= sprites_.GetHashCode();
@@ -167,16 +153,12 @@ namespace Pose.Persistence {
     #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       output.WriteRawMessage(this);
     #else
-      if (Version != 0) {
-        output.WriteRawTag(8);
-        output.WriteUInt32(Version);
-      }
       if (Width != 0) {
-        output.WriteRawTag(16);
+        output.WriteRawTag(8);
         output.WriteUInt32(Width);
       }
       if (Height != 0) {
-        output.WriteRawTag(24);
+        output.WriteRawTag(16);
         output.WriteUInt32(Height);
       }
       sprites_.WriteTo(output, _repeated_sprites_codec);
@@ -189,16 +171,12 @@ namespace Pose.Persistence {
     #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
-      if (Version != 0) {
-        output.WriteRawTag(8);
-        output.WriteUInt32(Version);
-      }
       if (Width != 0) {
-        output.WriteRawTag(16);
+        output.WriteRawTag(8);
         output.WriteUInt32(Width);
       }
       if (Height != 0) {
-        output.WriteRawTag(24);
+        output.WriteRawTag(16);
         output.WriteUInt32(Height);
       }
       sprites_.WriteTo(ref output, _repeated_sprites_codec);
@@ -211,9 +189,6 @@ namespace Pose.Persistence {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int CalculateSize() {
       int size = 0;
-      if (Version != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(Version);
-      }
       if (Width != 0) {
         size += 1 + pb::CodedOutputStream.ComputeUInt32Size(Width);
       }
@@ -231,9 +206,6 @@ namespace Pose.Persistence {
     public void MergeFrom(Spritesheet other) {
       if (other == null) {
         return;
-      }
-      if (other.Version != 0) {
-        Version = other.Version;
       }
       if (other.Width != 0) {
         Width = other.Width;
@@ -257,18 +229,14 @@ namespace Pose.Persistence {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
           case 8: {
-            Version = input.ReadUInt32();
-            break;
-          }
-          case 16: {
             Width = input.ReadUInt32();
             break;
           }
-          case 24: {
+          case 16: {
             Height = input.ReadUInt32();
             break;
           }
-          case 34: {
+          case 26: {
             sprites_.AddEntriesFrom(input, _repeated_sprites_codec);
             break;
           }
@@ -287,18 +255,14 @@ namespace Pose.Persistence {
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
           case 8: {
-            Version = input.ReadUInt32();
-            break;
-          }
-          case 16: {
             Width = input.ReadUInt32();
             break;
           }
-          case 24: {
+          case 16: {
             Height = input.ReadUInt32();
             break;
           }
-          case 34: {
+          case 26: {
             sprites_.AddEntriesFrom(ref input, _repeated_sprites_codec);
             break;
           }
@@ -338,6 +302,7 @@ namespace Pose.Persistence {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public Sprite(Sprite other) : this() {
+      key_ = other.key_;
       x_ = other.x_;
       y_ = other.y_;
       width_ = other.width_;
@@ -350,8 +315,19 @@ namespace Pose.Persistence {
       return new Sprite(this);
     }
 
+    /// <summary>Field number for the "key" field.</summary>
+    public const int KeyFieldNumber = 1;
+    private string key_ = "";
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public string Key {
+      get { return key_; }
+      set {
+        key_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+      }
+    }
+
     /// <summary>Field number for the "x" field.</summary>
-    public const int XFieldNumber = 1;
+    public const int XFieldNumber = 2;
     private uint x_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public uint X {
@@ -362,7 +338,7 @@ namespace Pose.Persistence {
     }
 
     /// <summary>Field number for the "y" field.</summary>
-    public const int YFieldNumber = 2;
+    public const int YFieldNumber = 3;
     private uint y_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public uint Y {
@@ -373,7 +349,7 @@ namespace Pose.Persistence {
     }
 
     /// <summary>Field number for the "width" field.</summary>
-    public const int WidthFieldNumber = 3;
+    public const int WidthFieldNumber = 4;
     private uint width_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public uint Width {
@@ -384,7 +360,7 @@ namespace Pose.Persistence {
     }
 
     /// <summary>Field number for the "height" field.</summary>
-    public const int HeightFieldNumber = 4;
+    public const int HeightFieldNumber = 5;
     private uint height_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public uint Height {
@@ -407,6 +383,7 @@ namespace Pose.Persistence {
       if (ReferenceEquals(other, this)) {
         return true;
       }
+      if (Key != other.Key) return false;
       if (X != other.X) return false;
       if (Y != other.Y) return false;
       if (Width != other.Width) return false;
@@ -417,6 +394,7 @@ namespace Pose.Persistence {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override int GetHashCode() {
       int hash = 1;
+      if (Key.Length != 0) hash ^= Key.GetHashCode();
       if (X != 0) hash ^= X.GetHashCode();
       if (Y != 0) hash ^= Y.GetHashCode();
       if (Width != 0) hash ^= Width.GetHashCode();
@@ -437,20 +415,24 @@ namespace Pose.Persistence {
     #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
       output.WriteRawMessage(this);
     #else
+      if (Key.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Key);
+      }
       if (X != 0) {
-        output.WriteRawTag(8);
+        output.WriteRawTag(16);
         output.WriteUInt32(X);
       }
       if (Y != 0) {
-        output.WriteRawTag(16);
+        output.WriteRawTag(24);
         output.WriteUInt32(Y);
       }
       if (Width != 0) {
-        output.WriteRawTag(24);
+        output.WriteRawTag(32);
         output.WriteUInt32(Width);
       }
       if (Height != 0) {
-        output.WriteRawTag(32);
+        output.WriteRawTag(40);
         output.WriteUInt32(Height);
       }
       if (_unknownFields != null) {
@@ -462,20 +444,24 @@ namespace Pose.Persistence {
     #if !GOOGLE_PROTOBUF_REFSTRUCT_COMPATIBILITY_MODE
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     void pb::IBufferMessage.InternalWriteTo(ref pb::WriteContext output) {
+      if (Key.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Key);
+      }
       if (X != 0) {
-        output.WriteRawTag(8);
+        output.WriteRawTag(16);
         output.WriteUInt32(X);
       }
       if (Y != 0) {
-        output.WriteRawTag(16);
+        output.WriteRawTag(24);
         output.WriteUInt32(Y);
       }
       if (Width != 0) {
-        output.WriteRawTag(24);
+        output.WriteRawTag(32);
         output.WriteUInt32(Width);
       }
       if (Height != 0) {
-        output.WriteRawTag(32);
+        output.WriteRawTag(40);
         output.WriteUInt32(Height);
       }
       if (_unknownFields != null) {
@@ -487,6 +473,9 @@ namespace Pose.Persistence {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int CalculateSize() {
       int size = 0;
+      if (Key.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Key);
+      }
       if (X != 0) {
         size += 1 + pb::CodedOutputStream.ComputeUInt32Size(X);
       }
@@ -509,6 +498,9 @@ namespace Pose.Persistence {
     public void MergeFrom(Sprite other) {
       if (other == null) {
         return;
+      }
+      if (other.Key.Length != 0) {
+        Key = other.Key;
       }
       if (other.X != 0) {
         X = other.X;
@@ -536,19 +528,23 @@ namespace Pose.Persistence {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, input);
             break;
-          case 8: {
-            X = input.ReadUInt32();
+          case 10: {
+            Key = input.ReadString();
             break;
           }
           case 16: {
-            Y = input.ReadUInt32();
+            X = input.ReadUInt32();
             break;
           }
           case 24: {
-            Width = input.ReadUInt32();
+            Y = input.ReadUInt32();
             break;
           }
           case 32: {
+            Width = input.ReadUInt32();
+            break;
+          }
+          case 40: {
             Height = input.ReadUInt32();
             break;
           }
@@ -566,19 +562,23 @@ namespace Pose.Persistence {
           default:
             _unknownFields = pb::UnknownFieldSet.MergeFieldFrom(_unknownFields, ref input);
             break;
-          case 8: {
-            X = input.ReadUInt32();
+          case 10: {
+            Key = input.ReadString();
             break;
           }
           case 16: {
-            Y = input.ReadUInt32();
+            X = input.ReadUInt32();
             break;
           }
           case 24: {
-            Width = input.ReadUInt32();
+            Y = input.ReadUInt32();
             break;
           }
           case 32: {
+            Width = input.ReadUInt32();
+            break;
+          }
+          case 40: {
             Height = input.ReadUInt32();
             break;
           }

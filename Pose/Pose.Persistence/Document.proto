@@ -30,7 +30,7 @@ message Node {
 
 	NodeType type = 6;
 
-	string spriteFile = 7; // the sprite's filepath relative to document.assetFolder when node.type == SPRITENODE
+	string spriteKey = 7; // The sprite's relative filepath. This is used as identifying key for the sprite in editor and runtimes.
 	float boneLength = 8;
 }
 

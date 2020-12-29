@@ -49,8 +49,10 @@ namespace Pose.Spritesheets
             };
             foreach (var sprite in spritesheet.Sprites)
             {
+                var spriteInfo = (SpriteInfo)sprite.Sprite.Reference;
                 protoSpritesheet.Sprites.Add(new Persistence.Sprite
                 {
+                    Key = spriteInfo.Key,
                     X = (uint)sprite.X,
                     Y = (uint)sprite.Y,
                     Width = (uint)sprite.Sprite.Width,

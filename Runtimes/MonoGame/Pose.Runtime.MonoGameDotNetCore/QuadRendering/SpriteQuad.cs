@@ -1,35 +1,36 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace Pose.Runtime.MonoGameDotNetCore.QuadRendering
 {
+    /// <summary>
+    /// Represents 4 corner vertices and UV coords of a quad with a width, height symmetrically around the 0,0 point in the center.
+    /// </summary>
     public class SpriteQuad
     {
+        public string Key { get; }
         internal readonly Vector2[] Vertices, TextureCoords;
-        internal readonly Texture2D Texture;
 
-        public SpriteQuad(Texture2D texture)
+        public SpriteQuad(string key, uint width, uint height, Vector2 t0, Vector2 t1)
         {
-            Texture = texture;
-            Vertices = PrepareVertices(texture);
-            TextureCoords = PrepareTextureCoords();
-            //WriteQuadVertices(GpuMesh.Vertices, GpuMesh.Indices, 0, 0, texture);
+            Key = key;
+            Vertices = PrepareVertices(width, height);
+            TextureCoords = PrepareTextureCoords(t0, t1);
         }
 
-        private static Vector2[] PrepareTextureCoords()
+        private static Vector2[] PrepareTextureCoords(Vector2 t0, Vector2 t1)
         {
-            var aT = new Vector2(0f, 0f);
-            var bT = new Vector2(1f, 0f);
-            var cT = new Vector2(1f, 1f);
-            var dT = new Vector2(0f, 1f);
+            var aT = t0;
+            var bT = new Vector2(t1.X, t0.Y);
+            var cT = t1;
+            var dT = new Vector2(t0.X, t1.Y);
 
             return new[] {aT, bT, cT, dT};
         }
 
-        private static Vector2[] PrepareVertices(Texture2D texture)
+        private static Vector2[] PrepareVertices(uint width, uint height)
         {
-            var halfWidth = texture.Width * 0.5f;
-            var halfHeight = texture.Height * 0.5f;
+            var halfWidth = width * 0.5f;
+            var halfHeight = height * 0.5f;
 
             var a = new Vector2(-halfWidth, halfHeight);
             var b = new Vector2(halfWidth, halfHeight);

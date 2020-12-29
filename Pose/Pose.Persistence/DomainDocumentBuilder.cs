@@ -86,7 +86,7 @@ namespace Pose.Persistence
 
         private static Domain.Nodes.Node BuildSpriteNode(DocumentData data, Node node)
         {
-            var spriteRef = new SpriteReference(node.SpriteFile);
+            var spriteRef = new SpriteReference(node.SpriteKey);
             var domainNode = new SpriteNode(data.MessageBus, node.Id, node.Name, spriteRef)
             {
                 Parent = node.ParentId == 0

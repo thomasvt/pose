@@ -13,8 +13,6 @@ namespace Pose.Runtime.MonoGame.TestGame
     public class Game1 : Game
     {
         private PoseRuntime _poseRuntime;
-        private MonoGameSpriteStore _spriteStore;
-        private MonoGameTextureStore _textureStore;
         private List<Skeleton> _skeletons;
         private readonly GraphicsDeviceManager _graphicsDeviceManager;
         private float _cameraZoom;
@@ -33,25 +31,22 @@ namespace Pose.Runtime.MonoGame.TestGame
 
         protected override void LoadContent()
         {
-            _textureStore = new MonoGameTextureStore(Content);
-            _spriteStore = new MonoGameSpriteStore(_textureStore);
-            var factory = new SkeletonDefinitionFactory(_spriteStore);
-            _poseRuntime = new PoseRuntime(new QuadRenderer(_graphicsDeviceManager, 50, BlendState.AlphaBlend, DepthStencilState.None))
+            _poseRuntime = new PoseRuntime(new GpuMeshRenderer(_graphicsDeviceManager, BlendState.AlphaBlend, DepthStencilState.None))
             {
-                UseMultiCore = true
+                UseMultiCore = false
             };
 
             var poseDocument = Content.LoadPoseDocument("poser.pose");
-            var skeletonDefinition = factory.Create(poseDocument);
+            var spritesheet = Content.LoadSpritesheet("poser.sheet");
+            var texture = Content.Load<Texture2D>("poser");
+            var skeletonDefinition = new SkeletonDefinition(poseDocument, spritesheet, texture);
             _skeletons = new List<Skeleton>();
-
-
 
             // DEMO 1 -----------
 
             _cameraZoom = 1f;
-            _skeletons.Add(_poseRuntime.AddSkeleton(skeletonDefinition, new Vector3(0, 0, 0), 0));
-            _skeletons.Add(_poseRuntime.AddSkeleton(skeletonDefinition, new Vector3(-100, 0, -20), 0)); // todo Z- is away from user. Fix ordering logic...
+            _skeletons.Add(_poseRuntime.AddSkeleton(skeletonDefinition, new Vector2(0, 0), 0, 0));
+            _skeletons.Add(_poseRuntime.AddSkeleton(skeletonDefinition, new Vector2(-100, 0), 20, 0));
 
             // DEMO 2 ------------------
 
@@ -93,7 +88,7 @@ namespace Pose.Runtime.MonoGame.TestGame
         
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.DarkGray);
+            GraphicsDevice.Clear(Color.Azure);
 
             _poseRuntime.SetCameraPosition(new Vector2(0, 0), _cameraZoom);
             _poseRuntime.Draw((float)gameTime.TotalGameTime.TotalSeconds / 2f);
