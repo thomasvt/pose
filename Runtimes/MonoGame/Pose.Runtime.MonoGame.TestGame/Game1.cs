@@ -42,11 +42,11 @@ namespace Pose.Runtime.MonoGame.TestGame
                 UseMultiCore = false
             };
 
-            // use this variant to load from files, without using the content pipeline:
-            var skeletonDefinition = SkeletonDefinition.LoadFromFiles(GraphicsDevice, "../../../../../../pose/pose/assets/poser/poser"); // this points to the original 'poser' sample files in git so we don't need to copy them over each time it changes.
-
-            //var skeletonDefinition = Content.LoadPoseSkeletonDefinition("poser");
             
+            var skeletonDefinition = SkeletonDefinition.LoadFromFiles(GraphicsDevice, "../../../../../../pose/pose/assets/poser/poser"); // this points to the original 'poser' sample files in git so we don't need to copy them over each time it changes.
+            // use this variant to load via MonoGame's content pipeline (in the pipeline tool: add the .png just like any texture, add .sheet and .pose with Build Action 'Copy'_
+            //var skeletonDefinition = Content.LoadPoseSkeletonDefinition("poser");
+
             _skeletons = new List<Skeleton>();
 
             // DEMO 1 -----------
@@ -63,14 +63,21 @@ namespace Pose.Runtime.MonoGame.TestGame
         private void CreateDemo1(SkeletonDefinition skeletonDefinition)
         {
             _cameraZoom = 1f;
-            _skeletons.Add(_poseRuntime.AddSkeleton(skeletonDefinition, new Vector2(0, 0), 0, 0));
+
+            // shows four running guys with different depths to show layering of sprites.
+            // the second is most in front, 1 and 3 are behind that, and 4th is furthest
+
             _skeletons.Add(_poseRuntime.AddSkeleton(skeletonDefinition, new Vector2(-100, 0), 1, 0));
+            _skeletons.Add(_poseRuntime.AddSkeleton(skeletonDefinition, new Vector2(0, 0), 0, 0));
             _skeletons.Add(_poseRuntime.AddSkeleton(skeletonDefinition, new Vector2(100, 0), 1, 0));
             _skeletons.Add(_poseRuntime.AddSkeleton(skeletonDefinition, new Vector2(200, 0), 2, 0));
         }
 
         private void CreateDemo2(SkeletonDefinition skeletonDefinition)
         {
+            // this just shows a lot of running guys in a grid and random rotations, to test performance and try out potential improvements of the runtime logic.
+            // for detailed performance measuring, I suggest using JetBrains' profiler in line-by-line mode.
+
             _cameraZoom = 0.3f;
             var r = new Random();
             const int count = 6000;
@@ -92,7 +99,7 @@ namespace Pose.Runtime.MonoGame.TestGame
             foreach (var skeleton in _skeletons)
             {
                 skeleton.StartAnimation(animationName, t - offset);
-                //offset += 0.097f;
+                offset += 0.097f;
             }
         }
 
@@ -112,7 +119,7 @@ namespace Pose.Runtime.MonoGame.TestGame
             GraphicsDevice.Clear(Color.Azure);
 
             _poseRuntime.SetCameraPosition(new Vector2(0, 0), _cameraZoom);
-            _poseRuntime.Draw((float)gameTime.TotalGameTime.TotalSeconds / 2f);
+            _poseRuntime.Draw((float)gameTime.TotalGameTime.TotalSeconds);
 
             MeasurePerformance();
         }
