@@ -123,5 +123,10 @@ namespace Pose.Runtime.MonoGameDotNetCore
         /// The time (ms) it took to draw all skeletons (the previous call to Draw()).
         /// </summary>
         public double DrawTime { get; private set; }
+
+        /// <summary>
+        /// The allowed error 
+        /// </summary>
+        public float BezierTolerance { get; set; }
     }
 }

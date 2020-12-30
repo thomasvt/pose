@@ -20,6 +20,8 @@ namespace Pose.Common.Curves
 
         public float SolveYAtX(float x)
         {
+            // see BezierMath for explanation of what and why this does.
+
             if (x < 0f || x > 1f)
                 throw new ArgumentOutOfRangeException(nameof(x));
 
@@ -28,16 +30,16 @@ namespace Pose.Common.Curves
 
             // use Newton-Raphson to find a T that yields an fx(t) closer to 0 than allowed tolerance.
 
-            var guess = x; // initial guess = what t would be if the spline was perfectly linear.
-            for (var i = 0; i < 10; i++)
+            var s = x; // initial guess = what t would be if the spline was perfectly linear.
+            for (var i = 0; i < 100; i++) // lets not try more than 100 times :)
             {
-                var value = fx.Solve(guess);
-                if (value >= 0 && value < _tolerance || value < 0 && value > -_tolerance)
+                var resultX = fx.Solve(s);
+                if (resultX >= 0 && resultX < _tolerance || resultX < 0 && resultX > -_tolerance)
                     break;
-                guess -= value / fxDerivative.Calc(guess);
+                s -= resultX / fxDerivative.Calc(s);
             }
 
-            return _fy.Solve(guess);
+            return _fy.Solve(s);
         }
     }
 }

@@ -104,6 +104,15 @@ namespace Pose.Runtime.MonoGameDotNetCore.Skeletons
             for (var i = 1; i < _nodes.Length; i++)
             {
                 node = ref _nodes[i];
+                if (!node.IsVisible)
+                {
+                    // set transform to zero so the quad is rendered with size 0
+                    node.GlobalTransform = new Matrix();
+
+                    // note: i didn't test the alternative, but I bet this is faster than dynamically building the vertex/index array contents each frame depending on visibility of nodes. 
+
+                    continue;
+                }
                 ref var parentNode = ref _nodes[node.ParentNodeIdx];
                 node.GlobalTransform = GetTransform(ref node) * parentNode.GlobalTransform;
             }

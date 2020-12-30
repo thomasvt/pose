@@ -13,13 +13,13 @@ namespace Pose.Runtime.MonoGameDotNetCore.Animations
         public readonly BezierCurveSolver BezierCurveSolver;
         public readonly CurveType CurveType;
 
-        public RTSegment(RTKey beginKey, RTKey endKey, CurveType curveType, BezierCurve? bezierCurve = null)
+        public RTSegment(RTKey beginKey, RTKey endKey, CurveType curveType, BezierCurve? bezierCurve = null, float bezierTolerance = 0.002f)
         {
             BeginKey = beginKey;
             EndKey = endKey;
             Duration = endKey.Time - beginKey.Time;
             CurveType = curveType;
-            BezierCurveSolver = bezierCurve.HasValue ? new BezierCurveSolver(bezierCurve.Value) : null;
+            BezierCurveSolver = bezierCurve.HasValue ? new BezierCurveSolver(bezierCurve.Value, bezierTolerance) : null;
         }
     }
 }
