@@ -39,7 +39,7 @@ namespace Pose.Runtime.MonoGame.TestGame
             // The runtime can therefore serve as the only renderer for your 2D game.
 
             // Note: the PoseRuntime is optional: you can also just load Pose skeletons and draw them through your own rendering code.
-            //       When calling Skeleton.Draw() you need to supply an ICpuMeshRenderer which will receive a single CpuMesh from the Skeleton
+            //       When calling Skeleton.Draw() you need to supply an ICpuMeshRenderer which will receive a single Mesh from the Skeleton
             //       containing an array of vertices, indices and a texture, so all you need to do is send it to the gpu.
 
             // To use PoseRuntime:
@@ -87,8 +87,8 @@ namespace Pose.Runtime.MonoGame.TestGame
 
         private void CreateDemo2(SkeletonDefinition skeletonDefinition)
         {
-            // this just shows a lot of running guys in a grid and random rotations, to test performance and try out potential improvements of the runtime logic.
-            // for detailed performance measuring, I suggest using JetBrains' profiler in line-by-line mode.
+            // this shows a lot of running guys in a grid with random rotations. It's to test performance and try out potential improvements of the runtime logic.
+            // for detailed performance measuring, I suggest using JetBrains' profiler in Line-by-Line mode.
 
             _cameraZoom = 0.3f;
             var r = new Random();
@@ -110,7 +110,7 @@ namespace Pose.Runtime.MonoGame.TestGame
             foreach (var skeleton in _poseRuntime.Entities.OfType<Skeleton>())
             {
                 skeleton.StartAnimation(animationName, t - offset);
-                offset += 0.097f;
+                offset += 0.097f; // add diversity in the animation's starttime
             }
         }
 

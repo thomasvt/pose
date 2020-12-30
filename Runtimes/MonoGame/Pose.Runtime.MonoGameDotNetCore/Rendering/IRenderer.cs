@@ -3,10 +3,9 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Pose.Runtime.MonoGameDotNetCore.Rendering
 {
-    public interface IRenderer : ICpuMeshRenderer
+    public interface IRenderer : IMeshRenderer
     {
         void Begin();
-        void Render(GpuMesh gpuMesh, Matrix worldTransform);
         void End();
         Matrix ViewTransform { get; set; }
         Matrix ProjectionTransform { get; set; }

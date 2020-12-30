@@ -5,9 +5,9 @@ using Microsoft.Xna.Framework.Graphics;
 namespace Pose.Runtime.MonoGameDotNetCore.Rendering
 {
     /// <summary>
-    /// Batches cpumesh with the same texture into a single drawcalls.
+    /// Batches the geometry of meshes with the same texture into a single drawcall.
     /// </summary>
-    internal class CpuMeshBatch
+    internal class UnbufferedMeshBatch
     {
         private Texture2D _cpuCurrentTexture;
         private GraphicsDevice _graphicsDevice;
@@ -16,7 +16,7 @@ namespace Pose.Runtime.MonoGameDotNetCore.Rendering
         private int[] _cpuIndices;
         private int _cpuVertexCount, _cpuIndexCount;
 
-        public CpuMeshBatch()
+        public UnbufferedMeshBatch()
         {
             _cpuVertices = new VertexPositionColorTexture[0];
             _cpuIndices = new int[0];
@@ -29,20 +29,20 @@ namespace Pose.Runtime.MonoGameDotNetCore.Rendering
             _cpuIndexCount = 0;
         }
 
-        public void Render(CpuMesh cpuMesh)
+        public void Render(Mesh mesh)
         {
-            if (cpuMesh == null)
-                throw new ArgumentNullException(nameof(cpuMesh));
-            if (cpuMesh.VertexCount == 0)
+            if (mesh == null)
+                throw new ArgumentNullException(nameof(mesh));
+            if (mesh.VertexCount == 0)
                 return;
 
-            if (cpuMesh.Texture != _cpuCurrentTexture)
+            if (mesh.Texture != _cpuCurrentTexture)
             {
                 Flush();
 
-                _effect.TextureEnabled = cpuMesh.Texture != null;
-                _effect.Texture = cpuMesh.Texture;
-                _cpuCurrentTexture = cpuMesh.Texture;
+                _effect.TextureEnabled = mesh.Texture != null;
+                _effect.Texture = mesh.Texture;
+                _cpuCurrentTexture = mesh.Texture;
             }
 
             var indexOffsetInBatch = _cpuVertexCount;
@@ -50,25 +50,25 @@ namespace Pose.Runtime.MonoGameDotNetCore.Rendering
             // copy vertices to batch buffer
 
             // grow vertex batch buffer?
-            if (_cpuVertexCount + cpuMesh.VertexCount > _cpuVertices.Length)
-                Array.Resize(ref _cpuVertices, (int)((_cpuVertexCount + cpuMesh.VertexCount) * 1.5f));
+            if (_cpuVertexCount + mesh.VertexCount > _cpuVertices.Length)
+                Array.Resize(ref _cpuVertices, (int)((_cpuVertexCount + mesh.VertexCount) * 1.5f));
             // copy vertices from cpumesh into batch buffer.
-            Array.Copy(cpuMesh.Vertices, 0, _cpuVertices, _cpuVertexCount, cpuMesh.VertexCount);
-            _cpuVertexCount += cpuMesh.VertexCount;
+            Array.Copy(mesh.Vertices, 0, _cpuVertices, _cpuVertexCount, mesh.VertexCount);
+            _cpuVertexCount += mesh.VertexCount;
 
 
             // copy indices to batch buffer
 
             // grow index batch buffer?
-            if (_cpuIndexCount + cpuMesh.IndexCount > _cpuIndices.Length)
-                Array.Resize(ref _cpuIndices, (int)((_cpuIndexCount + cpuMesh.IndexCount) * 1.5f));
+            if (_cpuIndexCount + mesh.IndexCount > _cpuIndices.Length)
+                Array.Resize(ref _cpuIndices, (int)((_cpuIndexCount + mesh.IndexCount) * 1.5f));
             // Copy the indices but shift their values so they point to the corresponding vertices in the batch buffer:
-            for (var i = 0; i < cpuMesh.IndexCount; i++)
+            for (var i = 0; i < mesh.IndexCount; i++)
             {
-                _cpuIndices[_cpuIndexCount + i] = cpuMesh.Indices[i] + indexOffsetInBatch;
+                _cpuIndices[_cpuIndexCount + i] = mesh.Indices[i] + indexOffsetInBatch;
             }
 
-            _cpuIndexCount += cpuMesh.IndexCount;
+            _cpuIndexCount += mesh.IndexCount;
         }
 
         public void Flush()

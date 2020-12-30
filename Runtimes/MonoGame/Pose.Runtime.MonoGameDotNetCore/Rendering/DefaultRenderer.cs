@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Media;
 
 namespace Pose.Runtime.MonoGameDotNetCore.Rendering
 {
@@ -13,14 +14,14 @@ namespace Pose.Runtime.MonoGameDotNetCore.Rendering
         private readonly GraphicsDeviceManager _graphicsDeviceManager;
         private BasicEffect _effect;
         private GraphicsDevice _graphicsDevice;
-        private readonly CpuMeshBatch _cpuMeshBatch;
+        private readonly UnbufferedMeshBatch _unbufferedMeshBatch;
 
         public DefaultRenderer(GraphicsDeviceManager graphicsDeviceManager, BlendState blendState = null, DepthStencilState depthStencilState = null)
         {
             BlendState = blendState ?? BlendState.NonPremultiplied;
             DepthStencilState = depthStencilState ?? DepthStencilState.None;
             _graphicsDeviceManager = graphicsDeviceManager;
-            _cpuMeshBatch = new CpuMeshBatch();
+            _unbufferedMeshBatch = new UnbufferedMeshBatch();
             graphicsDeviceManager.DeviceCreated += (s, e) => OnGraphicsDeviceCreated();
             OnGraphicsDeviceCreated();
         }
@@ -32,7 +33,7 @@ namespace Pose.Runtime.MonoGameDotNetCore.Rendering
         {
             _graphicsDevice = _graphicsDeviceManager.GraphicsDevice;
             CreateEffect(_graphicsDevice);
-            _cpuMeshBatch.UpdateDeviceDependents(_graphicsDevice, _effect);
+            _unbufferedMeshBatch.UpdateDeviceDependents(_graphicsDevice, _effect);
         }
 
         private void CreateEffect(GraphicsDevice graphicsDevice)
@@ -47,7 +48,7 @@ namespace Pose.Runtime.MonoGameDotNetCore.Rendering
 
         public void Begin()
         {
-            _cpuMeshBatch.Clear();
+            _unbufferedMeshBatch.Clear();
 
             _effect.View = ViewTransform;
             _effect.Projection = ProjectionTransform;
@@ -57,39 +58,40 @@ namespace Pose.Runtime.MonoGameDotNetCore.Rendering
 
         /// <summary>
         /// Use this overload for procedural meshes of which the geometry changes constantly (changing meshes, particles in world coords).
-        /// CpuMeshes cannot have individual world transforms because they are batched together; so set the vertices' position to world coords yourself.
+        /// Meshes cannot have individual world transforms because they are batched together; so set the vertices' position to world coords yourself.
         /// </summary>
-        public void Render(CpuMesh cpuMesh)
+        /// <param name="mesh">The mesh to render</param>
+        /// <param name="worldTransform">Sent as world transform to the gpu. Ignored when BufferMode.Unbuffered.</param>
+        public void Render(Mesh mesh, Matrix worldTransform)
         {
-            _cpuMeshBatch.Render(cpuMesh);
-        }
-
-        /// <summary>
-        /// Use this overload for static meshes that can be preloaded into videoram, which is a lot faster than CpuMesh.
-        /// </summary>
-        public void Render(GpuMesh gpuMesh, Matrix worldTransform)
-        {
-            if (gpuMesh == null)
-                throw new ArgumentNullException(nameof(gpuMesh));
-            if (gpuMesh.VertexCount == 0)
+            if (mesh == null)
+                throw new ArgumentNullException(nameof(mesh));
+            if (mesh.VertexCount == 0)
                 return;
 
-            _cpuMeshBatch.Flush();
-
-            _graphicsDevice.SetVertexBuffer(gpuMesh.GetVertexBuffer());
-            _graphicsDevice.Indices = gpuMesh.GetIndexBuffer();
-            _effect.World = worldTransform;
-
-            foreach (var pass in _effect.CurrentTechnique.Passes)
+            if (mesh.BufferMode == BufferMode.Unbuffered)
             {
-                pass.Apply();
-                _graphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, gpuMesh.IndexCount / 3);
+                _unbufferedMeshBatch.Render(mesh);
+            }
+            else
+            {
+                _unbufferedMeshBatch.Flush();
+
+                _graphicsDevice.SetVertexBuffer(mesh.GetVertexBuffer(_graphicsDevice));
+                _graphicsDevice.Indices = mesh.GetIndexBuffer(_graphicsDevice);
+                _effect.World = worldTransform;
+
+                foreach (var pass in _effect.CurrentTechnique.Passes)
+                {
+                    pass.Apply();
+                    _graphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, mesh.IndexCount / 3);
+                }
             }
         }
 
         public void End()
         {
-            _cpuMeshBatch.Flush();
+            _unbufferedMeshBatch.Flush();
         }
 
         public void Dispose()

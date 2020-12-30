@@ -20,7 +20,7 @@ namespace Pose.Runtime.MonoGameDotNetCore.Animations
         /// <summary>
         /// Reference to the graphical sprite of this node.
         /// </summary>
-        public readonly SpriteQuad SpriteQuad;
+        public readonly Sprite Sprite;
 
         /// <summary>
         /// The draworder index of this node within the skeleton as defined in the Pose editor. Lower is more in front.
@@ -32,11 +32,11 @@ namespace Pose.Runtime.MonoGameDotNetCore.Animations
         /// </summary>
         internal Matrix GlobalTransform;
 
-        public RTNode(int parentNodeIdx, bool isVisible, Transformation designTransformation, Transformation animateTransformation, int drawOrderIndex, SpriteQuad spriteQuad = null)
+        public RTNode(int parentNodeIdx, bool isVisible, Transformation designTransformation, Transformation animateTransformation, int drawOrderIndex, Sprite sprite = null)
         {
             IsVisible = isVisible;
             ParentNodeIdx = parentNodeIdx;
-            SpriteQuad = spriteQuad;
+            Sprite = sprite;
             DesignTransformation = designTransformation;
             AnimateTransformation = animateTransformation;
             GlobalTransform = Matrix.Identity;

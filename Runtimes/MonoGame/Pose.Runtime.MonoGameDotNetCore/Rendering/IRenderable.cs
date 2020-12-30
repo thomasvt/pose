@@ -7,6 +7,6 @@
         /// </summary>
         float Depth { get; }
 
-        void Draw(ICpuMeshRenderer quadRenderer);
+        void Draw(IMeshRenderer meshRenderer);
     }
 }

@@ -13,7 +13,7 @@ namespace Pose.Runtime.MonoGameDotNetCore.Skeletons
         private readonly RTNode[] _nodes;
         private readonly int[] _drawSequenceIndices;
         private readonly Dictionary<string, RTAnimation> _animations;
-        private readonly CpuMesh _cpuMesh;
+        private readonly SpriteMesh _mesh;
 
         /// <param name="nodes">all nodes of the hierarchy, in hierarchic order, for updating transforms</param>
         /// <param name="drawSequenceIndices">the indices of the spritenodes in nodes, in draw order</param>
@@ -22,42 +22,7 @@ namespace Pose.Runtime.MonoGameDotNetCore.Skeletons
             _nodes = nodes;
             _drawSequenceIndices = drawSequenceIndices;
             _animations = animations ?? throw new ArgumentNullException(nameof(animations));
-            var spriteNodeCount = nodes.Count(n => n.SpriteQuad != null);
-            _cpuMesh = new CpuMesh(spriteNodeCount * 4, spriteNodeCount * 6, texture)
-            {
-                VertexCount = spriteNodeCount * 4, 
-                IndexCount = spriteNodeCount * 6
-            };
-            _cpuMesh.PrepareQuadIndices(spriteNodeCount);
-            PrepareVertices();
-        }
-
-        /// <summary>
-        /// Initialize the vertex data that never changes in the <see cref="CpuMesh"/>.
-        /// </summary>
-        private void PrepareVertices()
-        {
-            var vertexIdx = 0;
-            for (var i = 0; i < _drawSequenceIndices.Length; i++)
-            {
-                ref var spriteNode = ref _nodes[_drawSequenceIndices[i]];
-                
-                ref var vertex = ref _cpuMesh.Vertices[vertexIdx++];
-                vertex.Color = Color.White;
-                vertex.TextureCoordinate = spriteNode.SpriteQuad.TextureCoords[0];
-
-                vertex = ref _cpuMesh.Vertices[vertexIdx++];
-                vertex.Color = Color.White;
-                vertex.TextureCoordinate = spriteNode.SpriteQuad.TextureCoords[1];
-
-                vertex = ref _cpuMesh.Vertices[vertexIdx++];
-                vertex.Color = Color.White;
-                vertex.TextureCoordinate = spriteNode.SpriteQuad.TextureCoords[2];
-
-                vertex = ref _cpuMesh.Vertices[vertexIdx++];
-                vertex.Color = Color.White;
-                vertex.TextureCoordinate = spriteNode.SpriteQuad.TextureCoords[3];
-            }
+            _mesh = new SpriteMesh(drawSequenceIndices.Select(idx => nodes[idx].Sprite), texture, BufferMode.Unbuffered);
         }
 
         /// <summary>
@@ -92,9 +57,9 @@ namespace Pose.Runtime.MonoGameDotNetCore.Skeletons
             ApplyTransforms(); // apply the changed transforms to all vertices
         }
 
-        public void Draw(ICpuMeshRenderer renderer)
+        public void Draw(IMeshRenderer meshRenderer)
         {
-            renderer.Render(_cpuMesh);
+            meshRenderer.Render(_mesh.Mesh, Matrix.Identity);
         }
 
         private void ApplyTransforms()
@@ -119,17 +84,10 @@ namespace Pose.Runtime.MonoGameDotNetCore.Skeletons
                 node.GlobalTransform = GetTransform(ref node) * parentNode.GlobalTransform;
             }
 
-            var vertexIdx = 0;
             for (var i = 0; i < _drawSequenceIndices.Length; i++)
             {
                 ref var spriteNode = ref _nodes[_drawSequenceIndices[i]];
-
-                for (var j = 0; j < 4; j++)
-                {
-                    ref var vertex = ref _cpuMesh.Vertices[vertexIdx++];
-                    var result = Vector2.Transform(spriteNode.SpriteQuad.Vertices[j], spriteNode.GlobalTransform);
-                    vertex.Position = new Vector3(result, 0);
-                }
+                _mesh.SetSpriteTransform(i, ref spriteNode.GlobalTransform);
             }
         }
 

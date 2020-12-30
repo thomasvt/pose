@@ -5,6 +5,6 @@ namespace Pose.Runtime.MonoGameDotNetCore
 {
     public interface ISpriteStore
     {
-        SpriteQuad GetSpriteQuad(string assetPath);
+        Sprite GetSpriteQuad(string assetPath);
     }
 }
