@@ -18,7 +18,7 @@ namespace Pose.Runtime.MonoGameDotNetCore.Rendering
         }
 
         /// <summary>
-        /// Populates the indices for using this GpuMesh as a list of quads with 4 clockwise corner vertices each. After this, set the vertices with the 4 corner vertices per quad and you're done.
+        /// Populates the indices for using this CpuMesh as a list of quads with 4 clockwise corner vertices each. You have to construct this CpuMesh with 4 vertices and 6 indices per quad you intend to store.
         /// </summary>
         public void PrepareQuadIndices(in int quadCount)
         {

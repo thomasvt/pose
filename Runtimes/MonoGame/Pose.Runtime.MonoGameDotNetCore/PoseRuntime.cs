@@ -9,28 +9,43 @@ using Pose.Runtime.MonoGameDotNetCore.Skeletons;
 
 namespace Pose.Runtime.MonoGameDotNetCore
 {
+    /// <summary>
+    /// This is the root object for rendering Pose animations and optionally all your other game entities.
+    /// </summary>
     public class PoseRuntime
     : IDisposable
     {
-        private readonly Renderer _gpuMeshRenderer;
+        private readonly IRenderer _renderer;
         private readonly List<Skeleton> _skeletons;
+        private readonly List<IRenderable> _renderables;
 
-        public PoseRuntime(Renderer gpuMeshRenderer)
+        public PoseRuntime(GraphicsDeviceManager graphicsDeviceManager)
+            :this(new DefaultRenderer(graphicsDeviceManager))
         {
-            _gpuMeshRenderer = gpuMeshRenderer;
+        }
+
+        /// <summary>
+        /// Creates a PoseRuntime with a custom <see cref="IRenderer"/>. Use the other ctor overload if you want to use the default.
+        /// </summary>
+        public PoseRuntime(IRenderer renderer)
+        {
+            _renderer = renderer;
             _skeletons = new List<Skeleton>();
+            _renderables = new List<IRenderable>();
 
             ViewTransform = Matrix.Identity;
         }
 
         /// <summary>
-        /// Adds the skeleton to the runtime, the runtime will dispose the skeleton.
+        /// Adds a skeleton or other renderable game entity to the collection.
         /// </summary>
-        public Skeleton AddSkeleton(SkeletonDefinition skeletonDefinition, Vector2 position, float depth, float angle)
+        public void Add(IRenderable renderable)
         {
-            var skeleton = skeletonDefinition.CreateInstance(position, depth, angle);
-            _skeletons.Add(skeleton);
-            return skeleton;
+            if (renderable is Skeleton skeleton)
+            {
+                _skeletons.Add(skeleton);
+            }
+            _renderables.Add(renderable);
         }
 
         /// <summary>
@@ -40,7 +55,7 @@ namespace Pose.Runtime.MonoGameDotNetCore
         public void Draw(float gameTime)
         {
             UpdateAnimations(gameTime);
-            RenderSprites();
+            RenderEntities();
         }
 
         private void UpdateAnimations(float gameTimeSeconds)
@@ -61,26 +76,27 @@ namespace Pose.Runtime.MonoGameDotNetCore
             UpdateTime = sw.Elapsed.TotalMilliseconds;
         }
 
-        private void RenderSprites()
+        private void RenderEntities()
         {
-            _gpuMeshRenderer.ProjectionTransform = ProjectionTransform;
-            _gpuMeshRenderer.ViewTransform = ViewTransform;
+            _renderer.ProjectionTransform = ProjectionTransform;
+            _renderer.ViewTransform = ViewTransform;
 
             var sw = Stopwatch.StartNew();
             
-            _gpuMeshRenderer.Begin();
-            foreach (var skeleton in _skeletons.OrderByDescending(s => s.Depth)) // todo optimize for infrequent Depth changing, IsDepthDirty -> move item
+            _renderer.Begin();
+            //_renderables.Sort((a, b) => b.Depth.CompareTo(a.Depth)); // todo optimize for infrequent Depth changing, IsDepthDirty -> move item
+            foreach (var skeleton in _renderables.OrderByDescending(r => r.Depth))
             {
-                skeleton.Draw(_gpuMeshRenderer);
+                skeleton.Draw(_renderer);
             }
-            _gpuMeshRenderer.End();
+            _renderer.End();
 
             DrawTime = sw.Elapsed.TotalMilliseconds;
         }
 
         public void Dispose()
         {
-            //_quadRenderer?.Dispose();
+            (_renderer as IDisposable)?.Dispose();
         }
 
         /// <summary>
@@ -93,7 +109,7 @@ namespace Pose.Runtime.MonoGameDotNetCore
         /// <param name="farPlane">Z is used for sprite depth order. High Z is drawn behind low Z. Z must be between nearplane and farplane. Using a large plane range causes inaccuracies in Z ordering, so keep it close to what you need.</param>
         public void SetCameraPosition(Vector2 position, float zoom = 1f, float nearPlane = 0f, float farPlane = 100f)
         {
-            var viewport = _gpuMeshRenderer.GraphicsDevice.Viewport;
+            var viewport = _renderer.GraphicsDevice.Viewport;
             var halfWidth = viewport.Width * 0.5f / zoom;
             var halfHeight = viewport.Height * 0.5f / zoom;
             ProjectionTransform = Matrix.CreateOrthographicOffCenter(-halfWidth, +halfWidth, -halfHeight, +halfHeight, nearPlane, farPlane);
@@ -128,5 +144,7 @@ namespace Pose.Runtime.MonoGameDotNetCore
         /// The allowed error 
         /// </summary>
         public float BezierTolerance { get; set; }
+
+        public IEnumerable<IRenderable> Entities => _renderables;
     }
 }

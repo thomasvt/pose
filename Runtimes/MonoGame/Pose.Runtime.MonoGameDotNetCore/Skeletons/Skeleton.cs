@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -9,7 +8,7 @@ using Pose.Runtime.MonoGameDotNetCore.Rendering;
 
 namespace Pose.Runtime.MonoGameDotNetCore.Skeletons
 {
-    public class Skeleton
+    public class Skeleton : IRenderable
     {
         private readonly RTNode[] _nodes;
         private readonly int[] _drawSequenceIndices;
@@ -84,15 +83,18 @@ namespace Pose.Runtime.MonoGameDotNetCore.Skeletons
             CurrentAnimation.Start(startTimeSeconds);
         }
 
-        internal void Update(float gameTime)
+        /// <summary>
+        /// Updates the animations. You can distribute the update() call of multiple skeletons over multiple threads. But don't manipulate a single skeleton instance from more than one thread.
+        /// </summary>
+        public void Update(float gameTimeSeconds)
         {
-            CurrentAnimation?.PlayForwardTo(gameTime, _nodes); // update all animated properties
+            CurrentAnimation?.PlayForwardTo(gameTimeSeconds, _nodes); // update all animated properties
             ApplyTransforms(); // apply the changed transforms to all vertices
         }
 
-        internal void Draw(Renderer quadRenderer)
+        public void Draw(ICpuMeshRenderer renderer)
         {
-            quadRenderer.Render(_cpuMesh);
+            renderer.Render(_cpuMesh);
         }
 
         private void ApplyTransforms()
@@ -144,14 +146,14 @@ namespace Pose.Runtime.MonoGameDotNetCore.Skeletons
         /// <summary>
         /// The world position for this skeleton.
         /// </summary>
-        public Vector2 Position { get; set; }
+        public Vector2 Position;
+
+        public float Angle;
 
         /// <summary>
-        /// For drawordering. More is further back.
+        /// For controlling the layering of sprites. More is further back.
         /// </summary>
         public float Depth { get; set; }
-        
-        public float Angle { get; set; }
 
         public RTAnimation CurrentAnimation { get; private set; }
     }

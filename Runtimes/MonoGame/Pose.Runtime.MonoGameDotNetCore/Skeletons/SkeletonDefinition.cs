@@ -28,9 +28,9 @@ namespace Pose.Runtime.MonoGameDotNetCore.Skeletons
             BezierTolerance = 0.005f;
         }
         
-        internal Skeleton CreateInstance(Vector2 position, float depth, float angle)
+        public Skeleton CreateInstance(Vector2 position, float depth, float angle)
         {
-            // TODO we could optimize by mapping a Document into a form more prepped for creating instances. But making instances isn't hot code.
+            // TODO we could optimize by mapping a Document into a form more prepped for creating instances.
             var nodes = BuildRuntimeNodes(out var nodeIndices);
             var drawSequenceIndices = _document.DrawOrder.NodeIds.Select(id => nodeIndices[id]).Reverse().ToArray();
             var animations = BuildRuntimeAnimations(nodeIndices);

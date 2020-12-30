@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Pose.Runtime.MonoGameDotNetCore;
-using Pose.Runtime.MonoGameDotNetCore.Rendering;
 using Pose.Runtime.MonoGameDotNetCore.Skeletons;
 
 namespace Pose.Runtime.MonoGame.TestGame
@@ -13,7 +12,6 @@ namespace Pose.Runtime.MonoGame.TestGame
     public class Game1 : Game
     {
         private PoseRuntime _poseRuntime;
-        private List<Skeleton> _skeletons;
         private readonly GraphicsDeviceManager _graphicsDeviceManager;
         private float _cameraZoom;
 
@@ -37,27 +35,41 @@ namespace Pose.Runtime.MonoGame.TestGame
 
         protected override void LoadContent()
         {
-            _poseRuntime = new PoseRuntime(new Renderer(_graphicsDeviceManager))
-            {
-                UseMultiCore = false
-            };
+            // The PoseRuntime is a light manager class for high performance 2D rendering. It supports rendering Pose animations, but also your custom (not-made-with-Pose) entities your game needs to render.
+            // The runtime can therefore serve as the only renderer for your 2D game.
 
+            // Note: the PoseRuntime is optional: you can also just load Pose skeletons and draw them through your own rendering code.
+            //       When calling Skeleton.Draw() you need to supply an ICpuMeshRenderer which will receive a single CpuMesh from the Skeleton
+            //       containing an array of vertices, indices and a texture, so all you need to do is send it to the gpu.
+
+            // To use PoseRuntime:
+
+            // 1. new PoseRuntime(GraphicsDeviceManager)
+            // 2. load a Pose SkeletonDefinition from file or MonoGame's content pipeline
+            // 3. create a Skeleton instance of the SkeletonDefinition.
+            // 4. PoseRuntime.Add(mySkeleton)
+            // 5. each frame: PoseRuntime.Draw().
+
+            _poseRuntime = new PoseRuntime(_graphicsDeviceManager)
+            {
+                UseMultiCore = true
+            };
             
             var skeletonDefinition = SkeletonDefinition.LoadFromFiles(GraphicsDevice, "../../../../../../pose/pose/assets/poser/poser"); // this points to the original 'poser' sample files in git so we don't need to copy them over each time it changes.
-            // use this variant to load via MonoGame's content pipeline (in the pipeline tool: add the .png just like any texture, add .sheet and .pose with Build Action 'Copy'_
-            //var skeletonDefinition = Content.LoadPoseSkeletonDefinition("poser");
 
-            _skeletons = new List<Skeleton>();
+            // use this following variant to load via MonoGame's content pipeline 
+            // note: in the MG pipeline tool: add the .png just like any texture, add the .sheet and .pose files with Build Action 'Copy'
+            // var skeletonDefinition = Content.LoadPoseSkeletonDefinition("poser");
 
             // DEMO 1 -----------
-            CreateDemo1(skeletonDefinition);
+            //CreateDemo1(skeletonDefinition);
             // ----
 
             // DEMO 2 ------------------
-            //CreateDemo2(skeletonDefinition);
+            CreateDemo2(skeletonDefinition); // don't forget setting UseMultiCore = true in the PoseRuntime.
             // ----
             
-            StartAnimations("Run");
+            StartAnimations("Run"); // the animationname is the one assigned to the animation in Pose Editor
         }
 
         private void CreateDemo1(SkeletonDefinition skeletonDefinition)
@@ -67,10 +79,10 @@ namespace Pose.Runtime.MonoGame.TestGame
             // shows four running guys with different depths to show layering of sprites.
             // the second is most in front, 1 and 3 are behind that, and 4th is furthest
 
-            _skeletons.Add(_poseRuntime.AddSkeleton(skeletonDefinition, new Vector2(-100, 0), 1, 0));
-            _skeletons.Add(_poseRuntime.AddSkeleton(skeletonDefinition, new Vector2(0, 0), 0, 0));
-            _skeletons.Add(_poseRuntime.AddSkeleton(skeletonDefinition, new Vector2(100, 0), 1, 0));
-            _skeletons.Add(_poseRuntime.AddSkeleton(skeletonDefinition, new Vector2(200, 0), 2, 0));
+            _poseRuntime.Add(skeletonDefinition.CreateInstance(new Vector2(-100, 0), 1, 0));
+            _poseRuntime.Add(skeletonDefinition.CreateInstance(new Vector2(0, 0), 0, 0));
+            _poseRuntime.Add(skeletonDefinition.CreateInstance(new Vector2(100, 0), 1, 0));
+            _poseRuntime.Add(skeletonDefinition.CreateInstance(new Vector2(200, 0), 2, 0));
         }
 
         private void CreateDemo2(SkeletonDefinition skeletonDefinition)
@@ -86,9 +98,8 @@ namespace Pose.Runtime.MonoGame.TestGame
             const int distance = 100;
             for (var i = 0; i < count; i++)
             {
-                _skeletons.Add(_poseRuntime.AddSkeleton(skeletonDefinition,
-                    new Vector2((i % horizCount - horizCount / 2) * distance, (i / horizCount - vertCount / 2) * distance),
-                    0, (float) r.NextDouble() * 6.283f));
+                var position = new Vector2(i % horizCount - horizCount / 2, i / horizCount - vertCount / 2) * distance;
+                _poseRuntime.Add(skeletonDefinition.CreateInstance(position, 0, (float) r.NextDouble() * 6.283f));
             }
         }
 
@@ -96,7 +107,7 @@ namespace Pose.Runtime.MonoGame.TestGame
         {
             var t = 0;
             var offset = 0f;
-            foreach (var skeleton in _skeletons)
+            foreach (var skeleton in _poseRuntime.Entities.OfType<Skeleton>())
             {
                 skeleton.StartAnimation(animationName, t - offset);
                 offset += 0.097f;
