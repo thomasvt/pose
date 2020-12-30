@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -64,7 +65,7 @@ namespace Pose.Runtime.MonoGameDotNetCore.Skeletons
         /// Starts playing an animation on this skeleton.
         /// </summary>
         /// <param name="name">Name of animation, as assigned in the Pose editor. Case sensitive.</param>
-        /// <param name="startTime">The starttime of the animation (first frame). Often this will be the gametime of the current frame, but you can use this to offset the animation.</param>
+        /// <param name="startTime">The starttime of the animation (first frame). Often this will be the gametime of the current frame, but you can use this to offset the animation's time position.</param>
         public void StartAnimation(string name, GameTime startTime)
         {
             StartAnimation(name, (float)startTime.TotalGameTime.TotalSeconds);
@@ -74,13 +75,13 @@ namespace Pose.Runtime.MonoGameDotNetCore.Skeletons
         /// Starts playing an animation on this skeleton.
         /// </summary>
         /// <param name="name">Name of animation, as assigned in the Pose editor. Case sensitive.</param>
-        /// <param name="startTime">The starttime of the animation (first frame). Often this will be the gametime of the current frame, but you can use this to offset the animation.</param>
-        public void StartAnimation(string name, float startTime)
+        /// <param name="startTimeSeconds">The starttime of the animation (first frame) in seconds. Often this will be the gametime of the current frame, but you can use this to offset the animation's time position.</param>
+        public void StartAnimation(string name, float startTimeSeconds)
         {
             if (!_animations.TryGetValue(name, out var animation))
                 throw new PoseAnimationNotFoundException($"Animation \"{name}\" not found.");
             CurrentAnimation = animation;
-            CurrentAnimation.Start(startTime);
+            CurrentAnimation.Start(startTimeSeconds);
         }
 
         internal void Update(float gameTime)

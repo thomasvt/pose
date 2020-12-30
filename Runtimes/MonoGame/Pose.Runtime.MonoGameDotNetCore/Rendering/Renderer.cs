@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -24,14 +25,14 @@ namespace Pose.Runtime.MonoGameDotNetCore.Rendering
 
         public Renderer(GraphicsDeviceManager graphicsDeviceManager, BlendState blendState = null, DepthStencilState depthStencilState = null)
         {
-            BlendState = blendState ?? BlendState.AlphaBlend;
+            BlendState = blendState ?? BlendState.NonPremultiplied;
             DepthStencilState = depthStencilState ?? DepthStencilState.None;
             _graphicsDeviceManager = graphicsDeviceManager;
             graphicsDeviceManager.DeviceCreated += (s, e) => OnGraphicsDeviceCreated();
             OnGraphicsDeviceCreated();
 
-            _cpuVertices = new VertexPositionColorTexture[200];
-            _cpuIndices = new int[200];
+            _cpuVertices = new VertexPositionColorTexture[0];
+            _cpuIndices = new int[0];
         }
 
         /// <summary>
@@ -74,25 +75,36 @@ namespace Pose.Runtime.MonoGameDotNetCore.Rendering
 
             if (cpuMesh.Texture != _cpuCurrentTexture)
             {
-                if (_cpuVertexCount > 0)
-                    FlushCpuGeometry();
+                FlushCpuGeometry();
 
                 _effect.TextureEnabled = cpuMesh.Texture != null;
                 _effect.Texture = cpuMesh.Texture;
                 _cpuCurrentTexture = cpuMesh.Texture;
             }
 
+            var indexOffsetInBatch = _cpuVertexCount;
+
+            // copy vertices to batch buffer
+
+            // grow vertex batch buffer?
             if (_cpuVertexCount + cpuMesh.VertexCount > _cpuVertices.Length)
                 Array.Resize(ref _cpuVertices, (int)((_cpuVertexCount + cpuMesh.VertexCount) * 1.5f));
+            // copy vertices from cpumesh into batch buffer.
             Array.Copy(cpuMesh.Vertices, 0, _cpuVertices, _cpuVertexCount, cpuMesh.VertexCount);
             _cpuVertexCount += cpuMesh.VertexCount;
 
+
+            // copy indices to batch buffer
+
+            // grow index batch buffer?
             if (_cpuIndexCount + cpuMesh.IndexCount > _cpuIndices.Length)
                 Array.Resize(ref _cpuIndices, (int)((_cpuIndexCount + cpuMesh.IndexCount) * 1.5f));
+            // Copy the indices but shift their values so they point to the corresponding vertices in the batch buffer:
             for (var i = 0; i < cpuMesh.IndexCount; i++)
             {
-                _cpuIndices[_cpuIndexCount + i] = cpuMesh.Indices[i] + _cpuVertexCount;
+                _cpuIndices[_cpuIndexCount + i] = cpuMesh.Indices[i] + indexOffsetInBatch;
             }
+            
             _cpuIndexCount += cpuMesh.IndexCount;
         }
 
@@ -103,10 +115,7 @@ namespace Pose.Runtime.MonoGameDotNetCore.Rendering
             if (gpuMesh.VertexCount == 0)
                 return;
 
-            if (_cpuVertexCount > 0) // was there still cpu mesh waiting to be rendered?
-            {
-                FlushCpuGeometry();
-            }
+            FlushCpuGeometry();
 
             _graphicsDevice.SetVertexBuffer(gpuMesh.GetVertexBuffer());
             _graphicsDevice.Indices = gpuMesh.GetIndexBuffer();
@@ -121,12 +130,14 @@ namespace Pose.Runtime.MonoGameDotNetCore.Rendering
 
         public void End()
         {
-            if (_cpuVertexCount > 0)
-                FlushCpuGeometry();
+            FlushCpuGeometry();
         }
 
         private void FlushCpuGeometry()
         {
+            if (_cpuVertexCount == 0)
+                return;
+
             _effect.World = Matrix.Identity;
 
             foreach (var pass in _effect.CurrentTechnique.Passes)

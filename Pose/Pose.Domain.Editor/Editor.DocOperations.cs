@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using Pose.Common;
+using Pose.Common.Curves;
 using Pose.Domain.Animations;
-using Pose.Domain.Curves;
 using Pose.Domain.Documents;
 using Pose.Domain.Documents.Messages;
 using Pose.Domain.Nodes;

@@ -5,6 +5,7 @@ using System.Windows.Input;
 using Pose.Domain;
 using Pose.Domain.Editor;
 using Pose.Domain.Nodes;
+using Pose.Domain.Nodes.Properties;
 using Pose.SceneEditor.EditorItems;
 using Pose.SceneEditor.Gizmos;
 using Pose.SceneEditor.MouseOperations;
@@ -148,7 +149,7 @@ namespace Pose.SceneEditor
         {
             foreach (var item in _items.Values)
             {
-                item.RefreshTransformationFromNode();
+                item.RefreshPropertiesFromNode();
             }
         }
 

@@ -1,4 +1,4 @@
-﻿namespace Pose.Domain.Curves
+﻿namespace Pose.Common.Curves
 {
     /// <summary>
     /// Cubic Bezier curve (2 points, 2 handle points). X0 and X3 are the endpoints, X1 and X2 are the handles. A, B and C are the parameters of the 3rd grade polynomials defining fx(t) and fy(t). 

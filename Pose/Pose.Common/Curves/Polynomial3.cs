@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics.Contracts;
 
-namespace Pose.Domain.Curves
+namespace Pose.Common.Curves
 {
     public struct Polynomial3
     {

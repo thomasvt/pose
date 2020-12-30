@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using Pose.Common;
 using Pose.Domain;
 using Pose.SceneEditor.Viewport;
 

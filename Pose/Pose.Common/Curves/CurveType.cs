@@ -1,4 +1,4 @@
-﻿namespace Pose.Domain.Curves
+﻿namespace Pose.Common.Curves
 {
     public enum CurveType
     {

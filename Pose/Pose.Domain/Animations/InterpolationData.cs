@@ -1,5 +1,5 @@
 ﻿using System;
-using Pose.Domain.Curves;
+using Pose.Common.Curves;
 
 namespace Pose.Domain.Animations
 {
@@ -52,7 +52,7 @@ namespace Pose.Domain.Animations
         {
             if (easingPercentage < 0f || easingPercentage > 1f)
                 throw new ArgumentOutOfRangeException(nameof(easingPercentage));
-            return new InterpolationData(CurveType.Bezier, Curves.BezierCurve.GetEasingCurve(easingPercentage));
+            return new InterpolationData(CurveType.Bezier, Common.Curves.BezierCurve.GetEasingCurve(easingPercentage));
         }
     }
 }

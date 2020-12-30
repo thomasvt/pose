@@ -22,7 +22,7 @@ message Node {
 	uint64 parentId = 3;
 	Point position = 4;
 	float angle = 5;
-
+	
 	enum NodeType {
 		SPRITENODE = 0;
 		BONENODE = 1;
@@ -32,6 +32,7 @@ message Node {
 
 	string spriteKey = 7; // The sprite's relative filepath. This is used as identifying key for the sprite in editor and runtimes.
 	float boneLength = 8;
+	bool isVisible = 9;
 }
 
 message Point {

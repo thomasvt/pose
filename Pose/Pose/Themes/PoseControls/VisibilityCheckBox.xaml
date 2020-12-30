@@ -13,19 +13,21 @@
         <Setter Property="BorderThickness" Value="1" />
         <Setter Property="Background" Value="#333333" />
         <Setter Property="Height" Value="21" />
+        <Setter Property="ToolTip" Value="Not visible" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type controls:VisibilityCheckBox}">
                     <Grid Background="Transparent">
-                        <Path Style="{StaticResource IconPath}" ToolTip="Visible" Width="15" Height="15" Stretch="Uniform" x:Name="optionMark" Data="{StaticResource IconEye}"  
+                        <Path Style="{StaticResource IconPath}" Width="15" Height="15" Stretch="Uniform" x:Name="optionMark" Data="{StaticResource IconEye}"  
                                   Fill="#dddddd" Margin="1" Opacity="0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                        <Path Style="{StaticResource IconPath}" ToolTip="Not visible" Width="15" Height="15" Stretch="Uniform" x:Name="optionMark2" Data="{StaticResource IconEyeClosed}"  
+                        <Path Style="{StaticResource IconPath}" Width="15" Height="15" Stretch="Uniform" x:Name="optionMark2" Data="{StaticResource IconEyeClosed}"  
                                   Fill="#555555" Margin="1" Opacity="1" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </Grid>
                     <ControlTemplate.Triggers>
                         <Trigger Property="IsChecked" Value="True">
                             <Setter TargetName="optionMark" Property="Opacity" Value="1" />
                             <Setter TargetName="optionMark2" Property="Opacity" Value="0" />
+                            <Setter Property="ToolTip" Value="Visible" />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

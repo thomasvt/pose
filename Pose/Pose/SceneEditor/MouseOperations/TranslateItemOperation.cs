@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using Pose.Common;
 using Pose.Domain;
 using Pose.SceneEditor.EditorItems;
 

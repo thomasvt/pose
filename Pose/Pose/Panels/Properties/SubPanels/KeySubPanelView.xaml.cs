@@ -1,8 +1,9 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
+using Pose.Common;
+using Pose.Common.Curves;
 using Pose.Controls;
 using Pose.Domain;
-using Pose.Domain.Curves;
 
 namespace Pose.Panels.Properties.SubPanels
 {

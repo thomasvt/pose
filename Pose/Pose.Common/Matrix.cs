@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Pose.Domain
+namespace Pose.Common
 {
     public struct Matrix
     : IEquatable<Matrix>

@@ -58,8 +58,11 @@
                     case NodeProperty.RotationAngle:
                         node.AnimateTransformation.Angle = newValue;
                         break;
+                    case NodeProperty.Visibility:
+                        node.IsVisible = newValue != 0f;
+                        break;
                     default:
-                        throw new PoseNotSupportedException($"Animating \"{propertyAnimation.NodeProperty}\" is currently not supported.");
+                        throw new PoseNotSupportedException($"Animating of PropertyType \"{propertyAnimation.NodeProperty}\" is currently not supported.");
                 }
             }
         }

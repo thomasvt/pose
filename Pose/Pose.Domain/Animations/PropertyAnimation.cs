@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Pose.Common.Curves;
 using Pose.Domain.Animations.Events;
-using Pose.Domain.Curves;
 using Pose.Domain.Nodes.Properties;
 using Pose.Framework.Messaging;
 

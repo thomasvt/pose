@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using Pose.Common;
+using Pose.Common.Curves;
 using Pose.Domain;
-using Pose.Domain.Curves;
 using Pose.Domain.Nodes;
 using Pose.Domain.Nodes.Properties;
 
@@ -54,7 +55,7 @@ namespace Pose.Persistence
                         Y = domainNode.GetProperty(PropertyType.TranslationY).DesignValue
                     },
                     Angle = domainNode.GetProperty(PropertyType.RotationAngle).DesignValue,
-
+                    IsVisible = Property.ValueToBool(domainNode.GetProperty(PropertyType.Visibility).DesignValue)
                 };
                 doc.Nodes.Add(node);
                 switch (domainNode)
@@ -126,7 +127,7 @@ namespace Pose.Persistence
             }
         }
 
-        private static BezierCurve MapCurve(Domain.Curves.BezierCurve? curve)
+        private static BezierCurve MapCurve(Common.Curves.BezierCurve? curve)
         {
             if (curve == null)
                 return null;

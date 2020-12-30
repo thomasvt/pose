@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Pose.Domain.Curves;
+using Pose.Common;
+using Pose.Common.Curves;
 
 namespace Pose.Domain.Tests.Bezier
 {

@@ -56,7 +56,7 @@ namespace Pose.SceneEditor
                 return; // ignore individual changes and wait for BulkSceneUpdateEnded.
 
             var item = _items[msg.NodeId];
-            item.RefreshTransformationFromNode();
+            item.RefreshPropertiesFromNode();
         }
 
         private void OnBulkSceneUpdateEnded(BulkSceneUpdateEnded msg)

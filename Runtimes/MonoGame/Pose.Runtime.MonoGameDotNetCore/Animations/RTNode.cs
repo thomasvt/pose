@@ -15,6 +15,8 @@ namespace Pose.Runtime.MonoGameDotNetCore.Animations
         /// The animated transformation properties, added to DesignTransformation to get the visible result.
         /// </summary>
         public Transformation AnimateTransformation;
+
+        public bool IsVisible;
         /// <summary>
         /// Reference to the graphical sprite of this node.
         /// </summary>
@@ -30,8 +32,9 @@ namespace Pose.Runtime.MonoGameDotNetCore.Animations
         /// </summary>
         internal Matrix GlobalTransform;
 
-        public RTNode(int parentNodeIdx, Transformation designTransformation, Transformation animateTransformation, int drawOrderIndex, SpriteQuad spriteQuad = null)
+        public RTNode(int parentNodeIdx, bool isVisible, Transformation designTransformation, Transformation animateTransformation, int drawOrderIndex, SpriteQuad spriteQuad = null)
         {
+            IsVisible = isVisible;
             ParentNodeIdx = parentNodeIdx;
             SpriteQuad = spriteQuad;
             DesignTransformation = designTransformation;

@@ -1,4 +1,4 @@
-﻿using Pose.Domain.Curves;
+﻿using Pose.Common.Curves;
 
 namespace Pose.Runtime.MonoGameDotNetCore.Animations
 {

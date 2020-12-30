@@ -32,27 +32,31 @@ namespace Pose.Runtime.MonoGame.TestGame
             };
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
+            IsFixedTimeStep = true;
         }
 
         protected override void LoadContent()
         {
             _poseRuntime = new PoseRuntime(new Renderer(_graphicsDeviceManager))
             {
-                UseMultiCore = true
+                UseMultiCore = false
             };
 
             // use this variant to load from files, without using the content pipeline:
-            // var skeletonDefinition = SkeletonDefinition.LoadFromFiles(GraphicsDevice, "poser");
+            var skeletonDefinition = SkeletonDefinition.LoadFromFiles(GraphicsDevice, "../../../../../../pose/pose/assets/poser/poser"); // this points to the original 'poser' sample files in git so we don't need to copy them over each time it changes.
 
-            var skeletonDefinition = Content.LoadPoseSkeletonDefinition("poser");
+            //var skeletonDefinition = Content.LoadPoseSkeletonDefinition("poser");
             
             _skeletons = new List<Skeleton>();
 
             // DEMO 1 -----------
-            //CreateDemo1(skeletonDefinition);
+            CreateDemo1(skeletonDefinition);
+            // ----
 
             // DEMO 2 ------------------
-            CreateDemo2(skeletonDefinition);
+            //CreateDemo2(skeletonDefinition);
+            // ----
+            
             StartAnimations("Run");
         }
 
@@ -60,7 +64,9 @@ namespace Pose.Runtime.MonoGame.TestGame
         {
             _cameraZoom = 1f;
             _skeletons.Add(_poseRuntime.AddSkeleton(skeletonDefinition, new Vector2(0, 0), 0, 0));
-            _skeletons.Add(_poseRuntime.AddSkeleton(skeletonDefinition, new Vector2(-100, 0), 20, 0));
+            _skeletons.Add(_poseRuntime.AddSkeleton(skeletonDefinition, new Vector2(-100, 0), 1, 0));
+            _skeletons.Add(_poseRuntime.AddSkeleton(skeletonDefinition, new Vector2(100, 0), 1, 0));
+            _skeletons.Add(_poseRuntime.AddSkeleton(skeletonDefinition, new Vector2(200, 0), 2, 0));
         }
 
         private void CreateDemo2(SkeletonDefinition skeletonDefinition)
@@ -86,7 +92,7 @@ namespace Pose.Runtime.MonoGame.TestGame
             foreach (var skeleton in _skeletons)
             {
                 skeleton.StartAnimation(animationName, t - offset);
-                offset += 0.097f;
+                //offset += 0.097f;
             }
         }
 

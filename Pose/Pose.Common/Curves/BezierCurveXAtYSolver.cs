@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Pose.Domain.Curves
+namespace Pose.Common.Curves
 {
     /// <summary>
     /// Improves performance of multiple calculations on a single <see cref="BezierCurve"/> by reusing intermediate data. If you only need to calculate once for a curve, use <see cref="BezierMath"/> instead.

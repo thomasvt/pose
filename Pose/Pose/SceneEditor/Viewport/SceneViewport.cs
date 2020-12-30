@@ -4,7 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Media.Media3D;
-using Pose.Domain;
+using Pose.Common;
 using Pose.Domain.Nodes;
 using Matrix = System.Windows.Media.Matrix;
 using Point = System.Windows.Point;

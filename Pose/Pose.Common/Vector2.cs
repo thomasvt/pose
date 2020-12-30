@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Runtime.InteropServices.WindowsRuntime;
 
-namespace Pose.Domain
+namespace Pose.Common
 {
     public readonly struct Vector2
     : IEquatable<Vector2>

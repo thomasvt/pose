@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using Pose.Common;
+using Pose.Common.Curves;
 using Pose.Domain;
 using Pose.Domain.Animations;
-using Pose.Domain.Curves;
 using Pose.Domain.Nodes;
 using Pose.Domain.Nodes.Properties;
 using Pose.Framework.Messaging;
@@ -80,6 +81,7 @@ namespace Pose.Persistence
             domainNode.GetProperty(PropertyType.TranslationY).SetDesignValueInternal(node.Position.Y);
             domainNode.GetProperty(PropertyType.RotationAngle).SetDesignValueInternal(node.Angle);
             domainNode.GetProperty(PropertyType.BoneLength).SetDesignValueInternal(node.BoneLength);
+            domainNode.GetProperty(PropertyType.Visibility).SetDesignValueInternal(node.IsVisible ? 1f : 0f);
 
             return domainNode;
         }
@@ -106,6 +108,7 @@ namespace Pose.Persistence
             domainNode.GetProperty(PropertyType.TranslationX).SetDesignValueInternal(node.Position.X);
             domainNode.GetProperty(PropertyType.TranslationY).SetDesignValueInternal(node.Position.Y);
             domainNode.GetProperty(PropertyType.RotationAngle).SetDesignValueInternal(node.Angle);
+            domainNode.GetProperty(PropertyType.Visibility).SetDesignValueInternal(node.IsVisible ? 1f : 0f);
 
             return domainNode;
         }
@@ -154,7 +157,7 @@ namespace Pose.Persistence
             switch (type)
             {
                 case Key.Types.InterpolationTypeEnum.Bezier:
-                    return new InterpolationData(CurveType.Bezier, new Domain.Curves.BezierCurve(MapPoint(curve.P0), MapPoint(curve.P1), MapPoint(curve.P2), MapPoint(curve.P3)));
+                    return new InterpolationData(CurveType.Bezier, new Common.Curves.BezierCurve(MapPoint(curve.P0), MapPoint(curve.P1), MapPoint(curve.P2), MapPoint(curve.P3)));
                 case Key.Types.InterpolationTypeEnum.Hold:
                     return new InterpolationData(CurveType.Hold);
                 case Key.Types.InterpolationTypeEnum.Linear:

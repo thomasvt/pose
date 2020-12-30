@@ -14,7 +14,7 @@ namespace Pose.SceneEditor.EditorItems
             _sceneEditor = sceneEditor;
 
             CreateSubItems();
-            RefreshTransformationFromNode();
+            RefreshPropertiesFromNode();
         }
 
         private void CreateSubItems()

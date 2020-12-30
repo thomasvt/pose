@@ -1,6 +1,7 @@
-﻿using Pose.Domain;
+﻿using Pose.Common;
+using Pose.Common.Curves;
+using Pose.Domain;
 using Pose.Domain.Animations.Messages;
-using Pose.Domain.Curves;
 using Pose.Domain.Editor;
 using Pose.Domain.Nodes.Properties;
 using Pose.Framework.Messaging;

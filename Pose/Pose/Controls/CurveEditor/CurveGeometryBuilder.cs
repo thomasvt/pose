@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Media;
+using Pose.Common;
+using Pose.Common.Curves;
 using Pose.Domain;
-using Pose.Domain.Curves;
 
 namespace Pose.Controls.CurveEditor
 {

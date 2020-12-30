@@ -1,9 +1,12 @@
 ﻿namespace Pose.Runtime.MonoGameDotNetCore.Animations
 {
-    internal enum NodeProperty // copied from Pose.Domain.Animations
+    internal enum NodeProperty // copy this from Pose.Domain.Animations, check there if it has changed.
     {
         TranslationX,
         TranslationY,
-        RotationAngle
+        RotationAngle,
+
+        BoneLength,
+        Visibility
     }
 }

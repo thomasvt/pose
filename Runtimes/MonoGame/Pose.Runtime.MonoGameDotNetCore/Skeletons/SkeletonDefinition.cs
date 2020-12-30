@@ -4,10 +4,10 @@ using System.IO;
 using System.Linq;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Pose.Domain.Curves;
+using Pose.Common.Curves;
 using Pose.Persistence;
 using Pose.Runtime.MonoGameDotNetCore.Animations;
-using BezierCurve = Pose.Domain.Curves.BezierCurve;
+using BezierCurve = Pose.Common.Curves.BezierCurve;
 using Spritesheet = Pose.Runtime.MonoGameDotNetCore.Rendering.Spritesheet;
 
 namespace Pose.Runtime.MonoGameDotNetCore.Skeletons
@@ -112,7 +112,7 @@ namespace Pose.Runtime.MonoGameDotNetCore.Skeletons
             if (curve == null)
                 return null;
 
-            return new BezierCurve(new Domain.Vector2(curve.P0.X, curve.P0.Y), new Domain.Vector2(curve.P1.X, curve.P1.Y), new Domain.Vector2(curve.P2.X, curve.P2.Y), new Domain.Vector2(curve.P3.X, curve.P3.Y));
+            return new BezierCurve(new Common.Vector2(curve.P0.X, curve.P0.Y), new Common.Vector2(curve.P1.X, curve.P1.Y), new Common.Vector2(curve.P2.X, curve.P2.Y), new Common.Vector2(curve.P3.X, curve.P3.Y));
         }
 
         private static CurveType MapInterpolationType(Key.Types.InterpolationTypeEnum type)
@@ -128,12 +128,12 @@ namespace Pose.Runtime.MonoGameDotNetCore.Skeletons
 
         private RTNode[] BuildRuntimeNodes(out Dictionary<ulong, int> nodeIndices)
         {
-            // we store worldtransform of the Skeleton in the game as an extra runtime rootnode at index 0. This makes all nodes have a parent node, eliminates an IF at render-time.
+            // we store worldtransform of the Skeleton in the game as an extra runtime rootnode at index 0. This ensures all nodes have a parent node, eliminating an IF at render-time and allows us to give the skeleton a world transform.
 
             var nodeCount = _document.Nodes.Count(n => n.Type == Node.Types.NodeType.Spritenode) + 1; // +1 -> for the extra runtime root 
             var nodes = new List<RTNode>(nodeCount)
             {
-                new RTNode(0, new Transformation(), new Transformation(), 0) // root of the skeleton
+                new RTNode(0, true, new Transformation(), new Transformation(), 0) // root of the skeleton
             };
             nodeIndices = new Dictionary<ulong, int>(nodeCount)
             {
@@ -151,6 +151,7 @@ namespace Pose.Runtime.MonoGameDotNetCore.Skeletons
                     drawOrderIndex = _document.DrawOrder.NodeIds.IndexOf(node.Id);
 
                 nodes.Add(new RTNode(parentIdx,
+                    node.IsVisible,
                     new Transformation(node.Position.X, node.Position.Y, node.Angle),
                     new Transformation(0,0,0),
                     drawOrderIndex,

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using Pose.Common;
 using Pose.Domain.Animations;
 using Pose.Domain.Documents.Events;
 using Pose.Domain.Documents.Messages;

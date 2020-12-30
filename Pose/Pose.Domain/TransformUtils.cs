@@ -1,4 +1,6 @@
-﻿namespace Pose.Domain
+﻿using Pose.Common;
+
+namespace Pose.Domain
 {
     public static class TransformUtils
     {

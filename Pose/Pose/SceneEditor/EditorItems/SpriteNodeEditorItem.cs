@@ -14,7 +14,7 @@ namespace Pose.SceneEditor.EditorItems
             _spriteBitmap = spriteBitmap;
 
             CreateSubItems();
-            RefreshTransformationFromNode();
+            RefreshPropertiesFromNode();
         }
 
         private void CreateSubItems()

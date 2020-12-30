@@ -16,9 +16,10 @@ namespace Pose.SceneEditor.EditorItems
             NodeId = nodeId;
         }
 
-        public virtual void RefreshTransformationFromNode()
+        public virtual void RefreshPropertiesFromNode()
         {
             Transformation = _sceneEditor.Editor.GetNodeTransformation(NodeId);
+            SetIsVisible(_sceneEditor.Editor.GetNodePropertyAsBool(NodeId, PropertyType.Visibility));
             UpdateVisuals();
         }
 

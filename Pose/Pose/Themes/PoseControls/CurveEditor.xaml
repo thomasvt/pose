@@ -1,7 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:curveEditor="clr-namespace:Pose.Controls.CurveEditor"
-                    xmlns:curves="clr-namespace:Pose.Domain.Curves;assembly=Pose.Domain">
+                    xmlns:curveEditor="clr-namespace:Pose.Controls.CurveEditor">
 
     <Style TargetType="{x:Type curveEditor:CurveEditor}">
         <Setter Property="LabelColumnWidth" Value="88" />

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Pose.Common;
 using Pose.Domain.Documents.Messages;
 using Pose.Domain.Nodes.Events;
 using Pose.Domain.Nodes.Messages;

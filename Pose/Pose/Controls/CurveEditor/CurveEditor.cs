@@ -4,8 +4,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Shapes;
+using Pose.Common;
+using Pose.Common.Curves;
 using Pose.Domain;
-using Pose.Domain.Curves;
 
 namespace Pose.Controls.CurveEditor
 {

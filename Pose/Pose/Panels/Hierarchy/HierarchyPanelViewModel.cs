@@ -55,12 +55,12 @@ namespace Pose.Panels.Hierarchy
             }
         }
 
-        private HierarchyNodeViewModel CreateNode(ulong nodeId, string name, bool isActive)
+        private HierarchyNodeViewModel CreateNode(ulong nodeId, string name, bool isVisible)
         {
             var node = _editor.CurrentDocument.GetNode(nodeId);
             var nodeViewModel = new HierarchyNodeViewModel(_editor, nodeId)
             {
-                IsNodeVisible = isActive,
+                IsNodeVisible = isVisible,
                 IsExpanded = false,
                 IsBone = node is BoneNode,
                 IsSprite = node is SpriteNode

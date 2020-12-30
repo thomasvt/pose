@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Pose.Domain.Curves
+namespace Pose.Common.Curves
 {
     public static class BezierMath
     {
