@@ -33,12 +33,13 @@
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <Path Grid.Column="0" Width="10" Height="10" Fill="#ff2C8FFF"  Style="{StaticResource IconPath}" Data="{StaticResource IconBone}" Visibility="{Binding IsBone, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                        <Path Grid.Column="0" Width="10" Height="10" Fill="#cccccc" Style="{StaticResource IconPath}" Data="{StaticResource IconSprite}" Visibility="{Binding IsSprite, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                        <Path Grid.Column="0" Width="10" Height="10" Style="{StaticResource IconPath}" Data="{StaticResource IconSprite}" Visibility="{Binding IsSprite, Converter={StaticResource BooleanToVisibilityConverter}}" />
                         <controls:EditableLabel Grid.Column="1" Height="24" Margin="8,0,8,0" Text="{Binding Name}"  TextBlock.FontWeight="{Binding IsBone, Converter={StaticResource BoolToBoneFontWeightConverter}}"
                                             VerticalAlignment="Center" IsSelected="{Binding IsSelected}" />
-                        <controls:KeyCheckBox Grid.Column="2" VerticalAlignment="Center" Margin="0,0,8,0" IsKeyable="{Binding IsKeyable}"
-                                              MatchesKeyValue="{Binding MatchesKeyValue}"
-                                              IsChecked="{Binding IsNodeVisible}" ToolTip="Toggle visibility" />
+                        <StackPanel Grid.Column="2" Orientation="Horizontal">
+                            <controls:VisibilityCheckBox VerticalAlignment="Center" Margin="0,0,0,0" IsChecked="{Binding IsNodeVisible}" />
+                            <controls:KeyButton IsChecked="{Binding IsKeyed}" Visibility="{Binding IsKeyable, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                        </StackPanel>
                     </Grid>
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>

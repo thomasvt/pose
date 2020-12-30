@@ -8,7 +8,7 @@
         <Setter Property="IsThreeState" Value="False" />
         <Setter Property="BorderBrush" Value="#aaaaaa" />
         <Setter Property="Background" Value="Transparent" />
-        <Setter Property="ToolTip" Value="Click to add a key for this property at the current animation frame." />
+        <Setter Property="ToolTip" Value="Click to add an animation key for this propertyvalue at the current frame." />
         <Setter Property="IsTabStop" Value="False" /> <!-- allow tab button in numericinputbox to jump to the next inputbox, not the KeyButton -->
         <Setter Property="Template">
             <Setter.Value>
@@ -62,10 +62,10 @@
                         </MultiTrigger>
 
                         <Trigger Property="IsChecked" Value="True">
-                            <Setter Property="ToolTip" Value="Click to remove the key for this property from the animation." />
+                            <Setter Property="ToolTip" Value="Click to remove the animation key for this propertyvalue." />
                         </Trigger>
                         <Trigger Property="IsChecked" Value="{x:Null}">
-                            <Setter Property="ToolTip" Value="Click to update this key with the changed value." />
+                            <Setter Property="ToolTip" Value="Click to update the animation key with the changed value." />
                         </Trigger>
                     </ControlTemplate.Triggers>
                 </ControlTemplate>

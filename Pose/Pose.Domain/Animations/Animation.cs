@@ -155,10 +155,7 @@ namespace Pose.Domain.Animations
         /// </summary>
         internal void ApplyCurrentFrameToScene()
         {
-            foreach (var nodeAnimations in AnimationsPerNode.Values)
-            {
-                nodeAnimations.ApplyToScene(CurrentFrame);
-            }
+            ApplyFrameToScene(CurrentFrame);
         }
 
         internal void ApplyFrameToScene(float frame)

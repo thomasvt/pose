@@ -105,7 +105,7 @@ namespace Pose.Panels.Properties
             var key = animation.GetKeyAnimateValueOrNull(nodeId, PropertyType, animation.CurrentFrame);
             if (key == null)
                 return false;
-            return Math.Abs(key.Value - currentPropertyValue) < 0.001 ? (bool?)true : null; // compensate for rounding errors. We don't need high accuracy anyway.
+            return Math.Abs(key.Value - currentPropertyValue) < 0.001 ? (bool?)true : null; // compensate for rounding errors while roundtripping, visual values can be different from internally stored values.
         }
 
         public bool? IsKeyed

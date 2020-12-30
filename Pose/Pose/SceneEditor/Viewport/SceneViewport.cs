@@ -195,7 +195,7 @@ namespace Pose.SceneEditor.Viewport
             _nodeItemFromVisual.Add(visual, nodeItem);
             _nodeItemFromId.Add(nodeId, nodeItem);
         }
-        
+
         public void RemoveSpriteNode(ulong nodeId)
         {
             var visual = _nodeItemFromId[nodeId].Visual;
@@ -236,6 +236,7 @@ namespace Pose.SceneEditor.Viewport
         public void Hide(in ulong nodeId)
         {
             var nodeItem = _nodeItemFromId[nodeId];
+            nodeItem.IsVisible = false;
             if (Children.Contains(nodeItem.Visual)) // this is fast (checks parent)
                 Children.Remove(nodeItem.Visual);
         }
@@ -243,43 +244,51 @@ namespace Pose.SceneEditor.Viewport
         public void Show(in ulong nodeId)
         {
             var nodeItem = _nodeItemFromId[nodeId];
+            nodeItem.IsVisible = true;
             if (!Children.Contains(nodeItem.Visual)) // this is fast (checks parent)
                 Children.Add(nodeItem.Visual);
         }
 
-        public void SortVisuals(IList<ulong> spriteIdsInOrder)
+        public void SortVisuals(IList<ulong> spriteIdsInDrawOrder)
         {
             // note: rendering order is opposite of domain draw order. (rendering: last in list is in front of others)
 
-            // Rebuilding the visual list is quite heavy, and very often the order is unchanged. So let's check for differences first.
-            if (spriteIdsInOrder.Count+1 == Children.Count)
-            {
-                var isEqual = true;
-                for (var i = 1; i < spriteIdsInOrder.Count; i++)
-                {
-                    var nodeId = spriteIdsInOrder[^i]; // index from end
-                    var visual = _nodeItemFromId[nodeId].Visual;
-                    if (Children[i] != visual)
-                    {
-                        isEqual = false;
-                        break;
-                    }
-                }
-
-                if (isEqual)
-                    return;
-            }
+            // Rebuilding the list of Children is quite heavy, and very often the order is unchanged. So let's check for differences first.
+            if (DrawOrderIsDifferent(spriteIdsInDrawOrder)) return;
 
             // the render order follows the physical order of the children, so that order must correspond to the DrawOrder of the scene. Using Z coords to force drawing order does not work, because the physical child order would still cause transparency issues,
             // like you would in DirectX when render order does not match depth sorting.
             // (The depth buffer would make the gpu skip pixels of a sprite that's behind a transparent part of another sprite that was rendered earlier => render order for transparent geometry must always be back to front)
             Children.Clear();
             Children.Add(_lightVisual);
-            for (var index = spriteIdsInOrder.Count - 1; index >= 0; index--)
+            for (var index = spriteIdsInDrawOrder.Count - 1; index >= 0; index--)
             {
-                var nodeId = spriteIdsInOrder[index];
-                Children.Add(_nodeItemFromId[nodeId].Visual);
+                var nodeId = spriteIdsInDrawOrder[index];
+                var node = _nodeItemFromId[nodeId];
+                if (node.IsVisible)
+                    Children.Add(node.Visual);
             }
+        }
+
+        private bool DrawOrderIsDifferent(IList<ulong> spriteIdsInDrawOrder)
+        {
+            var j = 1; // skip the first (camera)
+            for (var i = 1; i <= spriteIdsInDrawOrder.Count; i++)
+            {
+                var nodeId = spriteIdsInDrawOrder[^i]; // index from end, ^1 is the last item
+                var node = _nodeItemFromId[nodeId];
+                if (!node.IsVisible)
+                    continue;
+
+                if (Children[j] != node.Visual)
+                {
+                    return false;
+                }
+
+                j++;
+            }
+
+            return true;
         }
 
         /// <summary>

@@ -31,7 +31,7 @@
                         </Grid.ColumnDefinitions>
                         <Path Width="10" Height="10" Fill="#cc2C8FFF" Style="{StaticResource IconPath}" Data="{StaticResource IconSprite}" />
                         <TextBlock Grid.Column="1" Margin="8,0,0,0" Text="{Binding Name}" VerticalAlignment="Center" />
-                        <controls:KeyCheckBox Grid.Column="2" VerticalAlignment="Center" Margin="0,0,8,0" IsKeyable="False" IsChecked="{Binding IsNodeVisible}" ToolTip="Change visibility in Scene Tree panel" IsEnabled="False" />
+                        <controls:VisibilityCheckBox Grid.Column="2" VerticalAlignment="Center" Margin="0,0,8,0" IsChecked="{Binding IsNodeVisible}" ToolTip="Change visibility in Scene Tree panel" IsEnabled="False" />
                     </Grid>
                 </DataTemplate>
             </ListBox.ItemTemplate>

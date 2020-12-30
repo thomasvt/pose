@@ -19,6 +19,8 @@ namespace Pose.SceneEditor.Gizmos
         private readonly BoneNodeEditorItem _boneNodeEditorItem;
         private const double ScreenRadius = 6d;
         private const double ScreenRadiusTip = 1.5d;
+        private const double BoneOpacity = 0.5d;
+        private const double BoneOpacityHover = 0.9d;
         private static readonly Brush FillBrush = new SolidColorBrush(Palette.Bone);
         private static readonly Brush SelectionBrush = new SolidColorBrush(Palette.Selection);
         private Vector2 _worldPosition;
@@ -27,6 +29,7 @@ namespace Pose.SceneEditor.Gizmos
         private BonePath _gizmoPath;
         private float _angle;
         private float _lastZoom;
+        private bool _isSelected;
 
         private bool _geometryIsDirty;
 
@@ -44,8 +47,8 @@ namespace Pose.SceneEditor.Gizmos
             {
                 Fill = FillBrush,
                 Stroke = SelectionBrush,
-                StrokeThickness = 0d,
-                Opacity = 0.8f
+                StrokeThickness = 0.5d,
+                Opacity = BoneOpacity
             };
             _gizmoPath = new BonePath(_boneNodeEditorItem?.NodeId, _path) // gizmopath is container control around _path, used to detect UI events on Bones, by checking for 'BonePath'
             {
@@ -54,11 +57,13 @@ namespace Pose.SceneEditor.Gizmos
 
             _path.MouseEnter += (sender, args) =>
             {
-                _path.Opacity = 1f;
+                _path.Opacity = BoneOpacityHover;
             };
             _path.MouseLeave += (sender, args) =>
             {
-                _path.Opacity = 0.8f;
+                if (_isSelected)
+                    return;
+                _path.Opacity = BoneOpacity;
             };
 
             _sceneEditor.GizmoCanvasFront.Children.Add(_gizmoPath);
@@ -138,12 +143,16 @@ namespace Pose.SceneEditor.Gizmos
 
         public void ShowAsSelected()
         {
+            _isSelected = true;
             _path.StrokeThickness = 2d;
+            _path.Opacity = BoneOpacityHover;
         }
 
         public void ShowAsNotSelected()
         {
-            _path.StrokeThickness = 0d;
+            _isSelected = false;
+            _path.StrokeThickness = 0.5d;
+            _path.Opacity = BoneOpacity;
         }
 
         public void Dispose()

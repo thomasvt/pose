@@ -11,6 +11,9 @@ namespace Pose.SceneEditor.Viewport
         /// Domain id of the Node.
         /// </summary>
         public ulong NodeId { get; }
+
+        public bool IsVisible { get; set; }
+
         /// <summary>
         /// The graphical WPF item inside the viewport representing the Node.
         /// </summary>

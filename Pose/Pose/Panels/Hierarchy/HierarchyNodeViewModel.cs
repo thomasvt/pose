@@ -14,7 +14,7 @@ namespace Pose.Panels.Hierarchy
         private bool _isNodeVisible;
         private string _name;
         private bool _isKeyable;
-        private bool? _matchesKeyValue;
+        private bool? _isKeyed;
         private bool _isUpdating;
 
         public HierarchyNodeViewModel(Editor editor, ulong nodeId)
@@ -36,7 +36,7 @@ namespace Pose.Panels.Hierarchy
             _isUpdating = true;
             IsNodeVisible = _editor.GetNodePropertyAsBool(NodeId, PropertyType.Visibility);
             IsKeyable = _editor.Mode == EditorMode.Animate;
-            MatchesKeyValue = GetKeyState();
+            IsKeyed = GetKeyState();
             _isUpdating = false;
         }
 
@@ -123,14 +123,26 @@ namespace Pose.Panels.Hierarchy
             }
         }
 
-        public bool? MatchesKeyValue
+        public bool? IsKeyed
         {
-            get => _matchesKeyValue;
+            get => _isKeyed;
             set
             {
-                if (value == _matchesKeyValue) return;
-                _matchesKeyValue = value;
+                if (value == _isKeyed) return;
+                _isKeyed = value;
                 OnPropertyChanged();
+
+                if (_isUpdating)
+                    return;
+
+                if (value.HasValue && value.Value) // we don't care about undetermined here
+                {
+                    Keyed?.Invoke();
+                }
+                else
+                {
+                    Unkeyed?.Invoke();
+                }
             }
         }
 
@@ -161,7 +173,8 @@ namespace Pose.Panels.Hierarchy
         public event Action Deselected;
         public event Action IsExpandedChanged;
         public event Action NameChanged;
+        public event Action Keyed;
+        public event Action Unkeyed;
 
-        
     }
 }

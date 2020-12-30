@@ -33,7 +33,7 @@
         <ResourceDictionary Source="pack://application:,,,/Pose;component/Themes/PoseControls/FrameCursor.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Pose;component/Themes/PoseControls/IconButton.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Pose;component/Themes/PoseControls/KeyButton.xaml" />
-        <ResourceDictionary Source="pack://application:,,,/Pose;component/Themes/PoseControls/KeyCheckBox.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Pose;component/Themes/PoseControls/VisibilityCheckBox.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Pose;component/Themes/PoseControls/ModernWindow.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Pose;component/Themes/PoseControls/NumericInputBox.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Pose;component/Themes/PoseControls/TimelineKey.xaml" />

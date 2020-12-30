@@ -69,6 +69,8 @@ namespace Pose.Panels.Hierarchy
             nodeViewModel.NameChanged += () => _editor.RenameNode(nodeId, nodeViewModel.Name);
             nodeViewModel.Selected += () => _editor.SelectNodeAndChangeToModifyTool(nodeId); ;
             nodeViewModel.Deselected += () => _editor.NodeSelection.Remove(nodeId);
+            nodeViewModel.Keyed += () => _editor.AddOrUpdateKeyAtCurrentFrame(nodeId, PropertyType.Visibility);
+            nodeViewModel.Unkeyed += () => _editor.RemoveKeyAtCurrentFrame(nodeId, PropertyType.Visibility);
             _index.Add(nodeId, nodeViewModel);
             return nodeViewModel;
         }
