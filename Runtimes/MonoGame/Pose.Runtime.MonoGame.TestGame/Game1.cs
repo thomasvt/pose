@@ -92,7 +92,7 @@ namespace Pose.Runtime.MonoGame.TestGame
 
             _cameraZoom = 0.3f;
             var r = new Random();
-            const int count = 6000;
+            const int count = 5000;
             var horizCount = (int) (MathF.Sqrt(count) * 1.3f);
             var vertCount = count / horizCount + 1;
             const int distance = 100;

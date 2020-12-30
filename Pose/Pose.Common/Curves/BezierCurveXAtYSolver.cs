@@ -18,7 +18,42 @@ namespace Pose.Common.Curves
             _fy = bezierCurve.GetFy();
         }
 
-        public float SolveYAtX(float x)
+        public float SolveYAtX(float x) // optimized version (see below for more readable original)
+        {
+            // see BezierMath for explanation of what and why this does.
+
+            if (x < 0f || x > 1f)
+                throw new ArgumentOutOfRangeException(nameof(x));
+
+            var fxA = _fx.A;
+            var fxB = _fx.B;
+            var fxC = _fx.C;
+            var fxD = _fx.D - x; // Newton-Raphson finds 0-point of function (t where f(t)=0), but we want t where f(t) = x, so subtract x from D of the polynomial to be able to look for 0-point.
+
+            var fxdA = 3f * fxA;
+            var fxdB = 2f * fxB;
+
+            // use Newton-Raphson to find a T that yields an fx(t) closer to 0 than allowed tolerance.
+
+            var s = x; // initial guess = what t would be if the spline was perfectly linear.
+            float s2 = 0f, s3 = 0f;
+            for (var i = 0; i < 100; i++) // lets not try more than 100 times :)
+            {
+                s2 = s * s;
+                s3 = s * s2;
+                var resultX =  fxA * s3 + fxB * s2 + fxC * s + fxD;
+
+                if (resultX >= 0 && resultX < _tolerance || resultX < 0 && resultX > -_tolerance)
+                    break;
+
+                var d = fxdA * s2 + fxdB * s + fxC;
+                s -= resultX / d;
+            }
+
+            return _fy.A * s3 + _fy.B * s2 + _fy.C * s + _fy.D;
+        }
+
+        public float SolveYAtX_original(float x)
         {
             // see BezierMath for explanation of what and why this does.
 
