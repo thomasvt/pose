@@ -50,13 +50,8 @@ namespace Pose.Panels.Dopesheet
             _stopwatch = Stopwatch.StartNew();
         }
 
-        //private double _duration;
-        //private int i;
-
         private void UpdateScene()
         {
-            //var sw = Stopwatch.StartNew();
-
             var animation = _editor.GetCurrentAnimation();
             if (animation.IsLoop != _previousIsLoop)
             {
@@ -64,33 +59,34 @@ namespace Pose.Panels.Dopesheet
                 _previousIsLoop = animation.IsLoop;
             }
             var animationFrame = CalculateCurrentFrame();
-            var animationFrameInt = (int)animationFrame;
-
+            
             _editor.ApplyFrameToScene((float)animationFrame, _isFirstFrame);
             _isFirstFrame = false;
 
-            if (animationFrameInt != _previousAnimationFrameInt)
-            {
-                _editor.ChangeCurrentAnimationCurrentFrameTransient(animationFrameInt, true);
-                _previousAnimationFrameInt = animationFrameInt;
-            }
-
-            //_duration += (sw.Elapsed.TotalSeconds - _duration) * 0.1d;
-            //if (i++ % 60 == 0)
-            //    Debug.WriteLine($"{_duration * 1000:0.0} ms");
+            var animationFrameInt = (int)animationFrame;
+            SetDopesheetTimeCursor(animationFrameInt);
 
             if (!animation.IsLoop && animationFrameInt == animation.EndFrame)
                 EndReached?.Invoke();
         }
 
+        private void SetDopesheetTimeCursor(int animationFrameInt)
+        {
+            if (animationFrameInt == _previousAnimationFrameInt) 
+                return;
+
+            _editor.ChangeCurrentAnimationCurrentFrameTransient(animationFrameInt, true);
+            _previousAnimationFrameInt = animationFrameInt;
+        }
+
         private double CalculateCurrentFrame()
         {
             var animation = _editor.GetCurrentAnimation();
-            var animationFrameCount = animation.EndFrame - animation.BeginFrame;
+            var animationFrameCount = animation.EndFrame - animation.BeginFrame + (animation.IsLoop ? 1 : 0); // a loop needs an extra frame to return from last to first, the last != first in our implementation. eg. 0 -> 59 had 59 frames + 1 to return to start = 60 frames
             var animationFrameDurationTicks = (long)(1d / animation.FramesPerSecond * Stopwatch.Frequency);
             var animationDurationTicks = animationFrameDurationTicks * animationFrameCount;
 
-            var timerTicks = (_initialPositionTicks + _stopwatch.ElapsedTicks);
+            var timerTicks = _initialPositionTicks + _stopwatch.ElapsedTicks;
 
             if (!animation.IsLoop && timerTicks > animationDurationTicks)
             {
