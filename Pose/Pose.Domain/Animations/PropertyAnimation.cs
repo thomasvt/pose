@@ -72,32 +72,56 @@ namespace Pose.Domain.Animations
             }
         }
 
-        public float GetValueAt(in float frame)
+        public float GetValueAt(in float frame, in int firstFrame, int lastFrame, bool isLoop)
         {
+            if (!_keys.Any())
+                return 0f; // no animation, nothing to tell...
+
+            // loop over all keys in chronological order, the first key with a frame larger than the frame we're looking for is the end key of the segment we're in.
             var frameInt = (int) frame;
             Key prevKey = null;
+            int prevKeyFrame = 0;
             foreach (var pair in _keys)
             {
-                var nextKey = pair.Value;
-
-                if (nextKey.Frame == frameInt)
-                    return pair.Value.Value;
+                var key = pair.Value;
                 
-                if (nextKey.Frame > frameInt)
+                if (key.Frame > frameInt)
                 {
-                    if (prevKey == null) // we're before the first key = no left side key to interpolate with: just return the right side key's value.
-                        return nextKey.Value;
+                    if (prevKey == null) // we're before the first key in the animation -> there is no key to the left
+                    {
+                        if (isLoop)
+                        {
+                            // wrap by using last key on timeline as prev key:
+                            prevKey = _keys.Values[new Index(_keys.Count - 1)];
+                            prevKeyFrame = firstFrame - (lastFrame - prevKey.Frame + 1); // pretend the wrapped keyframe is further to the left so we can interpolate.
+                        }
+                        else
+                            return key.Value;
+                    }
 
-                    // interpolate
-                    var x = (frame - prevKey.Frame) / (nextKey.Frame - prevKey.Frame);
-                    var y = prevKey.Interpolation.CalculateY(x); // -> percentages
-                    return prevKey.Value * (1f - y) + nextKey.Value * y;
+                    // we're between prevkey and key -> interpolate
+                    var x = (frame - prevKeyFrame) / (key.Frame - prevKeyFrame);
+                    var y = prevKey.Interpolation.CalculateY(x); // -> returns a percentage
+                    return prevKey.Value * (1f - y) + key.Value * y; 
                 }
 
-                prevKey = nextKey;
+                prevKey = key;
+                prevKeyFrame = key.Frame;
             }
 
-            // requested frame is higher than last key found, so return value of that last key
+            // requested frame is higher than last key found:
+
+            if (isLoop) // + isloop -> wrap around to the beginning
+            {
+                // wrap by using first key on timeline as next key.
+                var nextKey = _keys.Values[new Index(0)];
+                var nextKeyFrame = lastFrame + nextKey.Frame - firstFrame + 1; // pretend the wrapped keyframe is further to the right so we can intepolate
+                var x = (frame - prevKey.Frame) / (nextKeyFrame - prevKey.Frame);
+                var y = prevKey.Interpolation.CalculateY(x); // -> returns a percentage
+                return prevKey.Value * (1f - y) + nextKey.Value * y;
+            }
+
+            // ... not a loop, just return the value of last key.
             return prevKey?.Value ?? 0f;
         }
 

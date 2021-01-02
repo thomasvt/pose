@@ -3,23 +3,33 @@
 namespace Pose.Runtime.MonoGameDotNetCore.Animations
 {
     /// <summary>
-    /// A segment between 2 Keys of a single PropertyAnimation.
+    /// A segment between 2 Keys of a single PropertyAnimation. 
     /// </summary>
     internal class RTSegment
     {
-        public readonly RTKey BeginKey;
-        public readonly RTKey EndKey;
-        public readonly float Duration;
         public readonly BezierCurveSolver BezierCurveSolver;
+        public readonly float BeginTime;
+        public readonly float EndTime;
+        public readonly float LeftKeyTime;
+        public readonly float Duration;
+        public readonly float LeftKeyValue;
+        public readonly float RightKeyValue;
         public readonly CurveType CurveType;
+        
 
-        public RTSegment(RTKey beginKey, RTKey endKey, CurveType curveType, BezierCurve? bezierCurve = null, float bezierTolerance = 0.002f)
+        public RTSegment(float beginTime, float endTime, float leftKeyTime, float duration, float leftKeyValue, float rightKeyValue, CurveType curveType, BezierCurve? bezierCurve = null, float bezierTolerance = 0.002f)
         {
-            BeginKey = beginKey;
-            EndKey = endKey;
-            Duration = endKey.Time - beginKey.Time;
+            BeginTime = beginTime;
+            EndTime = endTime;
+            LeftKeyTime = leftKeyTime;
+            Duration = duration;
+            LeftKeyValue = leftKeyValue;
+            RightKeyValue = rightKeyValue;
             CurveType = curveType;
             BezierCurveSolver = bezierCurve.HasValue ? new BezierCurveSolver(bezierCurve.Value, bezierTolerance) : null;
         }
+
+
+        
     }
 }

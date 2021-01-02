@@ -162,7 +162,7 @@ namespace Pose.Domain.Animations
         {
             foreach (var nodeAnimations in AnimationsPerNode.Values)
             {
-                nodeAnimations.ApplyToScene(frame);
+                nodeAnimations.ApplyToScene(frame, BeginFrame, EndFrame, IsLoop);
             }
         }
 

@@ -74,6 +74,12 @@ namespace Pose.Runtime.MonoGameDotNetCore.Skeletons
 
         private RTSegment[] BuildPropertyAnimationSegments(PropertyAnimation propertyAnimation, Animation animation)
         {
+            // This is more complicated than you would expect as we support animation wrapping by creating some nuances in the RTSegment. 
+            // BeginTime and EndTime indicate the Begin and End of the segment regarding the animation time-cursor: if the animation time is between BEginTime and EndTime, this segment is picked to calculate animation values.
+            // The actual interpolation calculation does not use BeginTime and EndTime, though. It uses leftKeyTime, Duration, LeftKeyValue and RightKeyValue. This is because, when looping, we wrap keyframes by creating segments
+            // at the beginning and end of the timeline where interpolation will be using a wrapped around keyframe form the other side of the timeline. Therefore, we need to supply this interpolation data separate from the BEgin/End times
+            // that only decide which Segment to pick.
+
             var segments = new List<RTSegment>();
             var sortedKeys = propertyAnimation.Keys.OrderBy(k => k.Frame).ToList();
 
@@ -82,7 +88,19 @@ namespace Pose.Runtime.MonoGameDotNetCore.Skeletons
                 // first key is not on first frame -> add a segment for the part before that first key
                 var key = sortedKeys[0];
                 var frameIndex = key.Frame - animation.BeginFrame;
-                segments.Add(new RTSegment(new RTKey(0, key.Value), new RTKey((float)frameIndex / animation.FramesPerSecond, key.Value), CurveType.Hold));
+                if (animation.IsLoop)
+                {
+                    // create a segment from 0 to first key, but with interpolation information that wraps around the animation timeline and uses the last key of the timeline as "left" key for interpolating.
+                    var wrappedKey = sortedKeys[new Index(sortedKeys.Count - 1)];
+                    var rightKeyTime = (float) frameIndex / animation.FramesPerSecond;
+                    var leftKeyTime = -(float)(animation.EndFrame - wrappedKey.Frame + 1) / animation.FramesPerSecond;
+                    var duration = rightKeyTime - leftKeyTime;
+                    segments.Add(new RTSegment(0, rightKeyTime, leftKeyTime, duration, wrappedKey.Value, key.Value, MapInterpolationType(wrappedKey.InterpolationType), MapBezierCurve(wrappedKey.Curve), BezierTolerance));
+                }
+                else
+                {
+                    segments.Add(new RTSegment(0, (float)frameIndex / animation.FramesPerSecond, 0, (float)frameIndex / animation.FramesPerSecond, key.Value, key.Value, CurveType.Hold));
+                }
             }
 
             // add segments for each key to the next key
@@ -93,15 +111,24 @@ namespace Pose.Runtime.MonoGameDotNetCore.Skeletons
 
                 if (i == sortedKeys.Count - 1)
                 {
-                    // last key, add an end-segment with constant value.
+                    // last key, add an end-segment
+
+                    if (animation.IsLoop)
+                    {
+                        // create a segment from last key to end of animation, but with interpolation information that wraps around the animation timeline and uses the first key of the timeline as "right" key for interpolating.
+                        var wrappedKey = sortedKeys[new Index(0)];
+                        var rightKeyTime = (float)(animation.EndFrame + wrappedKey.Frame - animation.BeginFrame + 1) / animation.FramesPerSecond;
+                        var duration = rightKeyTime - keyTime;
+                        segments.Add(new RTSegment(keyTime, float.MaxValue, keyTime, duration, key.Value, wrappedKey.Value, MapInterpolationType(key.InterpolationType), MapBezierCurve(key.Curve), BezierTolerance));
+                    }
                     // This allows us to ensures that non-looping animations end at the exact endkey-value by allowing to render 1 frame beyond the last keyframe.
-                    segments.Add(new RTSegment(new RTKey(keyTime, key.Value), new RTKey(float.MaxValue, key.Value), CurveType.Hold));
+                    segments.Add(new RTSegment(keyTime, float.MaxValue, keyTime, float.MaxValue - keyTime, key.Value, key.Value, CurveType.Hold));
                 }
                 else
                 {
                     var nextKey = sortedKeys[i + 1];
                     var nextKeyTime = (float)(nextKey.Frame - animation.BeginFrame) / animation.FramesPerSecond;
-                    segments.Add(new RTSegment(new RTKey(keyTime, key.Value), new RTKey(nextKeyTime, nextKey.Value), MapInterpolationType(key.InterpolationType), MapBezierCurve(key.Curve), BezierTolerance));
+                    segments.Add(new RTSegment(keyTime, nextKeyTime, keyTime, nextKeyTime - keyTime, key.Value, nextKey.Value, MapInterpolationType(key.InterpolationType), MapBezierCurve(key.Curve), BezierTolerance));
                 }
             }
 

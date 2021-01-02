@@ -36,14 +36,14 @@ namespace Pose.Runtime.MonoGameDotNetCore.Animations
         {
             ref var currentSegment = ref _segments[_currentSegmentIdx];
             // move to next segment until 'time' is inside segment. Also loops to first segment if last was reached and t is still outside the segment (because t will loop back to 0 by caller when isLoop = true).
-            while (time >= currentSegment.EndKey.Time || time < currentSegment.BeginKey.Time)
+            while (time >= currentSegment.EndTime || time < currentSegment.BeginTime)
             {
                 _currentSegmentIdx = (_currentSegmentIdx + 1) % _segments.Length;
                 currentSegment = ref _segments[_currentSegmentIdx];
             }
 
             // calc where we are on this segment in [0,1] percent
-            var t = (time - currentSegment.BeginKey.Time) / currentSegment.Duration;
+            var t = (time - currentSegment.LeftKeyTime) / currentSegment.Duration;
             // get interpolation value according to interpolationtype
             var y = 0f;
             if (currentSegment.CurveType == CurveType.Bezier)
@@ -55,7 +55,7 @@ namespace Pose.Runtime.MonoGameDotNetCore.Animations
                 y = t;
             }
 
-            return currentSegment.BeginKey.Value * (1 - y) + currentSegment.EndKey.Value * y;
+            return currentSegment.LeftKeyValue * (1 - y) + currentSegment.RightKeyValue * y;
         }
     }
 }

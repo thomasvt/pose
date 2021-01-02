@@ -74,11 +74,11 @@ namespace Pose.Domain.Animations
             }
         }
 
-        public void ApplyToScene(in float frame)
+        public void ApplyToScene(in float frame, int firstFrame, int lastFrame, bool isLoop)
         {
             foreach (var (propertyType, propertyAnimation) in PropertyAnimations)
             {
-                var value = propertyAnimation.GetValueAt(frame);
+                var value = propertyAnimation.GetValueAt(frame, firstFrame, lastFrame, isLoop);
                 var property = Node.GetProperty(propertyType) as IEditableProperty;
                 property.SetAnimateIncrement(value);
             }
