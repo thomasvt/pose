@@ -28,6 +28,7 @@
         <ResourceDictionary Source="pack://application:,,,/Pose;component/Themes/PoseControls/BezierHandle.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Pose;component/Themes/PoseControls/CurveEditor.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Pose;component/Themes/PoseControls/Dopesheet.xaml" />
+        <ResourceDictionary Source="pack://application:,,,/Pose;component/Themes/PoseControls/KeyAreaBackground.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Pose;component/Themes/PoseControls/DopesheetRow.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Pose;component/Themes/PoseControls/EditableLabel.xaml" />
         <ResourceDictionary Source="pack://application:,,,/Pose;component/Themes/PoseControls/FrameCursor.xaml" />
@@ -43,6 +44,4 @@
 
     </ResourceDictionary.MergedDictionaries>
 
-
-    
 </ResourceDictionary>

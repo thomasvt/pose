@@ -47,7 +47,7 @@ namespace Pose.Controls.Dopesheet
 
         public int GetFrameAt(double x)
         {
-            return (int)(x / FrameWidth) + FrameOffset;
+            return (int)((x - FrameWidth) / FrameWidth) + FrameOffset;
         }
 
         public static readonly DependencyProperty FrameWidthProperty = DependencyProperty.Register(

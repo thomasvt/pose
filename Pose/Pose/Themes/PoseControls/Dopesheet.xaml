@@ -43,7 +43,8 @@
                             <ScrollBar Grid.Row="1" Grid.Column="2" x:Name="PART_TimelineScrollBar" Height="10" Margin="0,6,0,0" DockPanel.Dock="Top" Minimum="0" Maximum="50" SmallChange="1" Background="#3a3a3a" LargeChange="10" Value="{TemplateBinding FrameOffset}" Orientation="Horizontal" />
                             <dopesheet1:TimelineRuler x:Name="PART_Ruler" Grid.Row="2" Grid.Column="2" Height="23" Margin="0,0,0,2" ClipToBounds="True" MinWidth="32" MinHeight="4" FrameWidth="{TemplateBinding FrameWidth}" FrameOffset="{TemplateBinding FrameOffset}" />
 
-                            <ScrollViewer Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3">
+                            <dopesheet1:KeyAreaBackground Grid.Row="3" Grid.Column="2" FrameWidth="{TemplateBinding FrameWidth}" FrameOffset="{TemplateBinding FrameOffset}" BeginFrame="{TemplateBinding BeginFrame}" EndFrame="{TemplateBinding EndFrame}" />
+                            <ScrollViewer Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="3" >
                                 <ItemsPresenter SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"/>
                             </ScrollViewer>
 

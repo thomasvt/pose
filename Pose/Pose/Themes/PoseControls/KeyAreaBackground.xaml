@@ -1,0 +1,15 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:dopesheet="clr-namespace:Pose.Controls.Dopesheet">
+
+    <Style TargetType="{x:Type dopesheet:KeyAreaBackground}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type dopesheet:KeyAreaBackground}">
+                    <Rectangle x:Name="PART_ActiveAreaRectangle" Fill="#2d2d2d" />
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+</ResourceDictionary>

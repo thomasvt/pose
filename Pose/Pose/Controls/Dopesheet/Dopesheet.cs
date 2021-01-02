@@ -118,7 +118,7 @@ namespace Pose.Controls.Dopesheet
             if (_timelineScrollBar == null)
                 return;
 
-            _timelineScrollBar.Maximum = endFrame - _timelineScrollBar.ViewportSize;
+            _timelineScrollBar.Maximum = endFrame - _timelineScrollBar.ViewportSize + 5;
             FrameOffset = (int)_timelineScrollBar.Value; // in some edge cases, scrollbar value is coerced within bounds without raising Scroll event, so update explicitly.
         }
 
