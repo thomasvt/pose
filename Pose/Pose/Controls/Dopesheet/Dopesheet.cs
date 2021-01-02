@@ -59,7 +59,7 @@ namespace Pose.Controls.Dopesheet
         private void ConfigureScrollBar()
         {
             _timelineScrollBar = GetTemplateChild("PART_TimelineScrollBar") as ScrollBar;
-            _timelineScrollBar.Scroll += (sender, args) => FrameOffset = (int) args.NewValue;
+            _timelineScrollBar.Scroll += (sender, args) => FrameOffset = (int)args.NewValue;
         }
 
         private void ConfigureFrameCursor()
@@ -73,7 +73,7 @@ namespace Pose.Controls.Dopesheet
             _minInputBox = GetTemplateChild("PART_BeginFrameInputBox") as NumericInputBox;
             _minInputBox.ValueChanged += (sender, args) =>
             {
-                BeginFrame = (int) _minInputBox.Value;
+                BeginFrame = (int)_minInputBox.Value;
                 BeginFrameCommitted?.Invoke(this, args);
             };
             OnBeginFrameSet(BeginFrame);
@@ -81,7 +81,7 @@ namespace Pose.Controls.Dopesheet
             _maxInputBox = GetTemplateChild("PART_EndFrameInputBox") as NumericInputBox;
             _maxInputBox.ValueChanged += (sender, args) =>
             {
-                EndFrame = (int) _maxInputBox.Value;
+                EndFrame = (int)_maxInputBox.Value;
                 EndFrameCommitted?.Invoke(this, args);
             };
             OnEndFrameSet(EndFrame);
@@ -118,8 +118,22 @@ namespace Pose.Controls.Dopesheet
             if (_timelineScrollBar == null)
                 return;
 
-            _timelineScrollBar.Maximum = endFrame - _timelineScrollBar.ViewportSize + 5;
+            // scrollbar max should be either endFrame or a Key that is even further to the right.
+
+            var range = GetUsedTimelineRange();
+            _timelineScrollBar.Maximum = (range.HasValue ? Math.Max(endFrame, range.Value.Max) : endFrame) - _timelineScrollBar.ViewportSize + 5;
             FrameOffset = (int)_timelineScrollBar.Value; // in some edge cases, scrollbar value is coerced within bounds without raising Scroll event, so update explicitly.
+        }
+
+        private void UpdateScrollBarMin(int beginFrame)
+        {
+            if (_timelineScrollBar == null)
+                return;
+
+            // scrollbar min should be either beginFrame or a Key that is even further to the left.
+            var range = GetUsedTimelineRange();
+            _timelineScrollBar.Minimum = range.HasValue ? Math.Min(beginFrame, range.Value.Min) : beginFrame;
+            FrameOffset = (int)_timelineScrollBar.Value; // in some edge cases, scrollbar value is coerced within bounds (if it was outside of bounds) without raising Scroll event, so update explicitly.
         }
 
         private FrameRange? GetUsedTimelineRange()
@@ -290,18 +304,6 @@ namespace Pose.Controls.Dopesheet
                     var beginFrame = (int)args.NewValue;
 
                     dopesheet.OnBeginFrameSet(beginFrame);
-                },
-                (o, value) =>
-                {
-                    var dopesheet = o as Dopesheet;
-
-                    var beginFrame = (int)value;
-                    var range = dopesheet.GetUsedTimelineRange();
-                    if (range.HasValue && range.Value.Min < beginFrame)
-                    {
-                        beginFrame = range.Value.Min;
-                    }
-                    return beginFrame;
                 })
             {
                 BindsTwoWayByDefault = true
@@ -313,11 +315,7 @@ namespace Pose.Controls.Dopesheet
             if (_minInputBox != null)
                 _minInputBox.Value = beginFrame;
 
-            if (_timelineScrollBar != null)
-            {
-                _timelineScrollBar.Minimum = beginFrame;
-                FrameOffset = (int) _timelineScrollBar.Value; // in some edge cases, scrollbar value is coerced within bounds (if it was outside of bounds) without raising Scroll event, so update explicitly.
-            }
+            UpdateScrollBarMin(beginFrame);
         }
 
         public int BeginFrame
@@ -340,22 +338,8 @@ namespace Pose.Controls.Dopesheet
                     var endFrame = (int)args.NewValue;
 
                     dopesheet.OnEndFrameSet(endFrame);
-                },
-                (o, value) =>
-                {
-                    var dopesheet = (Dopesheet)o;
-
-                    var endFrame = (int)value;
-
-                    var range = dopesheet.GetUsedTimelineRange();
-                    if (range.HasValue && range.Value.Max > endFrame)
-                    {
-                        endFrame = range.Value.Max;
-                    }
-
-                    return endFrame;
                 }
-                )
+            )
             {
                 BindsTwoWayByDefault = true
             });
@@ -409,7 +393,7 @@ namespace Pose.Controls.Dopesheet
 
         public object TopLeftContent
         {
-            get => (object) GetValue(TopLeftContentProperty);
+            get => (object)GetValue(TopLeftContentProperty);
             set => SetValue(TopLeftContentProperty, value);
         }
 
