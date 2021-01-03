@@ -74,65 +74,98 @@ namespace Pose.Runtime.MonoGameDotNetCore.Skeletons
 
         private RTSegment[] BuildPropertyAnimationSegments(PropertyAnimation propertyAnimation, Animation animation)
         {
-            // This is more complicated than you would expect as we support animation wrapping by creating some nuances in the RTSegment. 
-            // BeginTime and EndTime indicate the Begin and End of the segment regarding the animation time-cursor: if the animation time is between BEginTime and EndTime, this segment is picked to calculate animation values.
-            // The actual interpolation calculation does not use BeginTime and EndTime, though. It uses leftKeyTime, Duration, LeftKeyValue and RightKeyValue. This is because, when looping, we wrap keyframes by creating segments
-            // at the beginning and end of the timeline where interpolation will be using a wrapped around keyframe form the other side of the timeline. Therefore, we need to supply this interpolation data separate from the BEgin/End times
-            // that only decide which Segment to pick.
+            // we convert the keys on a propertyanimation into a series of Segments. Each segment fills up the gap between two keys and therefore has a begintime and endtime.
+            // These segments don't overlap. All segments together fill up the entire timeline of the animation.
+            //
+            // 
+            // ---------|------|--|-------|------------
+            //
+            // --- segment    | key
+            //
+            // The animation runtime will always find 1 segment that the current time is in, and can use the Interpolation info in that segment to find the correct animation value.
+            // For the first and last segment, we don't have two surrounding keys to interpolate between. So, we need to fabricate a virtual key to keep using the same interpolation algorithm:
+            // * for non loops: we create an interpolation of type Hold (constant value) using the value of the one key that is touching the segment.
+            // * for loops: loops wrap their animation around from the last key to the first key of the next repetition. So, we create interpolation that acts as if that wrapping is just a segment like all others:
+            //      we set interpolation data to interpolate between the last and first key in those edge-segments of the timeline.
+
 
             var segments = new List<RTSegment>();
             var sortedKeys = propertyAnimation.Keys.OrderBy(k => k.Frame).ToList();
 
             if (sortedKeys[0].Frame != animation.BeginFrame)
             {
-                // first key is not on first frame -> add a segment for the part before that first key
-                var key = sortedKeys[0];
-                var frameIndex = key.Frame - animation.BeginFrame;
-                if (animation.IsLoop)
-                {
-                    // create a segment from 0 to first key, but with interpolation information that wraps around the animation timeline and uses the last key of the timeline as "left" key for interpolating.
-                    var wrappedKey = sortedKeys[new Index(sortedKeys.Count - 1)];
-                    var rightKeyTime = (float) frameIndex / animation.FramesPerSecond;
-                    var leftKeyTime = -(float)(animation.EndFrame - wrappedKey.Frame + 1) / animation.FramesPerSecond;
-                    var duration = rightKeyTime - leftKeyTime;
-                    segments.Add(new RTSegment(0, rightKeyTime, leftKeyTime, duration, wrappedKey.Value, key.Value, MapInterpolationType(wrappedKey.InterpolationType), MapBezierCurve(wrappedKey.Curve), BezierTolerance));
-                }
-                else
-                {
-                    segments.Add(new RTSegment(0, (float)frameIndex / animation.FramesPerSecond, 0, (float)frameIndex / animation.FramesPerSecond, key.Value, key.Value, CurveType.Hold));
-                }
+                // first key is not on first frame -> add a segment for the part before the first key
+                segments.Add(CreatePreFirstKeySegment(sortedKeys, animation));
             }
 
-            // add segments for each key to the next key
             for (var i = 0; i < sortedKeys.Count; i++)
             {
-                var key = sortedKeys[i];
-                var keyTime = (float)(key.Frame - animation.BeginFrame) / animation.FramesPerSecond;
+                var leftKey = sortedKeys[i];
+                var leftKeyTime = FrameToTime(leftKey.Frame - animation.BeginFrame, animation);
 
-                if (i == sortedKeys.Count - 1)
-                {
-                    // last key, add an end-segment
-
-                    if (animation.IsLoop)
-                    {
-                        // create a segment from last key to end of animation, but with interpolation information that wraps around the animation timeline and uses the first key of the timeline as "right" key for interpolating.
-                        var wrappedKey = sortedKeys[new Index(0)];
-                        var rightKeyTime = (float)(animation.EndFrame + wrappedKey.Frame - animation.BeginFrame + 1) / animation.FramesPerSecond;
-                        var duration = rightKeyTime - keyTime;
-                        segments.Add(new RTSegment(keyTime, float.MaxValue, keyTime, duration, key.Value, wrappedKey.Value, MapInterpolationType(key.InterpolationType), MapBezierCurve(key.Curve), BezierTolerance));
-                    }
-                    // This allows us to ensures that non-looping animations end at the exact endkey-value by allowing to render 1 frame beyond the last keyframe.
-                    segments.Add(new RTSegment(keyTime, float.MaxValue, keyTime, float.MaxValue - keyTime, key.Value, key.Value, CurveType.Hold));
-                }
-                else
-                {
-                    var nextKey = sortedKeys[i + 1];
-                    var nextKeyTime = (float)(nextKey.Frame - animation.BeginFrame) / animation.FramesPerSecond;
-                    segments.Add(new RTSegment(keyTime, nextKeyTime, keyTime, nextKeyTime - keyTime, key.Value, nextKey.Value, MapInterpolationType(key.InterpolationType), MapBezierCurve(key.Curve), BezierTolerance));
-                }
+                segments.Add(i < sortedKeys.Count - 1
+                    ? CreateSegment(animation, sortedKeys, i, leftKeyTime, leftKey) // normal segment
+                    : CreatePostLastKeySegment(sortedKeys, animation)); // last segment
             }
 
             return segments.ToArray();
+        }
+
+        private RTSegment CreateSegment(Animation animation, List<Key> sortedKeys, int i, float leftKeyTime, Key leftKey)
+        {
+            var rightKey = sortedKeys[i + 1];
+            var rightKeyTime = FrameToTime(rightKey.Frame - animation.BeginFrame, animation);
+            var interpolation = CreateRuntimeInterpolation(leftKeyTime, leftKey, rightKeyTime, rightKey);
+            return new RTSegment(leftKeyTime, rightKeyTime, interpolation);
+        }
+
+        private RTSegment CreatePreFirstKeySegment(List<Key> sortedKeys, Animation animation)
+        {
+            var rightKey = sortedKeys[0];
+            var rightKeyTime = FrameToTime(rightKey.Frame - animation.BeginFrame, animation);
+            if (animation.IsLoop)
+            {
+                // create a segment from 0 to first key, but with interpolation between this key as rightside and the last on the timeline as left-side so the animation wraps around when looping.
+                var lastKey = sortedKeys[^1];
+                var leftKeyTime = FrameToTime(-animation.EndFrame + lastKey.Frame - 1, animation); // pretend that the wrapped key is more to the left (negative time), so interpolation is done just like on a normal segment.
+                var interpolation = CreateRuntimeInterpolation(leftKeyTime, lastKey, rightKeyTime, rightKey);
+                return new RTSegment(0, rightKeyTime, interpolation);
+            }
+            else
+            {
+                // no loop: create a startup segment with constant value.
+                var interpolation = new RTInterpolation(0, rightKey.Value, rightKeyTime, rightKey.Value, CurveType.Hold);
+                return new RTSegment(0, rightKeyTime, interpolation);
+            }
+        }
+
+        private RTSegment CreatePostLastKeySegment(List<Key> sortedKeys, Animation animation)
+        {
+            var leftKey = sortedKeys[^1];
+            var leftKeyTime = FrameToTime(leftKey.Frame - animation.BeginFrame, animation);
+            if (animation.IsLoop)
+            {
+                // create a segment from last key to end of animation, but with interpolation information that wraps around the animation timeline and uses the first key of the timeline as "right" key for interpolating.
+                var rightKey = sortedKeys[0];
+                var rightKeyTime = FrameToTime(animation.EndFrame + rightKey.Frame - animation.BeginFrame + 1, animation);
+                var interpolation = CreateRuntimeInterpolation(leftKeyTime, leftKey, rightKeyTime, rightKey);
+                return new RTSegment(leftKeyTime, FrameToTime(animation.EndFrame, animation), interpolation);
+            }
+            else
+            {
+                var interpolation = new RTInterpolation(leftKeyTime, leftKey.Value, float.MaxValue, leftKey.Value, CurveType.Hold);
+                return new RTSegment(leftKeyTime, float.MaxValue, interpolation);
+            }
+        }
+
+        private RTInterpolation CreateRuntimeInterpolation(float leftKeyTime, Key leftKey, float rightKeyTime, Key key)
+        {
+            return new RTInterpolation(leftKeyTime, leftKey.Value, rightKeyTime, key.Value, MapInterpolationType(leftKey.InterpolationType), MapBezierCurve(leftKey.Curve), BezierTolerance);
+        }
+
+        private static float FrameToTime(int frame, Animation animation)
+        {
+            return (float)frame / animation.FramesPerSecond;
         }
 
         private BezierCurve? MapBezierCurve(Persistence.BezierCurve curve)

@@ -62,14 +62,14 @@ namespace Pose.Runtime.MonoGame.TestGame
             // var skeletonDefinition = Content.LoadPoseSkeletonDefinition("poser");
 
             // DEMO 1 -----------
-            CreateDemo1(skeletonDefinition);
+            //CreateDemo1(skeletonDefinition);
             // ----
 
             // DEMO 2 ------------------
-            //CreateDemo2(skeletonDefinition); // don't forget setting UseMultiCore = true in the PoseRuntime.
+            CreateDemo2(skeletonDefinition); // don't forget setting UseMultiCore = true in the PoseRuntime.
             // ----
             
-            StartAnimations("Rest"); // the animationname is the one assigned to the animation in Pose Editor
+            StartAnimations("Run"); // the animationname is the one assigned to the animation in Pose Editor
         }
 
         private void CreateDemo1(SkeletonDefinition skeletonDefinition)

@@ -17,7 +17,7 @@ namespace Pose.Common.Curves
         [Pure]
         public Polynomial2 GetDerivative()
         {
-            return new Polynomial2(3*A, 2*B, C);
+            return new Polynomial2(3f*A, 2f*B, C);
         }
 
         /// <summary>

@@ -9,29 +9,24 @@ namespace Pose.Common.Curves
     {
         private readonly float _tolerance;
         private readonly Polynomial3 _fx;
+        private readonly Polynomial2 _fdx;
         private readonly Polynomial3 _fy;
 
         public BezierCurveSolver(BezierCurve bezierCurve, float tolerance = 0.002f)
         {
             _tolerance = tolerance;
             _fx = bezierCurve.GetFx();
+            _fdx = _fx.GetDerivative();
             _fy = bezierCurve.GetFy();
         }
 
-        public float SolveYAtX(float x) // optimized version (see below for more readable original)
+        public float SolveYAtX(float x) // optimized version (see method below for original, which shows the math behind it more clearly)
         {
-            // see BezierMath for explanation of what and why this does.
-
             if (x < 0f || x > 1f)
                 throw new ArgumentOutOfRangeException(nameof(x));
 
-            var fxA = _fx.A;
-            var fxB = _fx.B;
-            var fxC = _fx.C;
             var fxD = _fx.D - x; // Newton-Raphson finds 0-point of function (t where f(t)=0), but we want t where f(t) = x, so subtract x from D of the polynomial to be able to look for 0-point.
-
-            var fxdA = 3f * fxA;
-            var fxdB = 2f * fxB;
+                                      // We have derived the _fx in the ctor, although we change fx here... this is ok because we change the D factor which does not affect the derivative.
 
             // use Newton-Raphson to find a T that yields an fx(t) closer to 0 than allowed tolerance.
 
@@ -41,12 +36,12 @@ namespace Pose.Common.Curves
             {
                 s2 = s * s;
                 s3 = s * s2;
-                var resultX =  fxA * s3 + fxB * s2 + fxC * s + fxD;
+                var resultX =  _fx.A * s3 + _fx.B * s2 + _fx.C * s + fxD;
 
                 if (resultX >= 0 && resultX < _tolerance || resultX < 0 && resultX > -_tolerance)
                     break;
 
-                var d = fxdA * s2 + fxdB * s + fxC;
+                var d = _fdx.A * s2 + _fdx.B * s + _fdx.C;
                 s -= resultX / d;
             }
 

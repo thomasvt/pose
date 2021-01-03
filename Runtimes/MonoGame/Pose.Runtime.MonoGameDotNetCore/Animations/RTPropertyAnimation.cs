@@ -35,27 +35,28 @@ namespace Pose.Runtime.MonoGameDotNetCore.Animations
         internal float PlayForwardTo(in float time)
         {
             ref var currentSegment = ref _segments[_currentSegmentIdx];
-            // move to next segment until 'time' is inside segment. Also loops to first segment if last was reached and t is still outside the segment (because t will loop back to 0 by caller when isLoop = true).
+            // move to next segment until 'time' is inside current segment. Also wrap around to first segment if last is passed.
             while (time >= currentSegment.EndTime || time < currentSegment.BeginTime)
             {
                 _currentSegmentIdx = (_currentSegmentIdx + 1) % _segments.Length;
                 currentSegment = ref _segments[_currentSegmentIdx];
             }
 
+            var interpolation = currentSegment.Interpolation;
             // calc where we are on this segment in [0,1] percent
-            var t = (time - currentSegment.LeftKeyTime) / currentSegment.Duration;
+            var t = (time - interpolation.LeftKeyTime) / interpolation.Duration;
             // get interpolation value according to interpolationtype
             var y = 0f;
-            if (currentSegment.CurveType == CurveType.Bezier)
+            if (interpolation.CurveType == CurveType.Bezier)
             {
-                y = currentSegment.BezierCurveSolver.SolveYAtX(t);
+                y = interpolation.BezierCurveSolver.SolveYAtX(t);
             }
-            else if (currentSegment.CurveType == CurveType.Linear)
+            else if (interpolation.CurveType == CurveType.Linear)
             {
                 y = t;
             }
 
-            return currentSegment.LeftKeyValue * (1 - y) + currentSegment.RightKeyValue * y;
+            return interpolation.LeftKeyValue * (1f - y) + interpolation.RightKeyValue * y;
         }
     }
 }
