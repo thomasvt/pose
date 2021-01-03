@@ -74,19 +74,20 @@ namespace Pose.Runtime.MonoGameDotNetCore.Skeletons
 
         private RTSegment[] BuildPropertyAnimationSegments(PropertyAnimation propertyAnimation, Animation animation)
         {
-            // we convert the keys on a propertyanimation into a series of Segments. Each segment fills up the gap between two keys and therefore has a begintime and endtime.
-            // These segments don't overlap. All segments together fill up the entire timeline of the animation.
+            // we convert the keys on a propertyanimation into a series of Segments. Each segment takes up the gap between two keys and therefore has a begintime and endtime.
+            // The segments don't overlap but lie edge to edge along the timeline. All segments together take up the entire timeline of the animation.
             //
             // 
             // ---------|------|--|-------|------------
             //
             // --- segment    | key
             //
-            // The animation runtime will always find 1 segment that the current time is in, and can use the Interpolation info in that segment to find the correct animation value.
-            // For the first and last segment, we don't have two surrounding keys to interpolate between. So, we need to fabricate a virtual key to keep using the same interpolation algorithm:
-            // * for non loops: we create an interpolation of type Hold (constant value) using the value of the one key that is touching the segment.
-            // * for loops: loops wrap their animation around from the last key to the first key of the next repetition. So, we create interpolation that acts as if that wrapping is just a segment like all others:
-            //      we set interpolation data to interpolate between the last and first key in those edge-segments of the timeline.
+            // The animation runtime will find the single segment that the current time is in, and can use the Interpolation info of the segment to find the correct animation value.
+            //
+            // For the first and last segment, we don't have two surrounding keys to interpolate between. So, we need to fabricate the interpolation data a bit differently:
+            // * for non loops: we create an interpolation of type Hold (constant value through time) using the value of the one key that is touching the segment.
+            // * for loops: loops wrap the animation around from the last key to the first key of the next repetition as if that is just a normal segment.
+            //              So, we create interpolation data to interpolate between the last and first key in the outer-segments of the timeline.
 
 
             var segments = new List<RTSegment>();
