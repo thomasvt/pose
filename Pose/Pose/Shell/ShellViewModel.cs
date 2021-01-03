@@ -190,15 +190,23 @@ namespace Pose.Shell
         {
             if (_editor.CurrentDocument.PreviousSaveFilename != _editor.CurrentDocument.Filename)
             {
+                // file was moved since last session.
+
                 var previousAssetFolder = Path.GetFullPath(_editor.CurrentDocument.RelativeAssetFolder, Path.GetDirectoryName(_editor.CurrentDocument.PreviousSaveFilename));
-                if (Directory.Exists(previousAssetFolder))
+                if (!Directory.Exists(_editor.CurrentDocument.AbsoluteAssetFolder))
                 {
-                    if (MessageBox.Show(
-                            $"It seems this file has moved. This changes the relative asset folder and may cause missing sprites.\n\nOriginal: {previousAssetFolder}\nChanged to: {_editor.CurrentDocument.AbsoluteAssetFolder}\n\nDo you want me to repair the link to point to the Original folder? (you can undo this with Ctrl-Z afterwards)",
-                            "Asset folder link severed", MessageBoxButton.YesNo, MessageBoxImage.Warning) ==
-                        MessageBoxResult.Yes)
+                    if (Directory.Exists(previousAssetFolder))
                     {
-                        _editor.SetDocumentAssetFolder(previousAssetFolder);
+                        if (MessageBox.Show($"This file was moved but the used assets were not. I found them in the original location, and will change your assetfolder to point there:\n\n{previousAssetFolder}\n\nOk?",
+                                "Asset folder link severed", MessageBoxButton.OKCancel, MessageBoxImage.Warning) == MessageBoxResult.OK)
+                        {
+                            _editor.SetDocumentAssetFolder(previousAssetFolder);
+                        }
+                    }
+                    else
+                    {
+                        MessageBox.Show($"This file was moved and I can't find the asset folder. You will have to set the correct asset folder in the Assets panel.",
+                            "Asset folder link severed", MessageBoxButton.YesNo, MessageBoxImage.Warning);
                     }
                 }
             }

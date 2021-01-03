@@ -5,7 +5,7 @@
     <TargetFramework>netcoreapp3.1</TargetFramework>
     <UseWPF>true</UseWPF>
     <UseWindowsForms>true</UseWindowsForms>
-    <Version>0.4.0.15</Version>
+    <Version>0.4.0.17</Version>
     <Authors>Thomas Vantroyen</Authors>
     <Company>HellHoleGames</Company>
     <Description>A 2D bone-based animation creator for game development.</Description>
@@ -104,7 +104,13 @@
     <None Update="Assets\Poser\Poser.afdesign">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Assets\Poser\poser.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Assets\Poser\poser.pose">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="Assets\Poser\poser.sheet">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Assets\Poser\rest.png">

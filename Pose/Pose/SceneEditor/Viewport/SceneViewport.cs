@@ -90,7 +90,7 @@ namespace Pose.SceneEditor.Viewport
 
         internal void ApplyZoomToCamera(double? width = null)
         {
-            SceneCamera.Width = (width ?? ActualWidth) / Zoom;
+            SceneCamera.Width = (width ?? ActualWidth) / DeviceDependentZoom;
         }
 
         public Rect GetBoundingBox(ulong nodeId)
@@ -221,7 +221,7 @@ namespace Pose.SceneEditor.Viewport
 
         public void Clear()
         {
-            Zoom = 1;
+            Zoom = 1f;
             PanTo(new Vector(0, 0));
             Children.Clear();
             _lightVisual = new ModelVisual3D
@@ -231,6 +231,16 @@ namespace Pose.SceneEditor.Viewport
             Children.Add(_lightVisual);
             _nodeItemFromId.Clear();
             _nodeItemFromVisual.Clear();
+        }
+
+
+        /// <summary>
+        /// Returns WPF's multiplier from device pixel to device independent pixel. (eg. 1.5 when Windows desktop is set to 150%)
+        /// </summary>
+        private float GetDevicePixelScale()
+        {
+            var source = PresentationSource.FromVisual(this);
+            return (float) source.CompositionTarget.TransformToDevice.M11;
         }
 
         public void Hide(in ulong nodeId)
@@ -296,7 +306,7 @@ namespace Pose.SceneEditor.Viewport
         /// </summary>
         public Vector2 ScreenToWorldDistance(Vector distance)
         {
-            return distance.ToVector2() / Zoom;
+            return distance.ToVector2() / DeviceDependentZoom;
         }
 
         /// <summary>
@@ -305,13 +315,13 @@ namespace Pose.SceneEditor.Viewport
         public Vector WorldToScreenPosition(Vector2 position)
         {
             var cameraPosition = GetCameraWorldPosition();
-            var temp = (position - cameraPosition) * Zoom;
+            var temp = (position - cameraPosition) * DeviceDependentZoom;
             return new Vector(_screenCenterPx.X + temp.X, _screenCenterPx.Y - temp.Y);
         }
 
         public Vector WorldToScreenDistance(Vector2 distance)
         {
-            distance = distance * Zoom;
+            distance = distance * DeviceDependentZoom;
             return new Vector(distance.X, -distance.Y);
         }
 
@@ -320,7 +330,7 @@ namespace Pose.SceneEditor.Viewport
         /// </summary>
         public float WorldToScreenLength(float length)
         {
-            return length * Zoom;
+            return length * DeviceDependentZoom;
         }
 
         /// <summary>
@@ -330,7 +340,7 @@ namespace Pose.SceneEditor.Viewport
         {
             var cameraPosition = GetCameraWorldPosition();
             var temp = new Vector(position.X - _screenCenterPx.X, _screenCenterPx.Y - position.Y).ToVector2();
-            return temp / Zoom + cameraPosition;
+            return temp / DeviceDependentZoom + cameraPosition;
         }
 
         public Vector2 GetCameraWorldPosition()
@@ -346,6 +356,15 @@ namespace Pose.SceneEditor.Viewport
             SceneCamera.Position = new Point3D(position.X, position.Y, SceneCamera.Position.Z);
         }
 
+        /// <summary>
+        /// The zoom scale of the camera.
+        /// </summary>
         public float Zoom { get; private set; }
+
+        /// <summary>
+        /// WPF uses Windows Desktop zoom percentage to convert its device independent units into device specific pixel sized.
+        /// To get a crisp 1-to-1 sprite-to-screen pixel ratio, we need to reverse that zoom, because WPF also does this with the viewport content.
+        /// </summary>
+        private float DeviceDependentZoom => Zoom / GetDevicePixelScale();
     }
 }
