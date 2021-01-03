@@ -9,6 +9,9 @@ namespace Pose.Panels.Properties
     {
         public override DataTemplate SelectTemplate(object item, DependencyObject container)
         {
+            if (item == null)
+                return null;
+
             var element = container as FrameworkElement;
 
             if (!(element.TryFindResource(item.GetType().Name) is DataTemplate template))

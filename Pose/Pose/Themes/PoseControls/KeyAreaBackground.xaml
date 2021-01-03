@@ -6,7 +6,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type dopesheet:KeyAreaBackground}">
-                    <Rectangle x:Name="PART_ActiveAreaRectangle" Fill="#2d2d2d" />
+                    <Rectangle x:Name="PART_ActiveAreaRectangle" Fill="#363636" />
                 </ControlTemplate>
             </Setter.Value>
         </Setter>

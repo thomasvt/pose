@@ -1,6 +1,6 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Linq;
-using System.Windows;
 using Pose.Domain.Animations.Messages;
 using Pose.Domain.Editor;
 using Pose.Domain.Editor.Messages;
@@ -22,13 +22,14 @@ namespace Pose.Panels.Properties
         private RotateSubPanelViewModel _rotateSubPanel;
         private BoneSubPanelViewModel _boneSubPanel;
         private KeySubPanelViewModel _keySubPanel;
-        private string _title;
-        private VerticalAlignment _verticalAlignment;
-        
+        private string _topTitle;
+        private SubPanelViewModel _bottomSubPanel;
+        private string _bottomTitle;
+
         public PropertiesPanelViewModel(Editor editor)
         {
             _editor = editor;
-            SubPanels = new ObservableCollection<SubPanelViewModel>();
+            TopSubPanels = new ObservableCollection<SubPanelViewModel>();
 
             MessageBus.Default.Subscribe<NodeSelected>(OnNodeSelected);
             MessageBus.Default.Subscribe<NodeDeselected>(OnNodeDeselected);
@@ -47,20 +48,20 @@ namespace Pose.Panels.Properties
 
         private void OnEditorModeChanged(EditorModeChanged obj)
         {
-            RefreshAll();
+            RefreshAllTop();
         }
 
         private void OnNodeTransformChanged(NodeTransformChanged msg)
         {
             if (msg.NodeId == _entityId)
-                RefreshAll();
+                RefreshAllTop();
         }
 
         private void OnNodePropertyValueChanged(NodePropertyValueChanged msg)
         {
             if (msg.NodeId == _entityId)
             {
-                foreach (var panel in SubPanels.OfType<NodeSubPanelViewModel>())
+                foreach (var panel in TopSubPanels.OfType<NodeSubPanelViewModel>())
                 {
                     panel.RefreshPropertyAndKeyButton(_editor, msg.PropertyType);
                 }
@@ -71,7 +72,7 @@ namespace Pose.Panels.Properties
         {
             if (_editor.IsCurrentAnimation(msg.AnimationId))
             {
-                foreach (var panel in SubPanels.OfType<NodeSubPanelViewModel>())
+                foreach (var panel in TopSubPanels.OfType<NodeSubPanelViewModel>())
                 {
                     panel.Refresh();
                 }
@@ -93,7 +94,7 @@ namespace Pose.Panels.Properties
 
             if (msg.KeyId == _entityId)
             {
-                Clear();
+                ClearTop();
             }
             else if (_editor.GetCurrentAnimation().CurrentFrame == msg.Frame)
             {
@@ -116,7 +117,7 @@ namespace Pose.Panels.Properties
                 return;
 
             if (IsKeyOfCurrentFrame(e.KeyId) || _entityId == e.KeyId)
-                RefreshAll();
+                RefreshAllTop();
         }
 
         /// <summary>
@@ -129,21 +130,20 @@ namespace Pose.Panels.Properties
             return _editor.GetCurrentAnimation().Id == propertyAnimation.AnimationId && _editor.CurrentDocument.GetAnimation(propertyAnimation.AnimationId).CurrentFrame == key.Frame;
         }
 
-        private void RefreshAll()
+        private void RefreshAllTop()
         {
-            SetEntityTitle();
-            foreach (var panel in SubPanels)
+            UpdateTopTitle();
+            foreach (var panel in TopSubPanels)
             {
                 panel.Refresh();
             }
         }
 
-        private void SetEntityTitle()
+        private void UpdateTopTitle()
         {
-            Title = _entityType switch
+            TopTitle = _entityType switch
             {
                 EntityType.Node => _editor.CurrentDocument.GetNode(_entityId.Value).ToString(),
-                EntityType.AnimationKey => "Animation Key",
                 _ => string.Empty
             };
         }
@@ -153,7 +153,7 @@ namespace Pose.Panels.Properties
             if (!_entityId.HasValue)
                 return;
 
-            foreach (var panel in SubPanels.OfType<NodeSubPanelViewModel>())
+            foreach (var panel in TopSubPanels.OfType<NodeSubPanelViewModel>())
             {
                 panel.RefreshKeyButtons();
             }
@@ -164,92 +164,95 @@ namespace Pose.Panels.Properties
             if (msg.NodeId != _entityId)
                 return;
 
-            Clear();
+            ClearTop();
         }
 
-        private void Clear()
+        private void ClearTop()
         {
-            Title = string.Empty;
+            TopTitle = string.Empty;
             _entityType = EntityType.None;
             _entityId = null;
-            SubPanels.Clear();
+            TopSubPanels.Clear();
         }
 
         private void OnNodeSelected(NodeSelected msg)
         {
             _entityType = EntityType.Node;
             _entityId = msg.NodeId;
-            VerticalAlignment = VerticalAlignment.Top;
             var node = _editor.CurrentDocument.GetNode(msg.NodeId);
-            SubPanels.Clear();
+            TopSubPanels.Clear();
 
-            SubPanels.Add(_translateSubPanel);
-            SubPanels.Add(_rotateSubPanel);
+            TopSubPanels.Add(_translateSubPanel);
+            TopSubPanels.Add(_rotateSubPanel);
 
             if (node is BoneNode)
             {
-                SubPanels.Add(_boneSubPanel);
+                TopSubPanels.Add(_boneSubPanel);
             }
 
-            SetPanelsNodeId(msg.NodeId);
-            RefreshAll();
+            SetTopPanelsNodeId(msg.NodeId);
+            RefreshAllTop();
         }
 
         private void OnKeySelected(KeySelected msg)
         {
-            _entityType = EntityType.AnimationKey;
-            _entityId = msg.KeyId;
-            VerticalAlignment = VerticalAlignment.Bottom;
-            SubPanels.Clear();
-
-            SubPanels.Add(_keySubPanel);
             _keySubPanel.KeyId = msg.KeyId;
-
-            RefreshAll();
+            _keySubPanel.Refresh();
+            BottomTitle = "Animation Key";
+            BottomSubPanel = _keySubPanel;
         }
 
         private void OnKeyDeselected(KeyDeselected msg)
         {
-            if (msg.KeyId != _entityId)
+            if (msg.KeyId != _keySubPanel.KeyId)
                 return;
 
-            Clear();
+            BottomSubPanel = null;
         }
 
-        private void SetPanelsNodeId(ulong nodeId)
+        private void SetTopPanelsNodeId(ulong nodeId)
         {
-            foreach (var panel in SubPanels.OfType<NodeSubPanelViewModel>())
+            foreach (var panel in TopSubPanels.OfType<NodeSubPanelViewModel>())
             {
                 panel.SetNodeId(nodeId);
             }
         }
 
-        public string Title
+        public string TopTitle
         {
-            get => _title;
+            get => _topTitle;
             set
             {
-                if (_title == value)
+                if (_topTitle == value)
                     return;
 
-                _title = value;
+                _topTitle = value;
                 OnPropertyChanged();
             }
         }
 
-        public VerticalAlignment VerticalAlignment
+        public string BottomTitle
         {
-            get => _verticalAlignment;
+            get => _bottomTitle;
             set
             {
-                if (_verticalAlignment == value)
-                    return;
-
-                _verticalAlignment = value;
+                if (value == _bottomTitle) return;
+                _bottomTitle = value;
                 OnPropertyChanged();
             }
         }
 
-        public ObservableCollection<SubPanelViewModel> SubPanels { get; }
+        public ObservableCollection<SubPanelViewModel> TopSubPanels { get; }
+
+        public SubPanelViewModel BottomSubPanel
+        {
+            get => _bottomSubPanel;
+            set
+            {
+                if (Equals(value, _bottomSubPanel)) return;
+                _bottomSubPanel = value;
+                OnPropertyChanged();
+            }
+        }
     }
 }

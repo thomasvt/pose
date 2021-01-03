@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.DirectoryServices.ActiveDirectory;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -33,7 +34,9 @@ namespace Pose.Controls.Dopesheet
         protected override void OnMouseDown(MouseButtonEventArgs e)
         {
             base.OnMouseDown(e);
-            // copied from ListBox code:
+            if (!(e.Source is DopesheetRow)) // only direct click is accepted
+                return;
+            // copied from ListBox code, to notify owning dopesheet:
             var dopesheet = ItemsControlFromItemContainer(this) as Dopesheet;
             dopesheet?.NotifyDopesheetRowClicked(this, e.ChangedButton);
         }

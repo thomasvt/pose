@@ -22,14 +22,20 @@
             <subPanels:KeySubPanelView Margin="0,0,0,8" />
         </DataTemplate>
     </UserControl.Resources>
-    <StackPanel VerticalAlignment="{Binding VerticalAlignment}" Margin="0,0,0,16">
-        <Grid Margin="16,16,0,16">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition />
-                <ColumnDefinition Width="32" />
-            </Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="0" FontWeight="Bold" Text="{Binding Title}" Foreground="#ccFEAF29"  HorizontalAlignment="Left" />
-        </Grid>
-        <ItemsControl Margin="0,0,0,0"  ItemsSource="{Binding SubPanels}" ItemTemplateSelector="{StaticResource subPanelTemplateSelector}" KeyboardNavigation.TabNavigation="Cycle" />
-    </StackPanel>
+    <DockPanel LastChildFill="False">
+
+        <!-- node properties -->
+
+        <StackPanel DockPanel.Dock="Top" Margin="0,0,0,16">
+            <TextBlock Margin="16" FontWeight="Bold" Text="{Binding TopTitle}" Foreground="#ccFEAF29"  HorizontalAlignment="Left" />
+            <ItemsControl Margin="0,0,0,0" ItemsSource="{Binding TopSubPanels}" ItemTemplateSelector="{StaticResource subPanelTemplateSelector}" KeyboardNavigation.TabNavigation="Cycle" />
+        </StackPanel>
+
+        <!-- bottom property panel (animation Key properties) -->
+
+        <StackPanel DockPanel.Dock="Bottom" Margin="0,16,0, 8">
+            <TextBlock Margin="16" FontWeight="Bold" Text="{Binding BottomTitle}" Foreground="#ccFEAF29"  HorizontalAlignment="Left" />
+            <ContentControl Content="{Binding BottomSubPanel}" ContentTemplateSelector="{StaticResource subPanelTemplateSelector}" KeyboardNavigation.TabNavigation="Cycle" />
+        </StackPanel>
+    </DockPanel>
 </UserControl>
