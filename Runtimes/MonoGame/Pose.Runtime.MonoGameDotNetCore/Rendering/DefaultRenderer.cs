@@ -80,6 +80,7 @@ namespace Pose.Runtime.MonoGameDotNetCore.Rendering
                 _graphicsDevice.SetVertexBuffer(mesh.GetVertexBuffer(_graphicsDevice));
                 _graphicsDevice.Indices = mesh.GetIndexBuffer(_graphicsDevice);
                 _effect.World = worldTransform;
+                _effect.Texture = mesh.Texture;
 
                 foreach (var pass in _effect.CurrentTechnique.Passes)
                 {
