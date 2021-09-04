@@ -53,7 +53,7 @@ namespace Pose.Runtime.MonoGameDotNetCore.Rendering
         
             if (_indexBufferIsDirty)
             {
-                _indexBuffer.SetData(Indices, 0, VertexCount);
+                _indexBuffer.SetData(Indices, 0, IndexCount);
                 _indexBufferIsDirty = false;
             }
         
